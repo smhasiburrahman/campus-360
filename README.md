@@ -140,7 +140,7 @@ chore:    maintenance tasks
 | S M Hasibur Rahman | Backend | [smhasiburrahamn](https://github.com/smhasiburrahman) |
 | Md Sami Chowdhury | Backend | [RotenZen](https://github.com/RotenZen)|
 | Md Mahamud Hasan | Frontend | [Mahamud-Hasan123](https://github.com/Mahamud-Hasan123)|
-| Md Mir Adnan | Frontend | [miradnan](https://github.com/miradnan)|
+| Md Mir Adnan | Frontend | [miradnaan](https://github.com/miradnaan)|
 | Md Shakib | Frontend | |
 
 
