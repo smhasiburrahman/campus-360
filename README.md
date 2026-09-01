@@ -137,10 +137,10 @@ chore:    maintenance tasks
 
 | Name | Role | GitHub |
 |---|---|---|
-| S M Hasibur Rahman | Backend | smhasiburrahamn |
-| Md Sami Chowdhury | Backend | |
-| Md Mahamud Hasan | Frontend | |
-| Md Mir Adnan | Frontend | |
+| S M Hasibur Rahman | Backend | [smhasiburrahamn](https://github.com/smhasiburrahman) |
+| Md Sami Chowdhury | Backend | [RotenZen](https://github.com/RotenZen)|
+| Md Mahamud Hasan | Frontend | [Mahamud-Hasan123](https://github.com/Mahamud-Hasan123)|
+| Md Mir Adnan | Frontend | [miradnan](https://github.com/miradnan)|
 | Md Shakib | Frontend | |
 
 
