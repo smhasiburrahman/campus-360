@@ -35,7 +35,9 @@ public class LostFoundService {
         LostFoundPostResponse response = new LostFoundPostResponse();
         response.setId(post.getId());
         response.setPostKind(post.getPostKind());
+        response.setTitle(post.getTitle());
         response.setDescription(post.getDescription());
+        response.setLastKnownLocation(post.getLastKnownLocation());
         response.setStatus(post.getStatus());
         response.setCreatedAt(post.getCreatedAt());
         response.setOwnerId(post.getStudentId());
@@ -58,7 +60,9 @@ public class LostFoundService {
         LostFoundPost post = new LostFoundPost();
         post.setStudentId(studentId);
         post.setPostKind(request.getPostKind());
+        post.setTitle(request.getTitle());
         post.setDescription(request.getDescription());
+        post.setLastKnownLocation(request.getLastKnownLocation());
         post.setStatus("not_found");
         post.setIsDeleted(false);
 
@@ -79,8 +83,8 @@ public class LostFoundService {
         return mapToResponse(savedPost);
     }
 
-    public Page<LostFoundPostResponse> getAllPosts(Pageable pageable) {
-        return postRepository.findByIsDeletedFalse(pageable).map(this::mapToResponse);
+    public Page<LostFoundPostResponse> getAllPosts(String kind, String status, Pageable pageable) {
+        return postRepository.findByFilters(kind, status, pageable).map(this::mapToResponse);
     }
 
     public LostFoundPostResponse getPostById(Long id) {
@@ -99,7 +103,9 @@ public class LostFoundService {
         }
 
         post.setPostKind(request.getPostKind());
+        post.setTitle(request.getTitle());
         post.setDescription(request.getDescription());
+        post.setLastKnownLocation(request.getLastKnownLocation());
         LostFoundPost savedPost = postRepository.save(post);
 
         // Replace images

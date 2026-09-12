@@ -32,4 +32,13 @@ public class StudentController {
         Student saved = studentRepository.save(student);
         return ResponseEntity.ok(saved);
     }
+
+    @GetMapping("/me")
+    @PreAuthorize("hasRole('STUDENT')")
+    public ResponseEntity<?> getMe() {
+        String userId = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Student student = studentRepository.findById(Long.parseLong(userId))
+                .orElseThrow(() -> new RuntimeException("Student not found"));
+        return ResponseEntity.ok(student);
+    }
 }

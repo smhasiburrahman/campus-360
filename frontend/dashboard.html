@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Campus 360 - Home</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/lost-found.css">
+    <link rel="stylesheet" href="css/announcements.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="dashboard-layout">
+        
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="brand-icon">
+                    <i class="fa-solid fa-layer-group"></i>
+                </div>
+                <div>
+                    <h2>Campus 360</h2>
+                    <p>Student Platform</p>
+                </div>
+            </div>
+
+            <!-- Notice: 'Create Post' button removed as per request -->
+
+            <div class="sidebar-nav">
+                <a href="dashboard.html" class="nav-item active">
+                    <i class="fa-solid fa-house"></i> Home
+                </a>
+                <a href="lost-found.html" class="nav-item">
+                    <i class="fa-solid fa-magnifying-glass"></i> Lost & Found
+                </a>
+                <a href="announcements.html" class="nav-item">
+                    <i class="fa-solid fa-bullhorn"></i> Announcements
+                </a>
+                <a href="events.html" class="nav-item">
+                    <i class="fa-regular fa-calendar"></i> Events
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fa-solid fa-flag"></i> Complaints
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fa-solid fa-store"></i> Marketplace
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fa-solid fa-book-open"></i> Study Zone
+                </a>
+                <a href="materials.html" class="nav-item">
+                    <i class="fa-solid fa-folder-open"></i> Material Sharing
+                </a>
+
+                <div class="nav-section" style="margin-top: 2rem;">
+                    <div class="nav-section-title">Other</div>
+                    <a href="#" class="nav-item">
+                        <i class="fa-solid fa-bus"></i> Shuttle Tracking
+                    </a>
+                    <a href="#" class="nav-item">
+                        <i class="fa-regular fa-bell"></i> Notifications <span class="nav-badge">5</span>
+                    </a>
+                    <a href="#" class="nav-item">
+                        <i class="fa-regular fa-user"></i> My Profile
+                    </a>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            
+            <!-- Top Navbar -->
+            <header class="topbar">
+                <div class="search-bar">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" placeholder="Search posts, people, materials...">
+                </div>
+
+                <div class="topbar-actions">
+                    <div class="notification-bell">
+                        <i class="fa-regular fa-bell"></i>
+                        <div class="notification-dot"></div>
+                    </div>
+                    
+                    <!-- Notice: 'New Post' button removed as per request -->
+
+                    <div class="user-profile" id="userProfileBtn" style="cursor: pointer; position: relative;">
+                        <div class="avatar" id="navAvatar">U</div>
+                        <div class="user-name" id="navName">User</div>
+                        <i class="fa-solid fa-chevron-down" style="color: #94a3b8; font-size: 0.8rem;"></i>
+                        
+                        <div class="profile-dropdown" id="profileDropdown" style="display: none; position: absolute; top: 100%; right: 0; background: white; border: 1px solid var(--border-color); border-radius: var(--radius-md); box-shadow: var(--shadow-md); padding: 0.5rem 0; min-width: 150px; z-index: 100; margin-top: 0.5rem;">
+                            <button id="logoutBtn" style="width: 100%; text-align: left; padding: 0.75rem 1rem; background: none; border: none; cursor: pointer; color: #ef4444; font-weight: 500; display: flex; align-items: center; gap: 0.5rem;">
+                                <i class="fa-solid fa-arrow-right-from-bracket"></i> Log Out
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <div class="dashboard-container">
+                <div class="page-header">
+                    <h1>Home Feed</h1>
+                    <span>9 posts</span>
+                </div>
+
+                <!-- Filters -->
+                <div class="filter-tabs">
+                    <div class="filter-pill active">All Posts</div>
+                    <div class="filter-pill"><div class="dot announcement"></div> Announcements</div>
+                    <div class="filter-pill"><div class="dot lostfound"></div> Lost & Found</div>
+                    <div class="filter-pill"><div class="dot event"></div> Events</div>
+                    <div class="filter-pill"><div class="dot complaint"></div> Complaints</div>
+                    <div class="filter-pill"><div class="dot marketplace"></div> Marketplace</div>
+                    <div class="filter-pill"><div class="dot study"></div> Study Zone</div>
+                    <div class="filter-pill"><div class="dot material"></div> Material Sharing</div>
+                </div>
+
+                <div class="content-grid">
+                    
+                    <!-- Left Column: Feed -->
+                    <div class="feed-column" id="feedContainer">
+                        <div style="text-align: center; padding: 2rem; color: #94a3b8;">
+                            <i class="fa-solid fa-spinner fa-spin" style="font-size: 2rem; margin-bottom: 1rem;"></i>
+                            <p>Loading your feed...</p>
+                        </div>
+                    </div>
+
+                    <!-- Right Column: Widgets -->
+                    <div class="widgets-column">
+                        
+                        <!-- Campus Pulse Widget -->
+                        <div class="widget">
+                            <div class="widget-header">
+                                <i class="fa-solid fa-chart-simple" style="color: #10b981;"></i>
+                                <h3>Campus Pulse</h3>
+                            </div>
+                            <div class="pulse-grid" id="pulseGrid">
+                                <!-- Populated dynamically -->
+                            </div>
+                        </div>
+
+                        <!-- Upcoming Events Widget -->
+                        <div class="widget">
+                            <div class="widget-header">
+                                <i class="fa-regular fa-calendar" style="color: #8b5cf6;"></i>
+                                <h3>Upcoming Events</h3>
+                            </div>
+                            
+                            <div id="upcomingEventsContainer">
+                                <div style="text-align: center; padding: 1rem; color: #94a3b8;">
+                                    <i class="fa-solid fa-spinner fa-spin"></i> Loading...
+                                </div>
+                            </div>
+                            
+                            <button class="btn btn-outline btn-full">View All Events</button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/api.js?v=2"></script>
+    <script src="js/dashboard.js?v=2"></script>
+    <script>
+        // Check authentication
+        const token = localStorage.getItem('token');
+        if (!token) {
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>

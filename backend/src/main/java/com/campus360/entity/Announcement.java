@@ -24,6 +24,12 @@ public class Announcement {
     @Column(name = "owner_id", nullable = false)
     private Long ownerId;
 
+    @Column(name = "title", nullable = false)
+    private String title;
+
+    @Column(name = "category", nullable = false)
+    private String category;
+
     @Column(name = "description", nullable = false)
     private String description;
 

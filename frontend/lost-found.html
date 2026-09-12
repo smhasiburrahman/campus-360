@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Campus 360 - Lost & Found</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/lost-found.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="dashboard-layout">
+        
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="brand-icon">
+                    <i class="fa-solid fa-layer-group"></i>
+                </div>
+                <div>
+                    <h2>Campus 360</h2>
+                    <p>Student Platform</p>
+                </div>
+            </div>
+
+            <div class="sidebar-nav">
+                <a href="dashboard.html" class="nav-item">
+                    <i class="fa-solid fa-house"></i> Home
+                </a>
+                <a href="lost-found.html" class="nav-item active">
+                    <i class="fa-solid fa-magnifying-glass"></i> Lost & Found
+                </a>
+                <a href="announcements.html" class="nav-item">
+                    <i class="fa-solid fa-bullhorn"></i> Announcements
+                </a>
+                <a href="events.html" class="nav-item">
+                    <i class="fa-regular fa-calendar"></i> Events
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fa-solid fa-flag"></i> Complaints
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fa-solid fa-store"></i> Marketplace
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fa-solid fa-book-open"></i> Study Zone
+                </a>
+                <a href="materials.html" class="nav-item">
+                    <i class="fa-solid fa-folder-open"></i> Material Sharing
+                </a>
+
+                <div class="nav-section" style="margin-top: 2rem;">
+                    <div class="nav-section-title">Other</div>
+                    <a href="#" class="nav-item">
+                        <i class="fa-solid fa-bus"></i> Shuttle Tracking
+                    </a>
+                    <a href="#" class="nav-item">
+                        <i class="fa-regular fa-bell"></i> Notifications <span class="nav-badge">5</span>
+                    </a>
+                    <a href="#" class="nav-item">
+                        <i class="fa-regular fa-user"></i> My Profile
+                    </a>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            
+            <!-- Top Navbar -->
+            <header class="topbar">
+                <div class="search-bar">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" placeholder="Search posts, people, materials...">
+                </div>
+
+                <div class="topbar-actions">
+                    <div class="notification-bell">
+                        <i class="fa-regular fa-bell"></i>
+                        <div class="notification-dot"></div>
+                    </div>
+                    
+                    <div class="user-profile" id="userProfileBtn" style="cursor: pointer; position: relative;">
+                        <div class="avatar" id="navAvatar">U</div>
+                        <div class="user-name" id="navName">User</div>
+                        <i class="fa-solid fa-chevron-down" style="color: #94a3b8; font-size: 0.8rem;"></i>
+                        
+                        <div class="profile-dropdown" id="profileDropdown" style="display: none; position: absolute; top: 100%; right: 0; background: white; border: 1px solid var(--border-color); border-radius: var(--radius-md); box-shadow: var(--shadow-md); padding: 0.5rem 0; min-width: 150px; z-index: 100; margin-top: 0.5rem;">
+                            <button id="logoutBtn" style="width: 100%; text-align: left; padding: 0.75rem 1rem; background: none; border: none; cursor: pointer; color: #ef4444; font-weight: 500; display: flex; align-items: center; gap: 0.5rem;">
+                                <i class="fa-solid fa-arrow-right-from-bracket"></i> Log Out
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <div class="dashboard-container">
+                
+                <!-- Lost & Found Header -->
+                <div class="lf-header">
+                    <div class="lf-title-area">
+                        <div class="lf-icon">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </div>
+                        <div class="lf-title-text">
+                            <h1>Lost & Found</h1>
+                            <p class="lf-subtitle" id="statsSubtitle">Loading stats...</p>
+                        </div>
+                    </div>
+                    
+                    <button id="openReportModalBtn" class="btn" style="background-color: #f97316; display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; font-size: 0.85rem;">
+                        <i class="fa-solid fa-plus"></i> Report Item
+                    </button>
+                </div>
+
+                <!-- Filters -->
+                <div class="lf-filter-bar">
+                    <div class="lf-search">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input type="text" placeholder="Search items, descriptions, locations...">
+                    </div>
+                    
+                    <div class="lf-filter-group" id="kindFilterGroup">
+                        <button class="lf-toggle active" data-kind="all">All Items</button>
+                        <button class="lf-toggle" data-kind="lost"><i class="fa-solid fa-magnifying-glass"></i> Lost</button>
+                        <button class="lf-toggle" data-kind="found"><i class="fa-solid fa-check"></i> Found</button>
+                    </div>
+                    
+                    <div class="lf-filter-group" id="statusFilterGroup">
+                        <button class="lf-toggle active" data-status="all">All Status</button>
+                        <button class="lf-toggle" data-status="active">Active</button>
+                        <button class="lf-toggle" data-status="resolved">Resolved</button>
+                    </div>
+                    
+                    <div class="lf-filter-group" style="margin-left: auto;">
+                        <button class="lf-toggle active">Recent</button>
+                        <button class="lf-toggle">Popular</button>
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 1rem; color: #64748b; font-size: 0.9rem;">
+                    Showing <span id="itemCount">0</span> items
+                </div>
+
+                <div class="content-grid">
+                    
+                    <!-- Left Column: Feed -->
+                    <div class="feed-column" id="lfFeedContainer">
+                        <div style="text-align: center; padding: 2rem; color: #94a3b8;">
+                            <i class="fa-solid fa-spinner fa-spin" style="font-size: 2rem; margin-bottom: 1rem;"></i>
+                            <p>Loading items...</p>
+                        </div>
+                    </div>
+
+                    <!-- Right Column: Widgets -->
+                    <div class="widgets-column">
+                        
+                        <!-- This Month Stats -->
+                        <div class="widget">
+                            <h3 style="margin:0 0 0.2rem 0; font-size: 1.1rem;">This Month</h3>
+                            <p style="margin:0 0 1.5rem 0; font-size: 0.8rem; color: var(--text-muted);">Campus Lost & Found activity</p>
+                            
+                            <div class="pulse-grid" id="lfPulseGrid">
+                                <!-- Populated dynamically -->
+                            </div>
+                        </div>
+
+                        <!-- How It Works -->
+                        <div class="widget">
+                            <h3 style="margin:0; font-size: 1.1rem;">How It Works</h3>
+                            
+                            <div class="how-it-works-list">
+                                <div class="how-step">
+                                    <div class="step-num">1</div>
+                                    <div class="step-content">
+                                        <h4>Post Your Item</h4>
+                                        <p>Describe the item clearly with unique identifying marks, the last known location, and your contact method.</p>
+                                    </div>
+                                </div>
+                                <div class="how-step">
+                                    <div class="step-num">2</div>
+                                    <div class="step-content">
+                                        <h4>Community Helps</h4>
+                                        <p>Others on campus can comment, share, or DM you if they spot the item.</p>
+                                    </div>
+                                </div>
+                                <div class="how-step">
+                                    <div class="step-num">3</div>
+                                    <div class="step-content">
+                                        <h4>Verify & Handover</h4>
+                                        <p>Owner provides a description to confirm. Meet in a public campus area to hand it over.</p>
+                                    </div>
+                                </div>
+                                <div class="how-step">
+                                    <div class="step-num">4</div>
+                                    <div class="step-content">
+                                        <h4>Mark Resolved</h4>
+                                        <p>Once returned, mark your post as resolved to let others know it has been handled.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Safety Tips -->
+                        <div class="widget safety-tips">
+                            <h4><i class="fa-solid fa-thumbtack" style="color:#ef4444;"></i> Safety Tips</h4>
+                            <ul>
+                                <li>Always meet in public campus areas</li>
+                                <li>Include unique identifying marks</li>
+                                <li>Never share sensitive personal info publicly</li>
+                                <li>Mark resolved once item is returned</li>
+                            </ul>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Report Item Modal -->
+    <div id="reportModal" class="lf-modal">
+        <div class="lf-modal-content">
+            <div class="lf-modal-header">
+                <div>
+                    <h2>Report a Lost or Found Item</h2>
+                    <p>Help your fellow students reunite with their belongings</p>
+                </div>
+                <button class="lf-close-btn" id="closeModalBtn"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            
+            <form id="reportForm">
+                <div class="form-group">
+                    <label>Item Type</label>
+                    <div class="type-toggle">
+                        <button type="button" class="type-btn active" data-type="lost"><i class="fa-solid fa-magnifying-glass"></i> I Lost Something</button>
+                        <button type="button" class="type-btn" data-type="found"><i class="fa-solid fa-check"></i> I Found Something</button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Item Name <span class="required">*</span></label>
+                    <input type="text" id="reportItemName" required placeholder="e.g. AirPods Pro, Black Leather Wallet, TI-84 Calculator...">
+                </div>
+
+                <div class="form-group">
+                    <label>Description <span class="required">*</span></label>
+                    <textarea id="reportDescription" rows="4" required placeholder="Describe the item clearly — colour, brand, any unique marks, engravings, stickers, damage..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Last Seen / Found At <span class="required">*</span></label>
+                    <input type="text" id="reportLocation" required placeholder="e.g. Main Library, Building A — Ground Floor">
+                </div>
+
+                <div class="form-group">
+                    <label>Images</label>
+                    <div class="image-upload-area">
+                        <button type="button" class="add-image-btn" id="addImageBtn">
+                            <i class="fa-solid fa-camera"></i> Add Image
+                        </button>
+                        <input type="file" id="imageInput" accept="image/*" style="display: none;">
+                        <div id="imagePreviewContainer" class="image-preview-container"></div>
+                    </div>
+                </div>
+
+                <div class="lf-modal-footer">
+                    <button type="button" class="btn-cancel" id="cancelReportBtn">Cancel</button>
+                    <button type="submit" class="btn-submit">Submit Report</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/api.js?v=2"></script>
+    <script src="js/lost-found.js?v=2"></script>
+</body>
+</html>

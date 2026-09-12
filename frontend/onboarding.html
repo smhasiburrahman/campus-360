@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Campus 360 - Onboarding</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/auth.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .onboarding-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--bg-gray);
+            padding: 2rem;
+        }
+        .onboarding-card {
+            background-color: var(--bg-light);
+            border-radius: var(--radius-xl);
+            padding: 2.5rem;
+            width: 100%;
+            max-width: 500px;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-color);
+        }
+        .onboarding-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background-color: var(--alert-bg);
+            color: var(--primary-color);
+            padding: 0.4rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+        }
+        .onboarding-header h1 {
+            font-size: 1.75rem;
+            margin-bottom: 0.5rem;
+        }
+        .onboarding-header p {
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+            font-size: 0.95rem;
+        }
+        .footer-text {
+            text-align: center;
+            font-size: 0.8rem;
+            color: var(--text-light-muted);
+            margin-top: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="onboarding-container">
+        <div class="onboarding-card">
+            <div class="onboarding-badge">
+                <i class="fa-regular fa-square-check"></i> Account created <i class="fa-solid fa-chevron-right" style="color:#94a3b8; font-size: 0.7rem; margin: 0 0.25rem;"></i> <span style="background:var(--dark-bg); color:white; padding:0.2rem 0.6rem; border-radius:12px;">Complete your profile</span>
+            </div>
+            
+            <div class="onboarding-header">
+                <h1>One last step 👋</h1>
+                <p>Tell us a little about yourself to finish setting up your Campus 360 account.</p>
+            </div>
+
+            <form id="onboardingForm">
+                <div class="form-group">
+                    <label class="form-label">Full Name <span style="color: #ef4444;">*</span></label>
+                    <div class="input-with-icon">
+                        <i class="fa-regular fa-user"></i>
+                        <input type="text" class="form-control" id="fullName" placeholder="e.g. Sarah Al-Rashidi" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">University ID <span style="color: #ef4444;">*</span></label>
+                    <div class="input-with-icon">
+                        <i class="fa-regular fa-id-card"></i>
+                        <input type="text" class="form-control" id="universityId" placeholder="e.g. STU-2024-00891" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Department <span style="color: #ef4444;">*</span></label>
+                    <div class="input-with-icon">
+                        <i class="fa-solid fa-book-open"></i>
+                        <select class="form-control" id="departmentId" required style="appearance: none;">
+                            <option value="" disabled selected>Select your department...</option>
+                            <!-- Options will be populated by API -->
+                        </select>
+                        <i class="fa-solid fa-chevron-down icon-right" style="pointer-events: none; color: #94a3b8;"></i>
+                    </div>
+                </div>
+                
+                <p style="font-size:0.75rem; color:var(--text-muted); margin-bottom: 1.5rem;">
+                    <span style="color: #ef4444;">*</span> All fields are required to complete your profile.
+                </p>
+
+                <button type="submit" class="btn btn-primary" id="onboardingBtn">Complete Profile <i class="fa-solid fa-arrow-right" style="margin-left: 0.5rem;"></i></button>
+            </form>
+            
+            <div class="footer-text">
+                You can update your profile at any time in <strong>Settings &rarr; My Profile</strong>.
+            </div>
+        </div>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+        // Load departments when page loads
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                const response = await fetch(API_BASE_URL + '/departments');
+                if (response.ok) {
+                    const departments = await response.json();
+                    const select = document.getElementById('departmentId');
+                    departments.forEach(dept => {
+                        const option = document.createElement('option');
+                        option.value = dept.id;
+                        option.textContent = dept.name;
+                        select.appendChild(option);
+                    });
+                }
+            } catch (err) {
+                console.error('Failed to load departments', err);
+            }
+        });
+    </script>
+</body>
+</html>

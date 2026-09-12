@@ -30,7 +30,13 @@ public class MaterialShare {
     @Column(name = "trimester_id", nullable = false)
     private Integer trimesterId;
 
-    @Column(name = "description")
+    @Column(name = "title", nullable = false)
+    private String title;
+
+    @Column(name = "visits", nullable = false)
+    private Integer visits = 0;
+
+    @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 
     @Column(name = "is_deleted", nullable = false)

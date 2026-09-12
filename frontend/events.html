@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Campus 360 - Events</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/events.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="dashboard-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="brand-icon">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                </div>
+                <div>
+                    <h2>Campus 360</h2>
+                    <p>Student Platform</p>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <div class="nav-section">
+                    <a href="dashboard.html" class="nav-item">
+                        <i class="fa-solid fa-house"></i> Home
+                    </a>
+                    <a href="lost-found.html" class="nav-item">
+                        <i class="fa-solid fa-magnifying-glass"></i> Lost & Found
+                    </a>
+                    <a href="announcements.html" class="nav-item">
+                        <i class="fa-solid fa-bullhorn"></i> Announcements
+                    </a>
+                    <a href="events.html" class="nav-item active">
+                        <i class="fa-regular fa-calendar"></i> Events
+                    </a>
+                    <a href="#" class="nav-item">
+                        <i class="fa-solid fa-flag"></i> Complaints
+                    </a>
+                    <a href="#" class="nav-item">
+                        <i class="fa-solid fa-store"></i> Marketplace
+                    </a>
+                    <a href="#" class="nav-item">
+                        <i class="fa-solid fa-book-open"></i> Study Zone
+                    </a>
+                    <a href="materials.html" class="nav-item">
+                        <i class="fa-solid fa-folder-open"></i> Material Sharing
+                    </a>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-title">OTHER</div>
+                    <a href="#" class="nav-item">
+                        <i class="fa-solid fa-bus"></i> Shuttle Tracking
+                    </a>
+                    <a href="#" class="nav-item">
+                        <i class="fa-regular fa-bell"></i> Notifications
+                        <span class="nav-badge">5</span>
+                    </a>
+                    <a href="#" class="nav-item">
+                        <i class="fa-regular fa-user"></i> My Profile
+                    </a>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Topbar -->
+            <header class="topbar">
+                <div class="search-bar">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" placeholder="Search posts, people, materials...">
+                </div>
+                
+                <div class="topbar-actions">
+                    <div class="notification-bell">
+                        <i class="fa-regular fa-bell"></i>
+                        <div class="notification-dot"></div>
+                    </div>
+                    
+                    <div class="user-profile" id="userProfileBtn" style="cursor: pointer; position: relative;">
+                        <div class="avatar" id="navAvatar">U</div>
+                        <div class="user-name" id="navName">User</div>
+                        <i class="fa-solid fa-chevron-down" style="color: #94a3b8; font-size: 0.8rem;"></i>
+                        
+                        <div class="profile-dropdown" id="profileDropdown" style="display: none; position: absolute; top: 100%; right: 0; background: white; border: 1px solid var(--border-color); border-radius: var(--radius-md); box-shadow: var(--shadow-md); padding: 0.5rem 0; min-width: 150px; z-index: 100; margin-top: 0.5rem;">
+                            <button id="logoutBtn" style="width: 100%; text-align: left; padding: 0.75rem 1rem; background: none; border: none; cursor: pointer; color: #ef4444; font-weight: 500; display: flex; align-items: center; gap: 0.5rem;">
+                                <i class="fa-solid fa-arrow-right-from-bracket"></i> Log Out
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Dashboard Container -->
+            <div class="dashboard-container">
+                
+                <div class="events-header">
+                    <div class="events-title-area">
+                        <div class="events-icon">
+                            <i class="fa-regular fa-calendar"></i>
+                        </div>
+                        <div class="events-title-text">
+                            <h1>Events</h1>
+                            <p class="events-subtitle">Discover and register for campus events, workshops, and activities.</p>
+                        </div>
+                    </div>
+                    <div id="addEventBtnContainer">
+                        <!-- Add Event button will be injected here via JS if authorized -->
+                    </div>
+                </div>
+
+                <!-- Filter Bar -->
+                <div class="events-filter-bar">
+                    <div class="events-filter-group">
+                        <button class="events-toggle active" data-filter="all">All Events</button>
+                        <button class="events-toggle" data-filter="upcoming">Upcoming</button>
+                        <button class="events-toggle" data-filter="past">Past</button>
+                    </div>
+                </div>
+
+                <div class="content-grid">
+                    <!-- Events Feed -->
+                    <div class="feed-column" id="eventsFeed">
+                        <!-- Event Cards injected here via JS -->
+                        <div style="text-align: center; padding: 3rem; color: var(--text-muted);">
+                            <i class="fa-solid fa-spinner fa-spin fa-2x"></i>
+                            <p style="margin-top: 1rem;">Loading events...</p>
+                        </div>
+                    </div>
+
+                    <!-- Right Sidebar Widgets -->
+                    <div class="widgets-column">
+                        <!-- Campus Pulse Widget -->
+                        <div class="widget">
+                            <div class="widget-header">
+                                <i class="fa-solid fa-chart-simple" style="color: #3b82f6;"></i>
+                                <h3>Campus Pulse</h3>
+                            </div>
+                            <div class="pulse-grid">
+                                <div class="pulse-card">
+                                    <i class="fa-solid fa-calendar-day" style="color: #8b5cf6;"></i>
+                                    <h2 id="pulseEventsCount">0</h2>
+                                    <p>Events This Month</p>
+                                </div>
+                                <div class="pulse-card">
+                                    <i class="fa-solid fa-users" style="color: #10b981;"></i>
+                                    <h2 id="pulseRegistrations">0</h2>
+                                    <p>New Registrations</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Upcoming Events Widget -->
+                        <div class="widget">
+                            <div class="widget-header">
+                                <i class="fa-regular fa-calendar" style="color: #ec4899;"></i>
+                                <h3>Upcoming Events</h3>
+                            </div>
+                            <div id="upcomingEventsWidget">
+                                <!-- Upcoming Event Items injected here -->
+                                <p style="text-align: center; color: var(--text-muted); font-size: 0.9rem;">Loading...</p>
+                            </div>
+                            <button class="btn btn-outline btn-full" style="margin-top: 1rem;">View All Events</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- Create Event Modal -->
+    <div class="events-modal" id="createEventModal">
+        <div class="events-modal-content">
+            <div class="events-modal-header">
+                <div>
+                    <h2>Create Event</h2>
+                    <p>Host an event, workshop, or competition.</p>
+                </div>
+                <button class="events-close-btn" id="closeEventModalBtn">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            
+            <form id="createEventForm">
+                <div class="form-group">
+                    <label>Title <span class="required">*</span></label>
+                    <input type="text" id="eventTitle" placeholder="e.g. TechFest 2024" required>
+                </div>
+                
+                <div style="display: flex; gap: 1rem;">
+                    <div class="form-group" style="flex: 1;">
+                        <label>Date <span class="required">*</span></label>
+                        <input type="date" id="eventDate" required>
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                        <label>Time <span class="required">*</span></label>
+                        <input type="text" id="eventTime" placeholder="e.g. 9:00 AM - 9:00 PM" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Location <span class="required">*</span></label>
+                    <input type="text" id="eventLocation" placeholder="e.g. Main Auditorium" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Registration Link</label>
+                    <input type="url" id="eventLink" placeholder="https://example.com/register">
+                </div>
+
+                <div class="form-group">
+                    <label>Description <span class="required">*</span></label>
+                    <textarea id="eventDesc" rows="4" placeholder="Provide all the necessary details..." required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Organizer Details</label>
+                    <input type="text" id="eventOrganizer" placeholder="e.g. By CS Society in association with EEE Society">
+                </div>
+
+                <div class="form-group">
+                    <label>Images</label>
+                    <div class="image-upload-area">
+                        <button type="button" class="add-image-btn" onclick="document.getElementById('eventImageUpload').click()">
+                            <i class="fa-solid fa-camera"></i> Add Image
+                        </button>
+                        <input type="file" id="eventImageUpload" accept="image/*" style="display: none;" multiple>
+                        <div class="image-preview-container" id="eventImagePreviews"></div>
+                    </div>
+                </div>
+
+                <div class="events-modal-footer">
+                    <button type="button" class="btn-cancel" id="cancelEventBtn">Cancel</button>
+                    <button type="submit" class="btn-submit" id="submitEventBtn">Post Event</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/api.js?v=4"></script>
+    <script src="js/events.js"></script>
+</body>
+</html>
