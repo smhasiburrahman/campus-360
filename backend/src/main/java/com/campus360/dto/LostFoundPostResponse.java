@@ -8,7 +8,9 @@ import java.util.List;
 public class LostFoundPostResponse {
     private Long id;
     private String postKind;
+    private String title;
     private String description;
+    private String lastKnownLocation;
     private String status;
     private Long ownerId;
     private String ownerName;

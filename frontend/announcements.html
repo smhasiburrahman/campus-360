@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Campus 360 - Announcements</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/announcements.css?v=4">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="dashboard-layout">
+        
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="brand-icon">
+                    <i class="fa-solid fa-layer-group"></i>
+                </div>
+                <div>
+                    <h2>Campus 360</h2>
+                    <p>Student Platform</p>
+                </div>
+            </div>
+
+            <div class="sidebar-nav">
+                <a href="dashboard.html" class="nav-item">
+                    <i class="fa-solid fa-house"></i> Home
+                </a>
+                <a href="lost-found.html" class="nav-item">
+                    <i class="fa-solid fa-magnifying-glass"></i> Lost & Found
+                </a>
+                <a href="announcements.html" class="nav-item active">
+                    <i class="fa-solid fa-bullhorn"></i> Announcements
+                </a>
+                <a href="events.html" class="nav-item">
+                    <i class="fa-regular fa-calendar"></i> Events
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fa-solid fa-flag"></i> Complaints
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fa-solid fa-store"></i> Marketplace
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fa-solid fa-book-open"></i> Study Zone
+                </a>
+                <a href="materials.html" class="nav-item">
+                    <i class="fa-solid fa-folder-open"></i> Material Sharing
+                </a>
+
+                <div class="nav-section" style="margin-top: 2rem;">
+                    <div class="nav-section-title">Other</div>
+                    <a href="#" class="nav-item">
+                        <i class="fa-solid fa-bus"></i> Shuttle Tracking
+                    </a>
+                    <a href="#" class="nav-item">
+                        <i class="fa-regular fa-bell"></i> Notifications <span class="nav-badge">5</span>
+                    </a>
+                    <a href="#" class="nav-item">
+                        <i class="fa-regular fa-user"></i> My Profile
+                    </a>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            
+            <!-- Top Navbar -->
+            <header class="topbar">
+                <div class="search-bar">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" placeholder="Search posts, people, materials...">
+                </div>
+
+                <div class="topbar-actions">
+                    <div class="notification-bell">
+                        <i class="fa-regular fa-bell"></i>
+                        <div class="notification-dot"></div>
+                    </div>
+                    
+                    <div class="user-profile" id="userProfileBtn" style="cursor: pointer; position: relative;">
+                        <div class="avatar" id="navAvatar">U</div>
+                        <div class="user-name" id="navName">User</div>
+                        <i class="fa-solid fa-chevron-down" style="color: #94a3b8; font-size: 0.8rem;"></i>
+                        
+                        <div class="profile-dropdown" id="profileDropdown" style="display: none; position: absolute; top: 100%; right: 0; background: white; border: 1px solid var(--border-color); border-radius: var(--radius-md); box-shadow: var(--shadow-md); padding: 0.5rem 0; min-width: 150px; z-index: 100; margin-top: 0.5rem;">
+                            <button id="logoutBtn" style="width: 100%; text-align: left; padding: 0.75rem 1rem; background: none; border: none; cursor: pointer; color: #ef4444; font-weight: 500; display: flex; align-items: center; gap: 0.5rem;">
+                                <i class="fa-solid fa-arrow-right-from-bracket"></i> Log Out
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <div class="dashboard-container">
+                
+                <!-- Announcements Header -->
+                <div class="ann-header">
+                    <div class="ann-title-area">
+                        <div class="ann-icon">
+                            <i class="fa-solid fa-bullhorn"></i>
+                        </div>
+                        <div class="ann-title-text">
+                            <h1>Announcements</h1>
+                            <p class="ann-subtitle">Stay updated with official university news and club activities.</p>
+                        </div>
+                    </div>
+                    
+                    <button id="openCreateModalBtn" class="btn" style="background-color: #4f46e5; display: none; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; font-size: 0.85rem;">
+                        <i class="fa-solid fa-plus"></i> Create Announcement
+                    </button>
+                </div>
+
+                <!-- Filters -->
+                <div class="ann-filter-bar">
+                    <div class="ann-filter-group" id="categoryFilterGroup">
+                        <button class="ann-toggle active" data-category="">All Categories</button>
+                        <button class="ann-toggle" data-category="academic"><i class="fa-solid fa-graduation-cap"></i> Academic</button>
+                        <button class="ann-toggle" data-category="club"><i class="fa-solid fa-users"></i> Clubs & Orgs</button>
+                        <button class="ann-toggle" data-category="administrative"><i class="fa-solid fa-building"></i> Administrative</button>
+                    </div>
+                </div>
+
+                <div class="content-grid">
+                    
+                    <!-- Left Column: Feed -->
+                    <div class="feed-column" id="annFeedContainer">
+                        <div style="text-align: center; padding: 2rem; color: #94a3b8;">
+                            <i class="fa-solid fa-spinner fa-spin" style="font-size: 2rem; margin-bottom: 1rem;"></i>
+                            <p>Loading announcements...</p>
+                        </div>
+                    </div>
+
+                    <!-- Right Column: Widgets -->
+                    <div class="widgets-column">
+                        <div class="widget">
+                            <h3 style="margin:0 0 1rem 0; font-size: 1.1rem;">Subscribe to Updates</h3>
+                            <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1rem;">Get notified immediately when important academic or administrative announcements are posted.</p>
+                            <button class="btn btn-outline" style="width: 100%;"><i class="fa-regular fa-bell"></i> Manage Notifications</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Create Announcement Modal -->
+    <div id="createModal" class="ann-modal">
+        <div class="ann-modal-content">
+            <div class="ann-modal-header">
+                <div>
+                    <h2>Create Announcement</h2>
+                    <p>Post official news, updates, or schedules.</p>
+                </div>
+                <button class="ann-close-btn" id="closeModalBtn"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            
+            <form id="createAnnForm">
+                <div class="form-group">
+                    <label>Title <span class="required">*</span></label>
+                    <input type="text" id="annTitle" required placeholder="e.g. Mid-Term Examination Schedule — Fall 2024">
+                </div>
+
+                <div class="form-group">
+                    <label>Category <span class="required">*</span></label>
+                    <select id="annCategory" required>
+                        <option value="academic">Academic</option>
+                        <option value="administrative">Administrative</option>
+                        <option value="club">Club & Org</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Description <span class="required">*</span></label>
+                    <textarea id="annDescription" rows="5" required placeholder="Provide all the necessary details..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Images</label>
+                    <div class="image-upload-area">
+                        <button type="button" class="add-image-btn" id="addImageBtn">
+                            <i class="fa-solid fa-camera"></i> Add Image
+                        </button>
+                        <input type="file" id="imageInput" accept="image/*" style="display: none;">
+                        <div id="imagePreviewContainer" class="image-preview-container"></div>
+                    </div>
+                </div>
+
+                <div class="ann-modal-footer">
+                    <button type="button" class="btn-cancel" id="cancelCreateBtn">Cancel</button>
+                    <button type="submit" class="btn-submit">Post Announcement</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/api.js?v=3"></script>
+    <script src="js/announcements.js?v=3"></script>
+</body>
+</html>

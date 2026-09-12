@@ -32,4 +32,12 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
         }
     }
+    @PostMapping("/authority/login")
+    public ResponseEntity<?> loginAuthority(@RequestBody AuthRequest request) {
+        try {
+            return ResponseEntity.ok(authService.loginAuthority(request));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
+        }
+    }
 }

@@ -24,8 +24,20 @@ public class Event {
     @Column(name = "owner_id", nullable = false)
     private Long ownerId;
 
-    @Column(name = "description", nullable = false)
+    @Column(name = "title", nullable = false)
+    private String title;
+
+    @Column(name = "description", nullable = false, columnDefinition = "TEXT")
     private String description;
+
+    @Column(name = "event_time")
+    private String time;
+
+    @Column(name = "location")
+    private String location;
+
+    @Column(name = "organizer_details")
+    private String organizerDetails;
 
     @Column(name = "registration_link")
     private String registrationLink;

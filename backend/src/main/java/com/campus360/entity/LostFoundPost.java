@@ -24,6 +24,12 @@ public class LostFoundPost {
     @Column(name = "post_kind", nullable = false)
     private String postKind;
 
+    @Column(name = "title")
+    private String title;
+
+    @Column(name = "last_known_location")
+    private String lastKnownLocation;
+
     @Column(name = "description", nullable = false)
     private String description;
 

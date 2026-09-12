@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Campus 360 - Login</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/auth.css">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="auth-container">
+        <!-- Sidebar Content -->
+        <div class="auth-sidebar">
+            <div class="brand">
+                <div class="brand-icon">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                </div>
+                <div class="brand-text">
+                    <h2>Campus 360</h2>
+                    <p>Student Platform</p>
+                </div>
+            </div>
+
+            <div class="hero-text">
+                <h1>Your complete university experience,<br><span>in one place.</span></h1>
+                <p>Connect with your campus community, stay informed, and make the most of university life.</p>
+            </div>
+
+            <div class="features-grid">
+                <div class="feature-card">
+                    <i class="fa-solid fa-house"></i>
+                    <h4>Home Feed</h4>
+                    <p>Stay updated</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fa-solid fa-bullhorn"></i>
+                    <h4>Announcements</h4>
+                    <p>Never miss news</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fa-regular fa-calendar"></i>
+                    <h4>Events</h4>
+                    <p>Campus calendar</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <h4>Lost & Found</h4>
+                    <p>Reunite with belongings</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fa-solid fa-store"></i>
+                    <h4>Marketplace</h4>
+                    <p>Buy & sell on campus</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fa-solid fa-book-open"></i>
+                    <h4>Study Zone</h4>
+                    <p>Group sessions</p>
+                </div>
+            </div>
+
+            <div class="copyright">
+                &copy; 2026 Campus 360 · All rights reserved
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="auth-main">
+            <div class="auth-form-wrapper">
+                <div class="auth-header">
+                    <h1>Welcome back 👋</h1>
+                    <p>Sign in to your Campus 360 account</p>
+                </div>
+
+
+
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label class="form-label">Student Email</label>
+                        <div class="input-with-icon">
+                            <i class="fa-regular fa-envelope"></i>
+                            <input type="email" class="form-control" id="email" placeholder="you@campus360.edu" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Password</label>
+                        <div class="input-with-icon">
+                            <i class="fa-solid fa-lock"></i>
+                            <input type="password" class="form-control" id="password" placeholder="Enter your password" required>
+                            <i class="fa-regular fa-eye icon-right" onclick="togglePassword('password', this)"></i>
+                        </div>
+                    </div>
+
+                    <div class="form-options">
+                        <label class="checkbox-label">
+                            <input type="checkbox"> Remember me
+                        </label>
+                        <a href="#" class="text-link">Forgot password?</a>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" id="loginBtn">Log In <i class="fa-solid fa-arrow-right" style="margin-left: 0.5rem;"></i></button>
+                </form>
+
+                <div class="divider">New to Campus 360?</div>
+
+                <a href="register.html" class="btn btn-outline">Create a Student Account</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/api.js?v=4"></script>
+    <script src="js/auth.js?v=4"></script>
+</body>
+</html>

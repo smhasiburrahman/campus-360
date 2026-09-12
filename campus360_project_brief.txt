@@ -1,0 +1,342 @@
+CAMPUS 360 — PROJECT BRIEF
+============================================================
+Purpose of this document: a single, self-contained reference an AI
+assistant (or new developer) can read to fully understand the product,
+without needing any other prior conversation history. It combines the
+original requirements with the technical decisions already made for the
+database schema and the API design.
+
+Tech stack decided so far:
+- Backend: Java, Spring Boot
+- Database: MySQL (schema already designed, see "DATABASE DESIGN" section)
+- API style: REST, JSON, JWT auth (see "API DESIGN" section)
+- Live location: Google Maps API (client-side), custom backend tracking
+
+============================================================
+1. PRODUCT OVERVIEW
+============================================================
+Campus 360 is an all-in-one platform for a university campus. It combines
+a social feed of campus-specific post types (lost & found, announcements,
+events, complaints, a marketplace, study-group matching, and course
+material sharing) with two operational features: a university-authority
+moderation/admin layer and live shuttle-bus tracking.
+
+============================================================
+2. ACCOUNT TYPES
+============================================================
+There are four distinct account types, each with its own login
+(email + password). They are NOT rows in one shared "users" table —
+each is modeled and authenticated separately.
+
+2.1 Student
+    - Signs up with email + password only.
+    - Immediately after signup, an onboarding step collects:
+        * University ID
+        * Full name
+        * Department
+    - Can create posts, like/dislike, comment, bookmark, report,
+      vote on complaints, join study sessions, sell/buy in the
+      marketplace, and see the live shuttle map.
+
+2.2 Club
+    - Represents a university club/organization.
+    - Can post Announcements and Events.
+
+2.3 University Authority
+    - Represents university staff/admin.
+    - Responsibilities:
+        * Handles (reviews/updates status of) Complaints.
+        * Handles (updates status of) Lost & Found posts.
+        * Posts Announcements and Events (same as clubs).
+        * Registers Driver accounts for the shuttle service.
+        * Moderates content platform-wide: an authority account with
+          "admin" privileges can edit or delete ANY post (not just
+          their own), same as the post's original owner can.
+        * Reviews reports filed by students.
+    - Two internal roles: STAFF (day-to-day handling) and ADMIN
+      (full moderation rights + can provision other authority/staff
+      accounts).
+
+2.4 Driver
+    - Registered by university authority (not self-signup).
+    - Logs in, selects a route, and turns on live location tracking
+      while driving the shuttle.
+
+============================================================
+3. UNIVERSAL POST BEHAVIOR
+============================================================
+Every post type below shares these behaviors:
+    - Bookmarkable (students can save/unsave any post).
+    - Deletable (by the post's owner, or by a university-authority
+      admin).
+    - Editable (by the post's owner, or by a university-authority
+      admin).
+    - Reportable (students can flag a post; goes into a moderation
+      queue for university authority to review).
+    - Like / Dislike (one reaction per student per post; switching
+      or removing is allowed).
+    - Comments (threaded replies supported).
+
+These shared behaviors are handled generically across all seven post
+types rather than being reimplemented per type (see DATABASE DESIGN
+and API DESIGN sections for how).
+
+============================================================
+4. POST TYPES (the 7 feeds)
+============================================================
+
+4.1 Lost & Found
+    Required on creation (by student):
+        - Post kind: "lost" or "found"
+        - Description (text)
+        - Image(s) — optional
+    Shown in feed:
+        - Name of the person who posted
+        - Date created
+        - Description
+        - Post kind (lost/found)
+        - Status: "Found" / "Not Found"
+            * Updatable ONLY by the post owner or university authority
+        - Auto-assigned unique ID
+
+4.2 Announcements
+    Required on creation (by Club or University Authority):
+        - Description (text)
+        - Image — optional
+    Shown in feed:
+        - Poster: which Club, or "University Authority"
+        - Description
+        - Date created
+
+4.3 Events
+    Required on creation (by Club or University Authority):
+        - Description (text) + image (required from poster)
+        - Date created
+        - Registration link
+    Poster: Club or University Authority.
+
+4.4 Complaints
+    Required on creation (by student):
+        - Description (text + image)
+    Shown in feed:
+        - Post owner's name
+        - Upvote / Downvote buttons (this is the like/dislike
+          mechanic for this post type specifically)
+        - Complaint status
+    Status lifecycle:
+        not_approved -> pending -> processing -> handled OR denied
+        - Moves from "not_approved" to "pending" AUTOMATICALLY once
+          upvotes reach a configurable threshold.
+        - From "pending" onward, only university authority can change
+          status (to processing, then handled or denied).
+        - Authority cannot directly set "pending" — that transition
+          is vote-driven only.
+
+4.5 Marketplace
+    - The first time a student creates a sell listing, they are
+      prompted to create a Vendor Profile (a name for their
+      seller identity). One student = at most one vendor profile,
+      linked 1:1 to their student account.
+    - Buyers who click on a seller from a listing see only that
+      seller's Vendor Profile (not their general student profile).
+    - Buyers can rate (numeric) and write reviews on a vendor profile.
+    Listing fields:
+        - Post owner (via vendor profile)
+        - Product description
+        - Price
+        - Date of post
+        - Status: Sold / Unsold — OPTIONAL, owner may choose not to
+          show a status at all
+        - A "message" option/button (contacting the seller) —
+          implemented as a simple UI affordance/flag; no in-app chat
+          system is required behind it.
+
+4.6 Study Zone
+    Students post about a study session/group. Fields:
+        - Owner (student)
+        - Subject/course they want to study together
+        - Post time (auto, when created)
+        - Study time (when the session will happen)
+        - Peer limit (max number of students who can join)
+        - Tutor needed: yes/no
+        - Mode: online or offline
+        - Description
+    Other students can join a session up to its peer limit.
+
+4.7 Material Sharing
+    Students share course materials (notes, slides, recorded
+    classes, etc.) for others. Fields:
+        - Post owner (student)
+        - Department
+        - Course name AND course ID (both chosen via dropdowns —
+          implies a pre-populated Courses reference list tied to
+          Departments)
+        - Date
+        - Trimester name (also a dropdown — implies a pre-populated
+          Trimesters reference list)
+        - One or more attached files (notes/slides/recordings)
+
+============================================================
+5. USER PROFILE (STUDENT)
+============================================================
+A student's profile contains:
+    - Username / full name
+    - Email
+    - Profile picture
+    - Gender
+    - Department
+    - Their own posts (across all 7 post types)
+    - Their bookmarked posts (across all 7 post types)
+
+============================================================
+6. UNIVERSITY AUTHORITY RESPONSIBILITIES (recap, operational view)
+============================================================
+    - Handle Complaints (advance status after "pending").
+    - Handle Lost & Found (update Found/Not Found status).
+    - Share Announcements and Events.
+    - Register Driver accounts for the shuttle service.
+    - Review and act on user-filed Reports against any post.
+    - (Admin role only) Edit/delete any post platform-wide.
+
+============================================================
+7. SHUTTLE TRACKING
+============================================================
+Goal: live-track a campus shuttle using the driver's smartphone GPS,
+via the Google Maps API on the client side, so students can see the
+shuttle's live location.
+
+Flow:
+    1. University authority pre-configures Routes, each with an
+       ordered list of Stops (name + coordinates), and optionally a
+       list of physical Shuttles (vehicle number/capacity).
+    2. A Driver logs in, gets into the shuttle, CHOOSES A ROUTE for
+       their current trip, then turns ON live location tracking.
+    3. While tracking is on, the driver's phone periodically sends
+       its current GPS coordinates (latitude, longitude), and ideally
+       heading/bearing and speed, to the backend.
+    4. Students can view: the list of routes and stops, which
+       routes currently have an active trip, and the live position
+       of the shuttle on that route (polled or pushed in real time).
+    5. Driver turns tracking off / ends the trip when done.
+
+Data needed to support this (as determined during schema design):
+    - Route (id, name, description, active flag)
+    - Route Stop (route id, stop name, order/sequence, lat, lng)
+    - Shuttle vehicle (id, vehicle number, capacity) — optional
+      linkage if you want to track which physical bus is on a trip
+    - Trip (driver id, route id, shuttle id, status: active/
+      completed/cancelled, start time, end time, plus a CACHED
+      latest lat/lng/heading/speed/timestamp for fast "where is it
+      right now" reads)
+    - Location ping log (trip id, lat, lng, heading, speed,
+      recorded-at timestamp) — full history of GPS pings, separate
+      from the cached "latest" values on Trip, for logging/audit/
+      replay purposes.
+
+============================================================
+8. DATABASE DESIGN (already completed — summary)
+============================================================
+A full MySQL schema (.sql file) has already been designed and
+validated (imported cleanly into a live MySQL/MariaDB instance).
+Key structural decisions:
+
+- Separate account tables: students, clubs, university_authority
+  (with a role column: staff/admin), drivers — each with its own
+  email+password login. No single shared "users" table.
+- Each post type has ITS OWN dedicated content table (matching
+  separate frontend pages per type): lost_found_posts, announcements,
+  events, complaints, marketplace_listings (+ vendor_profiles,
+  vendor_reviews), study_sessions (+ study_session_participants),
+  material_shares (+ material_files).
+- Shared/universal post behaviors live in 5 reusable "polymorphic"
+  tables keyed by (post_type, post_id) instead of being duplicated
+  per post type:
+      post_images, post_likes (like/dislike, also doubles as
+      complaint upvote/downvote), post_comments (threaded via
+      parent_comment_id), post_bookmarks, post_reports.
+  Trade-off: MySQL can't put a real FOREIGN KEY on a polymorphic
+  post_id (it could point to any of 7 tables depending on post_type),
+  so that integrity check must happen in the application/service
+  layer, not the database.
+- Reference/lookup tables: departments, courses (linked to a
+  department), trimesters — used to populate dropdowns, especially
+  for Material Sharing and Study Zone.
+- Soft deletes: post tables use is_deleted/deleted_at rather than
+  hard deletes, so bookmarks/comments/reports on a deleted post
+  remain intact for history/audit.
+- A DB trigger auto-transitions a complaint from "not_approved" to
+  "pending" once its upvote count (post_likes with reaction='like')
+  crosses a configurable threshold stored in an app_settings table.
+- Two more triggers keep a vendor profile's avg_rating/rating_count
+  in sync whenever a vendor_reviews row is inserted or deleted.
+- Shuttle tracking tables: shuttle_routes, route_stops, shuttles,
+  shuttle_trips (with cached current lat/lng/heading/speed for fast
+  reads), shuttle_locations (full history log, indexed by trip+time).
+- File delivered: campus360_schema.sql
+
+============================================================
+9. API DESIGN (already completed — summary)
+============================================================
+A REST API has already been designed for a Spring Boot backend
+(Markdown reference doc delivered). Key conventions:
+
+- Base path /api/v1, JSON bodies, camelCase fields.
+- Auth: JWT bearer tokens; each account type logs in separately
+  (students, clubs, authority, drivers each have their own
+  /auth/.../login endpoint). Roles used for authorization: STUDENT,
+  CLUB, AUTHORITY_STAFF, AUTHORITY_ADMIN, DRIVER.
+- Students self-register (email+password) then complete a separate
+  onboarding call (university ID, name, department). Clubs self-
+  register. Authority accounts are provisioned internally (seeded,
+  or created by an existing admin). Drivers are created by authority
+  and only have a login endpoint (no self-registration).
+- Standard REST verbs used deliberately:
+    * POST for creation
+    * PUT for full replace / upsert (e.g. a like/dislike reaction is
+      PUT because it's an upsert on a unique per-user-per-post row)
+    * PATCH for partial/status-only updates (complaint status,
+      lost&found found/not-found status, listing sold/unsold)
+    * DELETE for removal (soft-delete under the hood)
+- Pagination via ?page=&size=&sort=, standard envelope with content/
+  page/size/totalElements/totalPages.
+- Shared engagement endpoints (reactions, comments, bookmarks,
+  reports, images) are generic and parameterized by a {postType}
+  path segment (lost-found | announcement | event | complaint |
+  marketplace | study-session | material-share) instead of being
+  duplicated 7 times, mirroring the DB's polymorphic tables. The
+  service layer is responsible for validating that a given postId
+  actually belongs to the claimed postType, since the DB can't
+  enforce that with a real foreign key.
+- Marketplace "message" option is just a UI-facing flag on a
+  listing (contactEnabled) — no chat/message storage in the API.
+- Shuttle tracking exposes: admin endpoints to manage routes/stops/
+  shuttles; driver endpoints to start a trip, send periodic location
+  pings (PATCH), and end a trip; public/student endpoints to list
+  routes+stops and see active trips' current location — offered both
+  as a pollable REST endpoint and a recommended WebSocket/STOMP
+  topic for real-time push updates.
+- Suggested Spring Boot package layout: config, auth, student,
+  reference, lostfound, announcement, event, complaint, marketplace,
+  studyzone, material, engagement (shared), admin, shuttle, common.
+- File delivered: campus360_api_design.md
+
+============================================================
+10. OPEN / NOT-YET-SPECIFIED DECISIONS
+============================================================
+Things the original requirements did not specify, where reasonable
+assumptions were made (flag these to the product owner before
+build-out if they matter):
+    - Exact complaint upvote threshold value (currently a
+      configurable setting, default placeholder used during testing:
+      10, tested with an example threshold of 2).
+    - Whether clubs require approval before their account is active,
+      or can self-register freely.
+    - File storage backend for images/materials (schema stores a
+      URL string; actual upload/storage mechanism — e.g. S3-style
+      bucket — is not yet chosen).
+    - Real-time transport for shuttle tracking (WebSocket/STOMP was
+      proposed as the recommended option; polling REST is the
+      fallback already specified).
+    - No in-app messaging/chat system exists yet for marketplace
+      buyer-seller contact — explicitly scoped out per product
+      owner's decision; only a placeholder flag exists.

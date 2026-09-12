@@ -51,9 +51,11 @@ public class LostFoundController {
 
     @GetMapping
     public ResponseEntity<Page<LostFoundPostResponse>> getAllPosts(
+            @RequestParam(required = false) String kind,
+            @RequestParam(required = false) String status,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
-        return ResponseEntity.ok(lostFoundService.getAllPosts(PageRequest.of(page, size)));
+        return ResponseEntity.ok(lostFoundService.getAllPosts(kind, status, PageRequest.of(page, size)));
     }
 
     @GetMapping("/{id}")

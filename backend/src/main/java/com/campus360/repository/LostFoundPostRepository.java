@@ -12,4 +12,11 @@ import java.util.Optional;
 public interface LostFoundPostRepository extends JpaRepository<LostFoundPost, Long> {
     Page<LostFoundPost> findByIsDeletedFalse(Pageable pageable);
     Optional<LostFoundPost> findByIdAndIsDeletedFalse(Long id);
+
+    @org.springframework.data.jpa.repository.Query("SELECT p FROM LostFoundPost p WHERE p.isDeleted = false " +
+           "AND (:kind IS NULL OR p.postKind = :kind) " +
+           "AND (:status IS NULL OR p.status = :status)")
+    Page<LostFoundPost> findByFilters(@org.springframework.data.repository.query.Param("kind") String kind, 
+                                      @org.springframework.data.repository.query.Param("status") String status, 
+                                      Pageable pageable);
 }

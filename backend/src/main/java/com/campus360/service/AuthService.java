@@ -63,4 +63,24 @@ public class AuthService {
                 .onboardingComplete(student.getOnboardingComplete())
                 .build();
     }
+
+    @Autowired
+    private com.campus360.repository.UniversityAuthorityRepository authorityRepository;
+
+    public AuthResponse loginAuthority(AuthRequest request) {
+        com.campus360.entity.UniversityAuthority auth = authorityRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new RuntimeException("Authority not found"));
+
+        if (!passwordEncoder.matches(request.getPassword(), auth.getPasswordHash())) {
+            throw new RuntimeException("Invalid credentials");
+        }
+
+        String token = jwtUtils.generateToken(auth.getId(), "AUTHORITY", "ROLE_" + auth.getRole().toUpperCase());
+
+        return AuthResponse.builder()
+                .token(token)
+                .id(auth.getId())
+                .role(auth.getRole().toUpperCase())
+                .build();
+    }
 }
