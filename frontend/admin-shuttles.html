@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Campus 360 - Admin Shuttle Management</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Leaflet CSS for Map -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
+    <style>
+        .admin-section {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-sm);
+        }
+        .admin-section h2 {
+            margin-bottom: 1.5rem;
+            font-size: 1.25rem;
+            color: var(--text-dark);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 0.5rem;
+        }
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-dark);
+        }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            font-family: inherit;
+        }
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+        #mapPicker {
+            height: 300px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-color);
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-layout">
+        
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="brand-icon">
+                    <i class="fa-solid fa-layer-group"></i>
+                </div>
+                <div>
+                    <h2>Campus 360</h2>
+                    <p>Student Platform</p>
+                </div>
+            </div>
+
+            <div class="sidebar-nav">
+                <a href="dashboard.html" class="nav-item">
+                    <i class="fa-solid fa-house"></i> Home
+                </a>
+                <a href="lost-found.html" class="nav-item">
+                    <i class="fa-solid fa-magnifying-glass"></i> Lost & Found
+                </a>
+                <a href="announcements.html" class="nav-item">
+                    <i class="fa-solid fa-bullhorn"></i> Announcements
+                </a>
+                <a href="events.html" class="nav-item">
+                    <i class="fa-regular fa-calendar"></i> Events
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fa-solid fa-flag"></i> Complaints
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fa-solid fa-store"></i> Marketplace
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fa-solid fa-book-open"></i> Study Zone
+                </a>
+                <a href="materials.html" class="nav-item">
+                    <i class="fa-solid fa-folder-open"></i> Material Sharing
+                </a>
+
+                <div class="nav-section" style="margin-top: 2rem;">
+                    <div class="nav-section-title">Other</div>
+                    <a href="shuttle.html" class="nav-item">
+                        <i class="fa-solid fa-bus"></i> Shuttle Tracking
+                    </a>
+                    <a href="#" class="nav-item">
+                        <i class="fa-regular fa-bell"></i> Notifications <span class="nav-badge">5</span>
+                    </a>
+                    <a href="#" class="nav-item">
+                        <i class="fa-regular fa-user"></i> My Profile
+                    </a>
+                </div>
+
+                <!-- Admin Section (Dynamic in JS, but hardcoded here since this page is for admins) -->
+                <div class="nav-section" id="adminSidebarSection" style="margin-top: 2rem;">
+                    <div class="nav-section-title" style="color: var(--danger);">Admin Panel</div>
+                    <a href="admin-shuttles.html" class="nav-item active">
+                        <i class="fa-solid fa-route"></i> Manage Shuttles
+                    </a>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            
+            <header class="topbar">
+                <div class="search-bar">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" placeholder="Search...">
+                </div>
+
+                <div class="topbar-actions">
+                    <div class="user-profile" id="userProfileBtn" style="cursor: pointer; position: relative;">
+                        <div class="avatar" id="navAvatar" style="background: var(--danger);">A</div>
+                        <div class="user-name" id="navName">Admin</div>
+                    </div>
+                </div>
+            </header>
+
+            <div class="dashboard-container">
+                <div class="page-header">
+                    <h1>Shuttle Management</h1>
+                    <span>Configure routes and fleet</span>
+                </div>
+
+                <div class="admin-section">
+                    <h2><i class="fa-solid fa-bus"></i> Register New Shuttle</h2>
+                    <form id="shuttleForm" class="form-grid">
+                        <div class="form-group">
+                            <label for="vehicleNo">Vehicle Number / License Plate</label>
+                            <input type="text" id="vehicleNo" required placeholder="e.g. BUS-405">
+                        </div>
+                        <div class="form-group">
+                            <label for="capacity">Passenger Capacity</label>
+                            <input type="number" id="capacity" required placeholder="e.g. 45" min="1">
+                        </div>
+                        <div class="form-group" style="grid-column: span 2;">
+                            <button type="submit" class="btn btn-primary" id="btnCreateShuttle">Register Shuttle</button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="admin-section">
+                    <h2><i class="fa-solid fa-route"></i> Create New Route</h2>
+                    <form id="routeForm" class="form-grid">
+                        <div class="form-group">
+                            <label for="routeName">Route Name</label>
+                            <input type="text" id="routeName" required placeholder="e.g. South Campus Express">
+                        </div>
+                        <div class="form-group">
+                            <label for="routeDesc">Description</label>
+                            <input type="text" id="routeDesc" placeholder="e.g. Covers the southern gates and science blocks">
+                        </div>
+                        <div class="form-group" style="grid-column: span 2;">
+                            <button type="submit" class="btn btn-primary" id="btnCreateRoute">Create Route</button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="admin-section">
+                    <h2><i class="fa-solid fa-map-pin"></i> Add Stop to Route</h2>
+                    <p style="color: var(--text-secondary); margin-bottom: 1rem;">Select a route and click on the map to automatically fill the coordinates for the new stop.</p>
+                    
+                    <div id="mapPicker"></div>
+                    
+                    <form id="stopForm" class="form-grid">
+                        <div class="form-group">
+                            <label for="stopRouteSelect">Select Route</label>
+                            <select id="stopRouteSelect" required>
+                                <option value="" disabled selected>Loading routes...</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="stopName">Stop Name</label>
+                            <input type="text" id="stopName" required placeholder="e.g. Main Gate">
+                        </div>
+                        <div class="form-group">
+                            <label for="stopLat">Latitude</label>
+                            <input type="text" id="stopLat" required readonly style="background: #f1f5f9;">
+                        </div>
+                        <div class="form-group">
+                            <label for="stopLng">Longitude</label>
+                            <input type="text" id="stopLng" required readonly style="background: #f1f5f9;">
+                        </div>
+                        <div class="form-group">
+                            <label for="sortOrder">Stop Order (Sequence Number)</label>
+                            <input type="number" id="sortOrder" required placeholder="e.g. 1" min="1">
+                        </div>
+                        <div class="form-group" style="display: flex; align-items: flex-end;">
+                            <button type="submit" class="btn btn-primary" style="width: 100%;" id="btnCreateStop">Add Stop</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+    <script src="js/api.js?v=5"></script>
+    <script src="js/admin-shuttles.js"></script>
+    <script>
+        // Check authentication & admin role
+        const token = localStorage.getItem('token');
+        if (!token) {
+            window.location.href = 'index.html';
+        }
+        // Basic frontend role check (backend is also protected)
+        setTimeout(() => {
+            if (window.currentUser && window.currentUser.role !== 'ROLE_ADMIN') {
+                alert("Unauthorized Access. Redirecting to home.");
+                window.location.href = 'dashboard.html';
+            }
+        }, 500);
+    </script>
+</body>
+</html>

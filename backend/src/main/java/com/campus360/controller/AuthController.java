@@ -40,4 +40,13 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
         }
     }
+
+    @PostMapping("/driver/login")
+    public ResponseEntity<?> loginDriver(@RequestBody AuthRequest request) {
+        try {
+            return ResponseEntity.ok(authService.loginDriver(request));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
+        }
+    }
 }

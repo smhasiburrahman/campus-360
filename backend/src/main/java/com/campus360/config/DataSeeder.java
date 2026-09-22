@@ -14,6 +14,9 @@ public class DataSeeder implements CommandLineRunner {
     private UniversityAuthorityRepository authorityRepository;
 
     @Autowired
+    private com.campus360.repository.DriverRepository driverRepository;
+
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
     @Override
@@ -28,6 +31,18 @@ public class DataSeeder implements CommandLineRunner {
             admin.setIsActive(true);
             authorityRepository.save(admin);
             System.out.println("Seeded initial admin account: admin@campus360.edu / admin123");
+        }
+
+        if (driverRepository.findByEmail("driver@campus360.edu").isEmpty()) {
+            com.campus360.entity.Driver driver = new com.campus360.entity.Driver();
+            driver.setEmail("driver@campus360.edu");
+            driver.setPasswordHash(passwordEncoder.encode("driver123"));
+            driver.setFullName("Test Driver");
+            driver.setPhone("1234567890");
+            driver.setLicenseNo("LIC-1234");
+            driver.setIsActive(true);
+            driverRepository.save(driver);
+            System.out.println("Seeded initial driver account: driver@campus360.edu / driver123");
         }
     }
 }

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Driver Dashboard - Campus 360</title>
+    <link rel="stylesheet" href="css/driver.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <header style="display: flex; justify-content: space-between; align-items: center;">
+        <h1 style="font-size: 1.25rem;"><i class="fa-solid fa-bus"></i> Campus 360 Driver</h1>
+        <button id="logoutBtn" class="btn" style="width: auto; padding: 0.5rem 1rem; font-size: 0.875rem; background: transparent; border: 1px solid var(--text-secondary); color: var(--text-secondary); display: none;">Logout</button>
+    </header>
+
+    <div class="container">
+        
+        <!-- Login Section -->
+        <div id="loginSection" class="card">
+            <h2 style="margin-bottom: 1.5rem; text-align: center;">Driver Login</h2>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" value="driver@campus360.edu" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" value="driver123" required>
+                </div>
+                <button type="submit" class="btn btn-primary" id="loginBtn">Log In</button>
+            </form>
+            <div id="loginError" style="color: var(--danger-color); margin-top: 1rem; text-align: center; display: none;"></div>
+        </div>
+
+        <!-- Setup Trip Section -->
+        <div id="setupSection" class="card hidden">
+            <h2 style="margin-bottom: 1.5rem; text-align: center;">Start New Trip</h2>
+            <div class="form-group">
+                <label for="routeSelect">Select Route</label>
+                <select id="routeSelect" required>
+                    <option value="" disabled selected>Loading routes...</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="shuttleSelect">Select Shuttle</label>
+                <select id="shuttleSelect" required>
+                    <option value="" disabled selected>Loading shuttles...</option>
+                </select>
+            </div>
+            <button class="btn btn-start" id="startTripBtn">Start Trip</button>
+        </div>
+
+        <!-- Active Trip Section -->
+        <div id="activeSection" class="hidden" style="display: flex; flex-direction: column; justify-content: space-between; height: 100%;">
+            <div>
+                <div class="live-indicator">
+                    <div class="dot"></div>
+                    Broadcasting Live
+                </div>
+                
+                <div class="telemetry">
+                    <div class="telemetry-label">Current Route</div>
+                    <div id="activeRouteName" style="font-size: 1.25rem; font-weight: 600; margin-top: 0.5rem; color: white;">-</div>
+                </div>
+
+                <div class="telemetry">
+                    <div class="telemetry-label">Speed</div>
+                    <div class="telemetry-value"><span id="speedDisplay">0</span> <span style="font-size: 1rem; color: var(--text-secondary);">km/h</span></div>
+                </div>
+                
+                <div class="telemetry">
+                    <div class="telemetry-label">Elapsed Time</div>
+                    <div class="telemetry-value" id="timeDisplay" style="font-size: 2rem;">00:00</div>
+                </div>
+            </div>
+
+            <button class="btn btn-end" id="endTripBtn">End Trip</button>
+        </div>
+
+    </div>
+
+    <!-- The API helper is shared with the main dashboard -->
+    <script src="js/api.js"></script>
+    <script src="js/driver.js"></script>
+</body>
+</html>

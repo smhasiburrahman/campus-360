@@ -83,4 +83,24 @@ public class AuthService {
                 .role(auth.getRole().toUpperCase())
                 .build();
     }
+
+    @Autowired
+    private com.campus360.repository.DriverRepository driverRepository;
+
+    public AuthResponse loginDriver(AuthRequest request) {
+        com.campus360.entity.Driver driver = driverRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new RuntimeException("Driver not found"));
+
+        if (!passwordEncoder.matches(request.getPassword(), driver.getPasswordHash())) {
+            throw new RuntimeException("Invalid credentials");
+        }
+
+        String token = jwtUtils.generateToken(driver.getId(), "DRIVER", "driver");
+
+        return AuthResponse.builder()
+                .token(token)
+                .id(driver.getId())
+                .role("DRIVER")
+                .build();
+    }
 }
