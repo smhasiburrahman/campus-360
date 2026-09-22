@@ -40,3 +40,24 @@ async function apiFetch(endpoint, options = {}) {
         throw error;
     }
 }
+// Initialize currentUser globally by decoding JWT
+(function() {
+    const token = localStorage.getItem('token');
+    if (token) {
+        try {
+            const base64Url = token.split('.')[1];
+            const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+            const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+            }).join(''));
+            const payload = JSON.parse(jsonPayload);
+            window.currentUser = {
+                id: payload.userId || payload.sub,
+                accountType: payload.accountType || payload.role,
+                role: payload.role || 'ROLE_STUDENT'
+            };
+        } catch(e) {
+            console.error('Failed to parse token payload', e);
+        }
+    }
+})();
