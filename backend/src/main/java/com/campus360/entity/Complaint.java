@@ -24,11 +24,8 @@ public class Complaint {
     @Column(name = "description", nullable = false)
     private String description;
 
-    @Column(name = "status")
-    private String status;
-
-    @Column(name = "NOT", nullable = false)
-    private String NOT;
+    @Column(name = "status", nullable = false)
+    private String status = "not_approved";
 
     @Column(name = "handled_by")
     private Long handledBy;
@@ -37,7 +34,7 @@ public class Complaint {
     private java.time.LocalDateTime statusUpdatedAt;
 
     @Column(name = "is_deleted", nullable = false)
-    private Boolean isDeleted;
+    private Boolean isDeleted = false;
 
     @Column(name = "deleted_at")
     private java.time.LocalDateTime deletedAt;
@@ -49,5 +46,7 @@ public class Complaint {
     @Column(name = "updated_at", nullable = false)
     @UpdateTimestamp
     private java.time.LocalDateTime updatedAt;
+
+    //testing
 
 }
