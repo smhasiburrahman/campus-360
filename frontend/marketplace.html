@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Campus 360 - Marketplace</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/marketplace.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="dashboard-layout">
+        
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="brand-icon">
+                    <i class="fa-solid fa-layer-group"></i>
+                </div>
+                <div>
+                    <h2>Campus 360</h2>
+                    <p>Student Platform</p>
+                </div>
+            </div>
+
+            <div class="sidebar-nav">
+                <a href="dashboard.html" class="nav-item">
+                    <i class="fa-solid fa-house"></i> Home
+                </a>
+                <a href="lost-found.html" class="nav-item">
+                    <i class="fa-solid fa-magnifying-glass"></i> Lost & Found
+                </a>
+                <a href="announcements.html" class="nav-item">
+                    <i class="fa-solid fa-bullhorn"></i> Announcements
+                </a>
+                <a href="events.html" class="nav-item">
+                    <i class="fa-regular fa-calendar"></i> Events
+                </a>
+                <a href="complaints.html" class="nav-item">
+                    <i class="fa-solid fa-flag"></i> Complaints
+                </a>
+                <a href="marketplace.html" class="nav-item active">
+                    <i class="fa-solid fa-store"></i> Marketplace
+                </a>
+                <a href="study-zone.html" class="nav-item">
+                    <i class="fa-solid fa-book-open"></i> Study Zone
+                </a>
+                <a href="materials.html" class="nav-item">
+                    <i class="fa-solid fa-folder-open"></i> Material Sharing
+                </a>
+
+                <div class="nav-section" style="margin-top: 2rem;">
+                    <div class="nav-section-title">Other</div>
+                    <a href="shuttle.html" class="nav-item">
+                        <i class="fa-solid fa-bus"></i> Shuttle Tracking
+                    </a>
+                    <a href="notifications.html" class="nav-item">
+                        <i class="fa-regular fa-bell"></i> Notifications <span class="nav-badge">5</span>
+                    </a>
+                    <a href="profile.html" class="nav-item">
+                        <i class="fa-regular fa-user"></i> My Profile
+                    </a>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            
+            <!-- Top Navbar -->
+            <header class="topbar">
+                <div class="search-bar">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" id="globalSearch" placeholder="Search posts, people, materials...">
+                </div>
+
+                <div class="topbar-actions">
+                    <div class="notification-bell">
+                        <i class="fa-regular fa-bell"></i>
+                        <div class="notification-dot"></div>
+                    </div>
+
+                    <div class="user-profile" id="userProfileBtn">
+                        <div class="avatar" id="navAvatar">U</div>
+                        <div class="user-name" id="navName">User</div>
+                        <i class="fa-solid fa-chevron-down" style="color: #94a3b8; font-size: 0.8rem;"></i>
+                        
+                        <div class="profile-dropdown" id="profileDropdown" style="display: none;">
+                            <button id="logoutBtn">
+                                <i class="fa-solid fa-arrow-right-from-bracket"></i> Log Out
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Marketplace Container -->
+            <div class="dashboard-container">
+                
+                <!-- Page Header Row -->
+                <div class="marketplace-header-row">
+                    <div>
+                        <h1>Marketplace</h1>
+                        <p class="subtitle">Buy and sell with fellow students on campus</p>
+                    </div>
+                    <div class="header-action-group">
+                        <button class="btn-my-listings" id="myListingsBtn">
+                            <i class="fa-regular fa-folder"></i> My Listings
+                        </button>
+                        <button class="btn-list-item" id="openCreateListingModalBtn">
+                            <i class="fa-solid fa-plus"></i> List an Item
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Top Stats 4-Card Strip -->
+                <div class="stats-strip-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon-wrap icon-pink">
+                            <i class="fa-solid fa-bag-shopping"></i>
+                        </div>
+                        <div class="stat-meta">
+                            <h3 id="statActiveListings">0</h3>
+                            <p>Active Listings</p>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon-wrap icon-orange">
+                            <i class="fa-solid fa-box-open"></i>
+                        </div>
+                        <div class="stat-meta">
+                            <h3 id="statTotalListings">0</h3>
+                            <p>Total Listings</p>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon-wrap icon-green">
+                            <i class="fa-solid fa-circle-check"></i>
+                        </div>
+                        <div class="stat-meta">
+                            <h3 id="statVerifiedSellers">0</h3>
+                            <p>Verified Sellers</p>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon-wrap icon-red">
+                            <i class="fa-solid fa-bookmark"></i>
+                        </div>
+                        <div class="stat-meta">
+                            <h3 id="statSavedByYou">0</h3>
+                            <p>Saved by You</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Toolbar (Search & Sort) -->
+                <div class="market-toolbar">
+                    <div class="market-search-box">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input type="text" id="marketSearchInput" placeholder="Search by title, category, or keyword...">
+                    </div>
+
+                    <div class="sort-box">
+                        <select id="marketSortSelect">
+                            <option value="newest">Newest First</option>
+                            <option value="price_low">Price: Low to High</option>
+                            <option value="price_high">Price: High to Low</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Category Filter Pills & Available Toggle -->
+                <div class="category-filter-wrapper">
+                    <div class="category-tabs" id="categoryFilterTabs">
+                        <button class="category-pill active" data-category="ALL">All</button>
+                        <button class="category-pill" data-category="Textbooks">Textbooks</button>
+                        <button class="category-pill" data-category="Electronics">Electronics</button>
+                        <button class="category-pill" data-category="Stationery">Stationery</button>
+                        <button class="category-pill" data-category="Lab Supplies">Lab Supplies</button>
+                    </div>
+
+                    <label class="toggle-switch-label">
+                        <input type="checkbox" id="availableOnlyToggle">
+                        <span>Available only</span>
+                    </label>
+                </div>
+
+                <!-- Listings Counter -->
+                <div class="showing-count" id="listingsCountLabel">Showing listings...</div>
+
+                <!-- Product Cards Grid (4 Column) -->
+                <div class="marketplace-grid" id="marketplaceGrid">
+                    <div class="loading-state">
+                        <i class="fa-solid fa-spinner fa-spin"></i>
+                        <p>Loading marketplace items...</p>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal: List a New Item -->
+    <div class="modal-overlay" id="createListingModal" style="display: none;">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3>List an Item for Sale</h3>
+                <button class="close-modal-btn" id="closeListingModalBtn">&times;</button>
+            </div>
+            <form id="createListingForm">
+                <div class="form-group">
+                    <label for="listingTitle">Product Title</label>
+                    <input type="text" id="listingTitle" placeholder="e.g. Calculus: Early Transcendentals, 8th Edition" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="listingCategory">Category</label>
+                        <select id="listingCategory" required>
+                            <option value="">Select Category</option>
+                            <option value="Textbooks">Textbooks</option>
+                            <option value="Electronics">Electronics</option>
+                            <option value="Stationery">Stationery</option>
+                            <option value="Lab Supplies">Lab Supplies</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="listingCondition">Condition</label>
+                        <select id="listingCondition" required>
+                            <option value="Like New">Like New</option>
+                            <option value="Good" selected>Good</option>
+                            <option value="Fair">Fair</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="listingPrice">Selling Price (BDT)</label>
+                        <input type="number" id="listingPrice" placeholder="1200" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="listingOriginalPrice">Original Price (Optional)</label>
+                        <input type="number" id="listingOriginalPrice" placeholder="2800">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="listingDescription">Description</label>
+                    <textarea id="listingDescription" rows="3" placeholder="Condition details, edition, marks, etc..." required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="listingImageUrl">Product Image URL</label>
+                    <input type="url" id="listingImageUrl" placeholder="https://example.com/item.jpg">
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancel" id="cancelListingModalBtn">Cancel</button>
+                    <button type="submit" class="btn-submit">Publish Listing</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script src="js/marketplace.js"></script>
+</body>
+</html>

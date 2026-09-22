@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Campus 360 - Complaints</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/complaints.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="dashboard-layout">
+        
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="brand-icon">
+                    <i class="fa-solid fa-layer-group"></i>
+                </div>
+                <div>
+                    <h2>Campus 360</h2>
+                    <p>Student Platform</p>
+                </div>
+            </div>
+
+            <div class="sidebar-nav">
+                <a href="dashboard.html" class="nav-item">
+                    <i class="fa-solid fa-house"></i> Home
+                </a>
+                <a href="lost-found.html" class="nav-item">
+                    <i class="fa-solid fa-magnifying-glass"></i> Lost & Found
+                </a>
+                <a href="announcements.html" class="nav-item">
+                    <i class="fa-solid fa-bullhorn"></i> Announcements
+                </a>
+                <a href="events.html" class="nav-item">
+                    <i class="fa-regular fa-calendar"></i> Events
+                </a>
+                <a href="complaints.html" class="nav-item active">
+                    <i class="fa-solid fa-flag"></i> Complaints
+                </a>
+                <a href="marketplace.html" class="nav-item">
+                    <i class="fa-solid fa-store"></i> Marketplace
+                </a>
+                <a href="study-zone.html" class="nav-item">
+                    <i class="fa-solid fa-book-open"></i> Study Zone
+                </a>
+                <a href="materials.html" class="nav-item">
+                    <i class="fa-solid fa-folder-open"></i> Material Sharing
+                </a>
+
+                <div class="nav-section" style="margin-top: 2rem;">
+                    <div class="nav-section-title">Other</div>
+                    <a href="shuttle.html" class="nav-item">
+                        <i class="fa-solid fa-bus"></i> Shuttle Tracking
+                    </a>
+                    <a href="notifications.html" class="nav-item">
+                        <i class="fa-regular fa-bell"></i> Notifications <span class="nav-badge">5</span>
+                    </a>
+                    <a href="profile.html" class="nav-item">
+                        <i class="fa-regular fa-user"></i> My Profile
+                    </a>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            
+            <!-- Top Navbar -->
+            <header class="topbar">
+                <div class="search-bar">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" id="globalSearch" placeholder="Search posts, people, materials...">
+                </div>
+
+                <div class="topbar-actions">
+                    <div class="notification-bell">
+                        <i class="fa-regular fa-bell"></i>
+                        <div class="notification-dot"></div>
+                    </div>
+
+                    <div class="user-profile" id="userProfileBtn">
+                        <div class="avatar" id="navAvatar">U</div>
+                        <div class="user-name" id="navName">User</div>
+                        <i class="fa-solid fa-chevron-down" style="color: #94a3b8; font-size: 0.8rem;"></i>
+                        
+                        <div class="profile-dropdown" id="profileDropdown" style="display: none;">
+                            <button id="logoutBtn">
+                                <i class="fa-solid fa-arrow-right-from-bracket"></i> Log Out
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Complaints Page Container -->
+            <div class="dashboard-container">
+                
+                <!-- Page Header Row -->
+                <div class="complaints-header-row">
+                    <div>
+                        <h1>Complaints</h1>
+                        <p class="subtitle">Voice campus issues — auto-escalated at 50 upvotes</p>
+                    </div>
+                    <div class="header-action-group">
+                        <button class="btn-authority-view" id="authorityViewBtn">
+                            <i class="fa-solid fa-shield-halved"></i> Authority View
+                        </button>
+                        <button class="btn-file-complaint" id="openComplaintModalBtn">
+                            <i class="fa-solid fa-plus"></i> File Complaint
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Toolbar (Search & Sort) -->
+                <div class="complaint-toolbar">
+                    <div class="complaint-search-box">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input type="text" id="complaintSearchInput" placeholder="Search complaints, descriptions, locations...">
+                    </div>
+
+                    <div class="sort-box">
+                        <select id="sortOrderSelect">
+                            <option value="newest">Newest First</option>
+                            <option value="most_voted">Most Upvoted</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Status Filter Tabs & My Complaints Toggle -->
+                <div class="status-filter-wrapper">
+                    <div class="status-tabs" id="statusFilterTabs">
+                        <button class="status-tab active" data-status="ALL">All <span class="count" id="count-ALL">0</span></button>
+                        <button class="status-tab" data-status="not_approved">Not Approved <span class="count" id="count-not_approved">0</span></button>
+                        <button class="status-tab" data-status="pending">Pending <span class="count" id="count-pending">0</span></button>
+                        <button class="status-tab" data-status="processing">Processing <span class="count" id="count-processing">0</span></button>
+                        <button class="status-tab" data-status="handled">Handled <span class="count" id="count-handled">0</span></button>
+                        <button class="status-tab" data-status="denied">Denied <span class="count" id="count-denied">0</span></button>
+                    </div>
+
+                    <label class="toggle-switch-label">
+                        <input type="checkbox" id="myComplaintsToggle">
+                        <span>My complaints</span>
+                    </label>
+                </div>
+
+                <!-- 2-Column Grid Layout -->
+                <div class="content-grid">
+                    
+                    <!-- Left Column: Complaints Feed -->
+                    <div class="feed-column" id="complaintsFeedContainer">
+                        <div class="loading-state">
+                            <i class="fa-solid fa-spinner fa-spin"></i>
+                            <p>Loading complaints...</p>
+                        </div>
+                    </div>
+
+                    <!-- Right Column: Sidebar Widgets -->
+                    <div class="widgets-column">
+                        
+                        <!-- Overview Card -->
+                        <div class="widget">
+                            <div class="widget-header">
+                                <h3>OVERVIEW</h3>
+                            </div>
+                            <div class="overview-list" id="overviewList">
+                                <div class="overview-row">
+                                    <span class="dot-indicator dot-not-approved"></span>
+                                    <span class="label">Not Approved</span>
+                                    <span class="value" id="overviewNotApproved">0</span>
+                                </div>
+                                <div class="overview-row">
+                                    <span class="dot-indicator dot-pending"></span>
+                                    <span class="label">Pending</span>
+                                    <span class="value" id="overviewPending">0</span>
+                                </div>
+                                <div class="overview-row">
+                                    <span class="dot-indicator dot-processing"></span>
+                                    <span class="label">Processing</span>
+                                    <span class="value" id="overviewProcessing">0</span>
+                                </div>
+                                <div class="overview-row">
+                                    <span class="dot-indicator dot-handled"></span>
+                                    <span class="label">Handled</span>
+                                    <span class="value" id="overviewHandled">0</span>
+                                </div>
+                                <div class="overview-row">
+                                    <span class="dot-indicator dot-denied"></span>
+                                    <span class="label">Denied</span>
+                                    <span class="value" id="overviewDenied">0</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Top Categories Card -->
+                        <div class="widget">
+                            <div class="widget-header">
+                                <h3>TOP CATEGORIES</h3>
+                            </div>
+                            <div class="categories-list" id="categoriesList">
+                                <!-- Populated dynamically -->
+                            </div>
+                        </div>
+
+                        <!-- How Complaints Work Card -->
+                        <div class="widget how-it-works-widget">
+                            <div class="widget-header">
+                                <h3>How Complaints Work</h3>
+                            </div>
+                            <ol class="step-guide">
+                                <li>
+                                    <span class="step-num">1</span>
+                                    <p>Submit your complaint with details and evidence</p>
+                                </li>
+                                <li>
+                                    <span class="step-num">2</span>
+                                    <p>Reach 50 upvotes to auto-escalate to Pending</p>
+                                </li>
+                                <li>
+                                    <span class="step-num">3</span>
+                                    <p>University Authority reviews and moves to Processing</p>
+                                </li>
+                                <li>
+                                    <span class="step-num">4</span>
+                                    <p>Complaint is Handled or Denied with an official response</p>
+                                </li>
+                            </ol>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal: File a Complaint -->
+    <div class="modal-overlay" id="complaintModal" style="display: none;">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3>File a Complaint</h3>
+                <button class="close-modal-btn" id="closeComplaintModalBtn">&times;</button>
+            </div>
+            <form id="fileComplaintForm">
+                <div class="form-group">
+                    <label for="complaintTitle">Title</label>
+                    <input type="text" id="complaintTitle" placeholder="Short description of the issue" required>
+                </div>
+                <div class="form-group">
+                    <label for="complaintCategory">Category</label>
+                    <select id="complaintCategory" required>
+                        <option value="">Select Category</option>
+                        <option value="Infrastructure">Infrastructure</option>
+                        <option value="Academic">Academic</option>
+                        <option value="Safety">Safety</option>
+                        <option value="Cafeteria & Food">Cafeteria & Food</option>
+                        <option value="Technology/IT">Technology/IT</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="complaintLocation">Location</label>
+                    <input type="text" id="complaintLocation" placeholder="e.g. Lab 302, Building B, 3rd Floor" required>
+                </div>
+                <div class="form-group">
+                    <label for="complaintDescription">Description</label>
+                    <textarea id="complaintDescription" rows="4" placeholder="Elaborate the problem in detail..." required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="complaintImage">Image URL (Optional)</label>
+                    <input type="url" id="complaintImage" placeholder="https://example.com/photo.jpg">
+                </div>
+                <div class="form-group checkbox-group">
+                    <label>
+                        <input type="checkbox" id="isAnonymous"> Post Anonymously
+                    </label>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancel" id="cancelModalBtn">Cancel</button>
+                    <button type="submit" class="btn-submit">Submit Complaint</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script src="js/complaints.js"></script>
+</body>
+</html>
