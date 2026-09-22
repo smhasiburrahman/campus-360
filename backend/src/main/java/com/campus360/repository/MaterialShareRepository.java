@@ -12,6 +12,7 @@ import java.util.Optional;
 @Repository
 public interface MaterialShareRepository extends JpaRepository<MaterialShare, Long> {
     Optional<MaterialShare> findByIdAndIsDeletedFalse(Long id);
+    Page<MaterialShare> findByStudentIdAndIsDeletedFalse(Long studentId, Pageable pageable);
 
     @Query("SELECT m FROM MaterialShare m WHERE m.isDeleted = false " +
            "AND (:deptId IS NULL OR m.departmentId = :deptId) " +
