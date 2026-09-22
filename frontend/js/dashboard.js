@@ -317,10 +317,17 @@ function createPostCardHTML(post) {
                 
                 <div class="post-actions" style="border:none; padding:0; gap:1rem;">
                     <button class="action-btn"><i class="fa-regular fa-thumbs-up"></i></button>
-                    <button class="action-btn"><i class="fa-regular fa-thumbs-down"></i></button>
                     <button class="action-btn"><i class="fa-regular fa-comment"></i></button>
-                    <button class="action-btn" style="margin-left: 0.5rem;"><i class="fa-regular fa-bookmark"></i></button>
-                    <button class="action-btn"><i class="fa-solid fa-ellipsis"></i></button>
+                    <button class="action-btn" style="margin-left: auto;"><i class="fa-regular fa-bookmark"></i></button>
+                    ${window.currentUser && (post.ownerId == window.currentUser.id || window.currentUser.role === 'ROLE_ADMIN' || window.currentUser.role === 'ROLE_SUPER_ADMIN') && post._type === 'lost-found' ? 
+                    `<div style="position:relative; display:inline-block;">
+                        <button class="action-btn" onclick="toggleDropdown(event, 'dash-dropdown-${post.id}')"><i class="fa-solid fa-ellipsis"></i></button>
+                        <div id="dash-dropdown-${post.id}" class="profile-dropdown-menu" style="display:none; position:absolute; bottom:100%; right:0; background:white; border:1px solid var(--border-color); border-radius:8px; box-shadow:var(--shadow-sm); min-width:120px; z-index:100; padding:0.5rem 0;">
+                            <a href="#" onclick="deleteLostFoundPost(${post.id}, this); return false;" style="display:block; padding:0.5rem 1rem; color:#ef4444; text-decoration:none;"><i class="fas fa-trash"></i> Delete</a>
+                        </div>
+                    </div>` : 
+                    (post._type === 'lost-found' ? `<button class="action-btn" onclick="alert('You do not have permission to delete this post.')"><i class="fa-solid fa-ellipsis"></i></button>` : `<button class="action-btn"><i class="fa-solid fa-ellipsis"></i></button>`)
+                    }
                 </div>
             </div>
         </div>

@@ -228,7 +228,15 @@ function createLFCard(item) {
                 <button class="action-btn"><i class="fa-regular fa-thumbs-down"></i></button>
                 <button class="action-btn"><i class="fa-regular fa-comment"></i></button>
                 <button class="action-btn" style="margin-left: 0.5rem;"><i class="fa-regular fa-bookmark"></i></button>
-                <button class="action-btn"><i class="fa-solid fa-ellipsis"></i></button>
+                ${window.currentUser && (item.ownerId == window.currentUser.id || window.currentUser.role === 'ROLE_ADMIN' || window.currentUser.role === 'ROLE_SUPER_ADMIN') ? 
+                `<div style="position:relative; display:inline-block;">
+                    <button class="action-btn" onclick="toggleDropdown(event, 'lf-dropdown-${item.id}')"><i class="fa-solid fa-ellipsis"></i></button>
+                    <div id="lf-dropdown-${item.id}" class="profile-dropdown-menu" style="display:none; position:absolute; bottom:100%; right:0; background:white; border:1px solid var(--border-color); border-radius:8px; box-shadow:var(--shadow-sm); min-width:120px; z-index:100; padding:0.5rem 0;">
+                        <a href="#" onclick="deleteLostFoundPost(${item.id}, this); return false;" style="display:block; padding:0.5rem 1rem; color:#ef4444; text-decoration:none;"><i class="fas fa-trash"></i> Delete</a>
+                    </div>
+                </div>` : 
+                `<button class="action-btn" onclick="alert('You do not have permission to delete this post.')"><i class="fa-solid fa-ellipsis"></i></button>`
+                }
             </div>
         </div>
     </div>
@@ -239,14 +247,49 @@ function createLFCard(item) {
 function timeAgo(dateString) {
     const now = new Date();
     const past = new Date(dateString);
-    const diffMs = now - past;
-    const diffMins = Math.round(diffMs / 60000);
-    if (diffMins < 60) return `${diffMins} minutes ago`;
-    const diffHrs = Math.round(diffMins / 60);
-    if (diffHrs < 24) return `${diffHrs} hours ago`;
-    const diffDays = Math.round(diffHrs / 24);
-    return diffDays === 1 ? 'Yesterday' : `${diffDays} days ago`;
+    const diffInSeconds = Math.floor((now - past) / 1000);
+    
+    if (diffInSeconds < 60) return 'Just now';
+    if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)} minutes ago`;
+    if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)} hours ago`;
+    if (diffInSeconds < 2592000) return `${Math.floor(diffInSeconds / 86400)} days ago`;
+    if (diffInSeconds < 31536000) return `${Math.floor(diffInSeconds / 2592000)} months ago`;
+    return `${Math.floor(diffInSeconds / 31536000)} years ago`;
 }
+
+// Global functions for dropdown and delete
+window.toggleDropdown = function(event, id) {
+    if (event) {
+        event.stopPropagation();
+    }
+    const el = document.getElementById(id);
+    if (el) {
+        el.style.display = el.style.display === 'none' ? 'block' : 'none';
+    }
+};
+
+document.addEventListener('click', (e) => {
+    document.querySelectorAll('.profile-dropdown-menu[id^="lf-dropdown-"], .profile-dropdown-menu[id^="dash-dropdown-"]').forEach(menu => {
+        menu.style.display = 'none';
+    });
+});
+
+window.deleteLostFoundPost = async function(id, btnElement) {
+    if (!confirm('Are you sure you want to delete this post?')) return;
+    try {
+        const res = await apiFetch(`/lost-found/${id}`, { method: 'DELETE' });
+        if (res && res.ok) {
+            const postCard = btnElement.closest('.lf-card, .feed-card');
+            if (postCard) {
+                postCard.remove();
+            }
+        } else {
+            alert('Failed to delete post');
+        }
+    } catch (e) {
+        alert('An error occurred while deleting the post');
+    }
+};
 
 // Modal Logic
 document.addEventListener('DOMContentLoaded', () => {
