@@ -10,7 +10,10 @@ import com.campus360.repository.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
+
 import java.time.LocalDateTime;
 
 @Service
@@ -44,23 +47,23 @@ public class ComplaintService {
 
     public ComplaintResponse getComplaintById(Long id) {
         Complaint complaint = complaintRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Complaint not found"));
-        if (complaint.getIsDeleted()) {
-            throw new RuntimeException("Complaint is deleted");
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Complaint not found"));
+        if (Boolean.TRUE.equals(complaint.getIsDeleted())) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Complaint not found");
         }
         return mapToResponse(complaint);
     }
 
     public ComplaintResponse updateComplaint(Long id, ComplaintRequest request, Long userId) {
         Complaint complaint = complaintRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Complaint not found"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Complaint not found"));
         
-        if (complaint.getIsDeleted()) {
-            throw new RuntimeException("Complaint is deleted");
+        if (Boolean.TRUE.equals(complaint.getIsDeleted())) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Complaint not found");
         }
         
         if (!complaint.getStudentId().equals(userId)) {
-            throw new RuntimeException("Not authorized to update this complaint");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Not authorized to update this complaint");
         }
         
         complaint.setDescription(request.getDescription());
@@ -70,10 +73,10 @@ public class ComplaintService {
 
     public ComplaintResponse updateStatus(Long id, ComplaintStatusUpdateRequest request, Long authorityId) {
         Complaint complaint = complaintRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Complaint not found"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Complaint not found"));
                 
-        if (complaint.getIsDeleted()) {
-            throw new RuntimeException("Complaint is deleted");
+        if (Boolean.TRUE.equals(complaint.getIsDeleted())) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Complaint not found");
         }
         
         complaint.setStatus(request.getStatus());
@@ -85,14 +88,14 @@ public class ComplaintService {
 
     public void deleteComplaint(Long id, Long userId, String adminRole) {
         Complaint complaint = complaintRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Complaint not found"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Complaint not found"));
                 
-        if (complaint.getIsDeleted()) {
+        if (Boolean.TRUE.equals(complaint.getIsDeleted())) {
             return;
         }
         
         if (!complaint.getStudentId().equals(userId) && !"ADMIN".equals(adminRole)) {
-            throw new RuntimeException("Not authorized to delete this complaint");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Not authorized to delete this complaint");
         }
         
         complaint.setIsDeleted(true);

@@ -108,11 +108,12 @@ class ComplaintServiceTest {
     void testGetComplaintById_NotFound() {
         when(complaintRepository.findById(99L)).thenReturn(Optional.empty());
 
-        Exception exception = assertThrows(RuntimeException.class, () -> {
+        org.springframework.web.server.ResponseStatusException exception = assertThrows(
+                org.springframework.web.server.ResponseStatusException.class, () -> {
             complaintService.getComplaintById(99L);
         });
 
-        assertEquals("Complaint not found", exception.getMessage());
+        assertEquals(org.springframework.http.HttpStatus.NOT_FOUND, exception.getStatusCode());
     }
 
     @Test
@@ -123,11 +124,12 @@ class ComplaintServiceTest {
         ComplaintRequest request = new ComplaintRequest();
         request.setDescription("New description");
 
-        Exception exception = assertThrows(RuntimeException.class, () -> {
+        org.springframework.web.server.ResponseStatusException exception = assertThrows(
+                org.springframework.web.server.ResponseStatusException.class, () -> {
             complaintService.updateComplaint(1L, request, 999L);
         });
 
-        assertEquals("Not authorized to update this complaint", exception.getMessage());
+        assertEquals(org.springframework.http.HttpStatus.FORBIDDEN, exception.getStatusCode());
     }
 
     @Test
@@ -158,5 +160,18 @@ class ComplaintServiceTest {
         assertTrue(mockComplaint.getIsDeleted());
         assertNotNull(mockComplaint.getDeletedAt());
         verify(complaintRepository).save(mockComplaint);
+    }
+
+    @Test
+    @DisplayName("Soft Delete Complaint - Forbidden for Other Students")
+    void testDeleteComplaint_Forbidden() {
+        when(complaintRepository.findById(1L)).thenReturn(Optional.of(mockComplaint));
+
+        org.springframework.web.server.ResponseStatusException exception = assertThrows(
+                org.springframework.web.server.ResponseStatusException.class, () -> {
+            complaintService.deleteComplaint(1L, 999L, "STUDENT");
+        });
+
+        assertEquals(org.springframework.http.HttpStatus.FORBIDDEN, exception.getStatusCode());
     }
 }

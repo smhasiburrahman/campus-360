@@ -34,7 +34,7 @@ public class StudySession {
     private Integer peerLimit;
 
     @Column(name = "tutor_needed", nullable = false)
-    private Boolean tutorNeeded;
+    private Boolean tutorNeeded = false;
 
     @Column(name = "mode", nullable = false)
     private String mode;
@@ -43,7 +43,7 @@ public class StudySession {
     private String description;
 
     @Column(name = "is_deleted", nullable = false)
-    private Boolean isDeleted;
+    private Boolean isDeleted = false;
 
     @Column(name = "deleted_at")
     private java.time.LocalDateTime deletedAt;

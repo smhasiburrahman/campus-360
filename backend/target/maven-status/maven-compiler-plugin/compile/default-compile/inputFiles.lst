@@ -12,6 +12,7 @@ C:\Users\JARVIS\SW_Project\campus-360\backend\src\main\java\com\campus360\contro
 C:\Users\JARVIS\SW_Project\campus-360\backend\src\main\java\com\campus360\controller\MaterialShareController.java
 C:\Users\JARVIS\SW_Project\campus-360\backend\src\main\java\com\campus360\controller\PostEngagementController.java
 C:\Users\JARVIS\SW_Project\campus-360\backend\src\main\java\com\campus360\controller\StudentController.java
+C:\Users\JARVIS\SW_Project\campus-360\backend\src\main\java\com\campus360\controller\StudySessionController.java
 C:\Users\JARVIS\SW_Project\campus-360\backend\src\main\java\com\campus360\controller\TrimesterController.java
 C:\Users\JARVIS\SW_Project\campus-360\backend\src\main\java\com\campus360\dto\AnnouncementRequest.java
 C:\Users\JARVIS\SW_Project\campus-360\backend\src\main\java\com\campus360\dto\AnnouncementResponse.java
@@ -39,6 +40,9 @@ C:\Users\JARVIS\SW_Project\campus-360\backend\src\main\java\com\campus360\dto\Re
 C:\Users\JARVIS\SW_Project\campus-360\backend\src\main\java\com\campus360\dto\StudentPostItemDTO.java
 C:\Users\JARVIS\SW_Project\campus-360\backend\src\main\java\com\campus360\dto\StudentProfileResponse.java
 C:\Users\JARVIS\SW_Project\campus-360\backend\src\main\java\com\campus360\dto\StudentProfileUpdateRequest.java
+C:\Users\JARVIS\SW_Project\campus-360\backend\src\main\java\com\campus360\dto\StudySessionParticipantResponse.java
+C:\Users\JARVIS\SW_Project\campus-360\backend\src\main\java\com\campus360\dto\StudySessionRequest.java
+C:\Users\JARVIS\SW_Project\campus-360\backend\src\main\java\com\campus360\dto\StudySessionResponse.java
 C:\Users\JARVIS\SW_Project\campus-360\backend\src\main\java\com\campus360\dto\VendorProfileRequest.java
 C:\Users\JARVIS\SW_Project\campus-360\backend\src\main\java\com\campus360\dto\VendorProfileResponse.java
 C:\Users\JARVIS\SW_Project\campus-360\backend\src\main\java\com\campus360\dto\VendorReviewRequest.java
@@ -110,3 +114,4 @@ C:\Users\JARVIS\SW_Project\campus-360\backend\src\main\java\com\campus360\servic
 C:\Users\JARVIS\SW_Project\campus-360\backend\src\main\java\com\campus360\service\MarketplaceService.java
 C:\Users\JARVIS\SW_Project\campus-360\backend\src\main\java\com\campus360\service\MaterialShareService.java
 C:\Users\JARVIS\SW_Project\campus-360\backend\src\main\java\com\campus360\service\StudentService.java
+C:\Users\JARVIS\SW_Project\campus-360\backend\src\main\java\com\campus360\service\StudySessionService.java

@@ -39,11 +39,13 @@ com\campus360\dto\PublicStudentProfileResponse.class
 com\campus360\controller\AnnouncementController.class
 com\campus360\dto\ComplaintResponse.class
 com\campus360\controller\MarketplaceController.class
+com\campus360\controller\StudySessionController.class
 com\campus360\dto\LostFoundPostResponse.class
 com\campus360\controller\DepartmentController.class
 com\campus360\entity\Trimester.class
 com\campus360\dto\StudentProfileResponse$StudentProfileResponseBuilder.class
 com\campus360\dto\OwnerDTO.class
+com\campus360\dto\StudySessionParticipantResponse.class
 com\campus360\entity\LostFoundPost.class
 com\campus360\dto\VendorProfileResponse.class
 com\campus360\dto\DepartmentDTO.class
@@ -95,8 +97,10 @@ com\campus360\entity\VendorReview.class
 com\campus360\entity\Department.class
 com\campus360\repository\StudentRepository.class
 com\campus360\repository\AnnouncementRepository.class
+com\campus360\service\StudySessionService.class
 com\campus360\controller\AuthController.class
 com\campus360\dto\VendorSummaryDTO$VendorSummaryDTOBuilder.class
+com\campus360\dto\StudySessionResponse.class
 com\campus360\entity\PostReport.class
 com\campus360\entity\ShuttleLocation.class
 com\campus360\repository\PostBookmarkRepository.class
@@ -117,5 +121,6 @@ com\campus360\service\AnnouncementService.class
 com\campus360\repository\StudySessionRepository.class
 com\campus360\entity\Announcement.class
 com\campus360\repository\LostFoundPostRepository.class
+com\campus360\dto\StudySessionRequest.class
 com\campus360\dto\VendorReviewRequest.class
 com\campus360\repository\MaterialFileRepository.class
