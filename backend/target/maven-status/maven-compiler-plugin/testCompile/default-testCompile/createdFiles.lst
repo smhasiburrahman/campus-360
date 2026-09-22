@@ -1,1 +1,3 @@
-com/campus360/Campus360ApplicationTests.class
+com\campus360\Campus360ApplicationTests.class
+com\campus360\service\ComplaintServiceTest.class
+com\campus360\controller\ComplaintControllerTest.class
