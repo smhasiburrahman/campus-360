@@ -425,26 +425,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const logoutBtn = document.getElementById('logoutBtn');
 
     if (userProfileBtn && profileDropdown) {
-        userProfileBtn.addEventListener('click', (e) => {
-            if (profileDropdown.style.display === 'none' || profileDropdown.style.display === '') {
-                profileDropdown.style.display = 'block';
-            } else {
-                profileDropdown.style.display = 'none';
-            }
-        });
+        
 
         // Close dropdown when clicking outside
-        document.addEventListener('click', (e) => {
-            if (!userProfileBtn.contains(e.target)) {
-                profileDropdown.style.display = 'none';
-            }
-        });
+        
     }
 
     if (logoutBtn) {
-        logoutBtn.addEventListener('click', () => {
-            localStorage.removeItem('token');
-            window.location.href = 'index.html';
-        });
+        
     }
 });

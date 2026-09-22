@@ -1,0 +1,193 @@
+.shuttle-container {
+    padding: 1.5rem;
+    height: calc(100vh - 80px); /* 80px for topbar */
+    display: flex;
+    flex-direction: column;
+}
+
+.map-wrapper {
+    position: relative;
+    width: 100%;
+    flex: 1;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
+    background-color: #f1f5f9;
+}
+
+#map {
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+/* Glassmorphism Panel */
+.glass-panel {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 320px;
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 16px;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    max-height: calc(100% - 40px);
+}
+
+.glass-header {
+    padding: 1rem 1.25rem;
+    background: rgba(255, 255, 255, 0.5);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.glass-header h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    color: var(--text-dark);
+}
+
+.live-dot {
+    width: 10px;
+    height: 10px;
+    background-color: var(--success);
+    border-radius: 50%;
+    animation: pulse-green 1.5s infinite;
+}
+
+@keyframes pulse-green {
+    0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+    70% { box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+}
+
+.route-list {
+    padding: 1rem;
+    overflow-y: auto;
+    flex: 1;
+}
+
+.route-card {
+    background: white;
+    border-radius: 12px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border-color);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    cursor: pointer;
+}
+
+.route-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    border-color: var(--primary);
+}
+
+.route-card:last-child {
+    margin-bottom: 0;
+}
+
+.route-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 0.5rem;
+}
+
+.route-name {
+    font-weight: 600;
+    color: var(--text-dark);
+}
+
+.route-status {
+    font-size: 0.75rem;
+    padding: 0.2rem 0.5rem;
+    border-radius: 999px;
+    background: rgba(16, 185, 129, 0.1);
+    color: var(--success);
+    font-weight: 600;
+}
+
+.route-detail {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-top: 0.25rem;
+}
+
+/* Custom Marker Styling */
+.shuttle-marker-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+}
+
+.shuttle-marker-icon {
+    width: 32px;
+    height: 32px;
+    background: #e11d48; /* Vibrant red/rose to pop against the map */
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+    border: 2px solid white;
+    z-index: 2;
+    position: relative;
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.shuttle-marker-pulse {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: #e11d48;
+    border-radius: 50%;
+    animation: pulse-marker 2s infinite;
+    z-index: 1;
+    opacity: 0.6;
+}
+
+@keyframes pulse-marker {
+    0% { transform: scale(1); opacity: 0.6; }
+    100% { transform: scale(1.8); opacity: 0; }
+}
+
+/* Leaflet Popup Styling */
+.leaflet-popup-content-wrapper {
+    border-radius: 12px;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+    padding: 0.5rem;
+}
+
+.leaflet-popup-content {
+    margin: 0.5rem 0.75rem;
+}
+
+.popup-title {
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--text-dark);
+    margin-bottom: 0.25rem;
+    display: block;
+}
+
+.popup-speed {
+    color: var(--primary);
+    font-weight: 700;
+}
