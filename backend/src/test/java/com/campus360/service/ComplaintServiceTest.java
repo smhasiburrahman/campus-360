@@ -35,6 +35,9 @@ class ComplaintServiceTest {
     @Mock
     private StudentRepository studentRepository;
 
+    @Mock
+    private com.campus360.repository.PostLikeRepository postLikeRepository;
+
     @InjectMocks
     private ComplaintService complaintService;
 
@@ -82,8 +85,9 @@ class ComplaintServiceTest {
 
         when(complaintRepository.findByIsDeletedFalseAndStatus("not_approved", pageable)).thenReturn(page);
         when(studentRepository.findById(100L)).thenReturn(Optional.of(mockStudent));
+        when(postLikeRepository.countByPostTypeAndPostIdAndReaction(anyString(), anyLong(), anyString())).thenReturn(0);
 
-        Page<ComplaintResponse> result = complaintService.getAllComplaints("not_approved", pageable);
+        Page<ComplaintResponse> result = complaintService.getAllComplaints("not_approved", pageable, null);
 
         assertNotNull(result);
         assertEquals(1, result.getTotalElements());
@@ -95,8 +99,9 @@ class ComplaintServiceTest {
     void testGetComplaintById_Success() {
         when(complaintRepository.findById(1L)).thenReturn(Optional.of(mockComplaint));
         when(studentRepository.findById(100L)).thenReturn(Optional.of(mockStudent));
+        when(postLikeRepository.countByPostTypeAndPostIdAndReaction(anyString(), anyLong(), anyString())).thenReturn(0);
 
-        ComplaintResponse response = complaintService.getComplaintById(1L);
+        ComplaintResponse response = complaintService.getComplaintById(1L, null);
 
         assertNotNull(response);
         assertEquals(1L, response.getId());
@@ -110,7 +115,7 @@ class ComplaintServiceTest {
 
         org.springframework.web.server.ResponseStatusException exception = assertThrows(
                 org.springframework.web.server.ResponseStatusException.class, () -> {
-            complaintService.getComplaintById(99L);
+            complaintService.getComplaintById(99L, null);
         });
 
         assertEquals(org.springframework.http.HttpStatus.NOT_FOUND, exception.getStatusCode());
