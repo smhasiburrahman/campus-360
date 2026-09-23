@@ -1,0 +1,31 @@
+{
+  "trimesters": [
+    {
+      "trimesterNumber": 1,
+      "courses": [
+        { "courseCode": "ENG 1011" },
+        { "courseCode": "MATH 1151" },
+        { "courseCode": "CSE 1110" },
+        { "courseCode": "BDS 1201" },
+        { "courseCode": "URC 1101" }
+      ]
+    },
+    {
+      "trimesterNumber": 2,
+      "courses": [
+        { "courseCode": "ENG 1013" },
+        { "courseCode": "MATH 2183" },
+        { "courseCode": "MATH 2201" },
+        { "courseCode": "CSE 1111" },
+        { "courseCode": "CSE 1112" }
+      ]
+    },
+    {
+      "trimesterNumber": 3,
+      "courses": [
+        { "courseCode": "MATH 2205" },
+        { "courseCode": "CSE 2215" },
+        { "courseCode": "CSE 2216" },
+        { "courseCode": "CSE 2213" },
+        { "courseCode": "PHY 2105" },
+        { "course

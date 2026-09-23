@@ -52,19 +52,12 @@ function setupMarketplaceListeners() {
     const logoutBtn = document.getElementById('logoutBtn');
 
     if (userProfileBtn && profileDropdown) {
-        userProfileBtn.addEventListener('click', () => {
-            profileDropdown.style.display = profileDropdown.style.display === 'block' ? 'none' : 'block';
-        });
-        document.addEventListener('click', (e) => {
-            if (!userProfileBtn.contains(e.target)) profileDropdown.style.display = 'none';
-        });
+        
+        
     }
 
     if (logoutBtn) {
-        logoutBtn.addEventListener('click', () => {
-            localStorage.removeItem('token');
-            window.location.href = 'index.html';
-        });
+        
     }
 
     // Category Filter Tabs
