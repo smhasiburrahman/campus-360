@@ -1,0 +1,278 @@
+/* study-zone.css */
+:root {
+    --study-color: #0ea5e9;
+    --study-color-dark: #0284c7;
+    --study-tint-bg: #e0f2fe;
+}
+
+
+.main-content {
+    width: calc(100% - 260px);
+}
+
+
+.sidebar-nav {
+    scrollbar-width: none;      /* Firefox */
+    -ms-overflow-style: none;   /* old Edge */
+}
+
+.sidebar-nav::-webkit-scrollbar {
+    display: none;              /* Chrome / Safari / Edge */
+}
+
+/* Sidebar bottom user card (not part of dashboard.css yet) */
+.sidebar-create-post-wrap {
+    padding: 0 1.5rem 1rem 1.5rem;
+}
+
+.sidebar-footer {
+    margin-top: auto;
+    padding: 1rem 1.5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-shrink: 0;
+}
+
+.sidebar-footer .avatar {
+    width: 36px;
+    height: 36px;
+    font-size: 0.8rem;
+    flex-shrink: 0;
+}
+
+.sidebar-footer-info {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    line-height: 1.25;
+}
+
+.sidebar-footer-name {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: white;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.sidebar-footer-meta {
+    font-size: 0.72rem;
+    color: var(--text-light-muted);
+}
+
+.sidebar-footer .fa-gear {
+    margin-left: auto;
+    color: var(--text-light-muted);
+    font-size: 0.85rem;
+    cursor: pointer;
+}
+
+/* --------------------------------------------------------------------
+   Topbar right side: compact "+ New Post" button and chevron.
+   .btn defaults to width:100% / larger padding, which is right for the
+   sidebar's Create Post button but too big for the topbar.
+   -------------------------------------------------------------------- */
+.btn-topbar {
+    width: auto;
+    padding: 0.55rem 1.1rem;
+    font-size: 0.85rem;
+}
+
+.user-profile i.fa-chevron-down {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+}
+
+/* --------------------------------------------------------------------
+   Filter tabs: dashboard.css already styles .filter-pill / .dot.*.
+   Only the Study Zone pill gets its own accent color when active,
+   matching the screenshot, instead of the generic dark active state.
+   -------------------------------------------------------------------- */
+.filter-pill.study-pill.active {
+    background-color: var(--study-color);
+    border-color: var(--study-color);
+    color: white;
+}
+
+/* --------------------------------------------------------------------
+   Study session post card: reuses .post-card / .post-header /
+   .post-avatar / .tag-pill / .post-content / .post-actions as-is,
+   just tints the study-specific bits.
+   -------------------------------------------------------------------- */
+.study-post {
+    border-left: 4px solid var(--study-color);
+}
+
+.study-post .post-avatar {
+    background-color: var(--study-color);
+}
+
+.study-tag {
+    background-color: var(--study-tint-bg);
+    color: var(--study-color-dark);
+}
+
+.study-info-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.85rem;
+    margin: 0.5rem 0 1rem 0;
+}
+
+.info-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+}
+
+.offline-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #7c3aed;
+    background: #ede9fe;
+    padding: 0.3rem 0.65rem;
+    border-radius: 999px;
+}
+
+.study-location {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin: 0.75rem 0 1rem 0;
+}
+
+.study-location i {
+    color: var(--study-color);
+}
+
+.study-progress-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.study-joined-count {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    white-space: nowrap;
+}
+
+.study-progress-bar {
+    flex: 1;
+    min-width: 100px;
+    height: 8px;
+    background: var(--bg-gray);
+    border-radius: 999px;
+    overflow: hidden;
+}
+
+.study-progress-fill {
+    height: 100%;
+    background: var(--study-color);
+    border-radius: 999px;
+    transition: width 0.25s ease;
+}
+
+.btn-join {
+    background: var(--study-color);
+    color: white;
+    border: none;
+    padding: 0.55rem 1.25rem;
+    border-radius: var(--radius-md);
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background-color 0.15s ease;
+}
+
+.btn-join:hover {
+    background: var(--study-color-dark);
+}
+
+.btn-join.joined {
+    background: var(--bg-gray);
+    color: var(--text-muted);
+}
+
+/* --------------------------------------------------------------------
+   Widget header icon colors (dashboard.css leaves them uncolored).
+   -------------------------------------------------------------------- */
+.widget-header .fa-chart-simple { color: var(--primary-color); }
+.widget-header .fa-calendar     { color: #7c3aed; }
+.widget-header .fa-bell         { color: #f59e0b; }
+
+/* Campus Pulse: per-stat icon / number tint on top of the shared
+   .pulse-card box */
+.pulse-icon-blue   { color: #2563eb; }
+.pulse-icon-red    { color: #ef4444; }
+.pulse-icon-green  { color: #10b981; }
+.pulse-icon-indigo { color: #6366f1; }
+
+.pulse-num-red    { color: #ef4444 !important; }
+.pulse-num-green  { color: #10b981 !important; }
+.pulse-num-indigo { color: #6366f1 !important; }
+
+/* Recent Activity (no shared equivalent yet) */
+.activity-item {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.85rem;
+    color: var(--text-main);
+}
+
+.activity-icon-heart {
+    color: #ef4444;
+    font-size: 0.9rem;
+}
+
+/* --------------------------------------------------------------------
+   Responsive
+   -------------------------------------------------------------------- */
+@media (max-width: 1024px) {
+    .content-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .sidebar {
+        transform: translateX(-100%);
+    }
+
+    .main-content {
+        margin-left: 0;
+    }
+}
+
+@media (max-width: 640px) {
+    .study-progress-row {
+        align-items: stretch;
+    }
+
+    .study-progress-bar {
+        order: 3;
+        flex-basis: 100%;
+    }
+
+    .btn-join {
+        width: 100%;
+        text-align: center;
+    }
+}

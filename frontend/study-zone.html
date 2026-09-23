@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Study Zone | Campus 360</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/dashboard.css">
+<link rel="stylesheet" href="css/study-zone.css">
+</head>
+<body>
+
+<div class="dashboard-layout">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="brand-icon"><i class="fa-solid fa-graduation-cap"></i></div>
+            <div>
+                <h2>Campus 360</h2>
+                <p>Student Platform</p>
+            </div>
+        </div>
+
+        <div class="sidebar-create-post-wrap">
+            <button class="btn btn-primary">
+                <i class="fa-solid fa-plus"></i>&nbsp; Create Post
+            </button>
+        </div>
+
+        <nav class="sidebar-nav">
+            <div class="nav-section">
+                <a href="dashboard.html" class="nav-item">
+                    <i class="fa-solid fa-house"></i> Home
+                </a>
+                <a href="lost-found.html" class="nav-item">
+                    <i class="fa-solid fa-magnifying-glass"></i> Lost &amp; Found
+                </a>
+                <a href="announcements.html" class="nav-item">
+                    <i class="fa-solid fa-bullhorn"></i> Announcements
+                </a>
+                <a href="events.html" class="nav-item">
+                    <i class="fa-regular fa-calendar"></i> Events
+                </a>
+                <a href="complaints.html" class="nav-item">
+                    <i class="fa-regular fa-flag"></i> Complaints
+                </a>
+                <a href="marketplace.html" class="nav-item">
+                    <i class="fa-solid fa-store"></i> Marketplace
+                </a>
+                <a href="study-zone.html" class="nav-item active">
+                    <i class="fa-solid fa-book-open"></i> Study Zone
+                </a>
+                <a href="materials.html" class="nav-item">
+                    <i class="fa-regular fa-file-lines"></i> Material Sharing
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Other</div>
+                <a href="#" class="nav-item">
+                    <i class="fa-solid fa-shuttle-van"></i> Shuttle Tracking
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fa-regular fa-bell"></i> Notifications
+                    <span class="nav-badge">5</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fa-regular fa-user"></i> My Profile
+                </a>
+            </div>
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="avatar">SR</div>
+            <div class="sidebar-footer-info">
+                <span class="sidebar-footer-name">Sarah Rahman</span>
+                <span class="sidebar-footer-meta">CSE — Year 3</span>
+            </div>
+            <i class="fa-solid fa-gear"></i>
+        </div>
+    </aside>
+
+    <!-- Main -->
+    <main class="main-content">
+        <header class="topbar">
+            <div class="search-bar">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" placeholder="Search posts, people, materials...">
+            </div>
+
+            <div class="topbar-actions">
+                <div class="notification-bell">
+                    <i class="fa-regular fa-bell"></i>
+                    <span class="notification-dot"></span>
+                </div>
+                <button class="btn btn-primary btn-topbar">
+                    <i class="fa-solid fa-plus"></i>&nbsp; New Post
+                </button>
+                <div class="user-profile">
+                    <div class="avatar">SR</div>
+                    <span class="user-name">Sarah</span>
+                    <i class="fa-solid fa-chevron-down"></i>
+                </div>
+            </div>
+        </header>
+
+        <div class="dashboard-container">
+
+            <div class="page-header">
+                <h1>Study Zone</h1>
+            </div>
+
+            <div class="filter-tabs" id="filterTabs">
+                <button class="filter-pill" data-filter="all">All Posts</button>
+                <button class="filter-pill" data-filter="announcements"><span class="dot announcement"></span>Announcements</button>
+                <button class="filter-pill" data-filter="lost-found"><span class="dot lostfound"></span>Lost &amp; Found</button>
+                <button class="filter-pill" data-filter="events"><span class="dot event"></span>Events</button>
+                <button class="filter-pill" data-filter="complaints"><span class="dot complaint"></span>Complaints</button>
+                <button class="filter-pill" data-filter="marketplace"><span class="dot marketplace"></span>Marketplace</button>
+                <button class="filter-pill study-pill active" data-filter="study-zone"><span class="dot study"></span>Study Zone</button>
+                <button class="filter-pill" data-filter="materials"><span class="dot material"></span>Material Sharing</button>
+            </div>
+
+            <div class="content-grid">
+
+                <!-- Feed -->
+                <section id="studyFeed">
+
+                    <article class="post-card study-post" data-post-id="1">
+                        <div class="post-header">
+                            <div class="post-avatar">NI</div>
+                            <div class="post-meta">
+                                <h4>Nadia Islam <span class="tag-pill study-tag">Study Zone</span></h4>
+                                <p>CSE Student, Year 2 · 6 hours ago</p>
+                            </div>
+                        </div>
+
+                        <div class="post-content">
+                            <h3>Data Structures &amp; Algorithms — Pre-Exam Group Study</h3>
+
+                            <div class="study-info-row">
+                                <span class="info-chip"><i class="fa-solid fa-book"></i> CSE220 — Data Structures &amp; Algorithms</span>
+                                <span class="info-chip"><i class="fa-regular fa-calendar"></i> Tomorrow, Oct 12</span>
+                                <span class="info-chip"><i class="fa-regular fa-clock"></i> 4:00 PM – 7:00 PM</span>
+                                <span class="offline-badge"><i class="fa-solid fa-location-dot"></i> Offline</span>
+                            </div>
+
+                            <p>
+                                Focused group study before the mid-term. We will cover Trees, Graphs, and Dynamic
+                                Programming. Everyone should come having reviewed the lecture notes. Bring your
+                                textbook and laptop if possible.
+                            </p>
+
+                            <div class="study-location">
+                                <i class="fa-solid fa-location-dot"></i> Room 408, Building B (Study Lounge)
+                            </div>
+
+                            <div class="study-progress-row">
+                                <span class="study-joined-count"><i class="fa-solid fa-users"></i> 4/8 joined</span>
+                                <div class="study-progress-bar">
+                                    <div class="study-progress-fill" style="width: 50%;"></div>
+                                </div>
+                                <button class="btn-join" data-action="join">Join Session</button>
+                            </div>
+                        </div>
+
+                        <div class="post-actions">
+                            <button class="action-btn" data-action="like">
+                                <i class="fa-regular fa-heart"></i> <span class="like-count">9</span>
+                            </button>
+                            <button class="action-btn" data-action="dislike">
+                                <i class="fa-regular fa-thumbs-down"></i>
+                            </button>
+                            <button class="action-btn" data-action="comment">
+                                <i class="fa-regular fa-comment"></i> 5
+                            </button>
+                            <div class="action-right">
+                                <button class="action-btn" data-action="bookmark">
+                                    <i class="fa-regular fa-bookmark"></i>
+                                </button>
+                                <button class="action-btn" data-action="more">
+                                    <i class="fa-solid fa-ellipsis"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </article>
+
+                </section>
+
+                <!-- Right rail -->
+                <aside>
+
+                    <div class="widget">
+                        <div class="widget-header">
+                            <i class="fa-solid fa-chart-simple"></i>
+                            <h3>Campus Pulse</h3>
+                        </div>
+                        <div class="pulse-grid">
+                            <div class="pulse-card">
+                                <i class="fa-regular fa-file-lines pulse-icon-blue"></i>
+                                <h2>34</h2>
+                                <p>Posts Today</p>
+                            </div>
+                            <div class="pulse-card">
+                                <i class="fa-solid fa-flag pulse-icon-red"></i>
+                                <h2 class="pulse-num-red">12</h2>
+                                <p>Open Complaints</p>
+                            </div>
+                            <div class="pulse-card">
+                                <i class="fa-solid fa-book-open pulse-icon-green"></i>
+                                <h2 class="pulse-num-green">8</h2>
+                                <p>Active Studies</p>
+                            </div>
+                            <div class="pulse-card">
+                                <i class="fa-regular fa-file pulse-icon-indigo"></i>
+                                <h2 class="pulse-num-indigo">21</h2>
+                                <p>New Materials</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="widget">
+                        <div class="widget-header">
+                            <i class="fa-regular fa-calendar"></i>
+                            <h3>Upcoming Events</h3>
+                        </div>
+
+                        <div class="event-item">
+                            <div class="event-date"><span>OCT</span>28</div>
+                            <div class="event-details">
+                                <h4>TechFest 2024</h4>
+                                <p>CS Society</p>
+                            </div>
+                        </div>
+                        <div class="event-item">
+                            <div class="event-date"><span>NOV</span>3</div>
+                            <div class="event-details">
+                                <h4>Career Fair 2024</h4>
+                                <p>Career Office</p>
+                            </div>
+                        </div>
+                        <div class="event-item">
+                            <div class="event-date"><span>OCT</span>16</div>
+                            <div class="event-details">
+                                <h4>Blood Donation Drive</h4>
+                                <p>NSU Medical</p>
+                            </div>
+                        </div>
+
+                        <button class="btn btn-outline btn-full">View All Events</button>
+                    </div>
+
+                    <div class="widget">
+                        <div class="widget-header">
+                            <i class="fa-regular fa-bell"></i>
+                            <h3>Recent Activity</h3>
+                        </div>
+                        <div class="activity-item">
+                            <i class="fa-solid fa-heart activity-icon-heart"></i>
+                            <span>Layla Ahmed liked your post</span>
+                        </div>
+                    </div>
+
+                </aside>
+
+            </div>
+
+        </div>
+    </main>
+</div>
+
+<script src="js/auth.js"></script>
+<script src="js/api.js"></script>
+<script src="js/study-zone.js"></script>
+</body>
+</html>
