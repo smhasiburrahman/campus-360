@@ -19,6 +19,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         console.warn('Token decoding skipped, default student role applied.');
     }
 
+    // Removed dummy authorityViewBtn references
+
     await loadUserProfile();
     setupEventListeners();
     await fetchComplaints();
@@ -29,6 +31,12 @@ document.addEventListener('DOMContentLoaded', async () => {
    ========================================================================== */
 async function loadUserProfile() {
     try {
+        if (currentUserRole !== 'STUDENT' && currentUserRole !== 'ROLE_STUDENT') {
+            document.getElementById('navName').textContent = 'Authority / Admin';
+            document.getElementById('navAvatar').textContent = 'AU';
+            return;
+        }
+
         // BACKEND API INTEGRATION:
         // GET /api/v1/students/me
         const res = await apiFetch('/students/me');
@@ -130,48 +138,7 @@ async function fetchComplaints() {
         console.warn('Backend currently offline, initializing dynamic mock state.');
     }
 
-    // Dynamic initial mock dataset to render UI when Spring Boot is offline
-    if (!apiSuccess || complaintsList.length === 0) {
-        complaintsList = [
-            {
-                id: 47,
-                ownerId: 101,
-                ownerName: "Alice Rahman",
-                isAnonymous: true,
-                department: "CSE",
-                category: "Infrastructure",
-                title: "Air Conditioner Non-Functional in Computer Lab 302 — Over 2 Weeks",
-                description: "The AC unit in Lab 302 (Building B, 3rd Floor) has been completely non-functional for over two weeks. During lab sessions temperatures routinely exceed 35°C, making it physically uncomfortable.",
-                location: "Lab 302, Building B, 3rd Floor",
-                imageUrls: ["https://images.unsplash.com/photo-1497366216548-37526070297c?w=600&auto=format&fit=crop&q=80"],
-                status: "pending",
-                upvoteCount: 52, // 50+ threshold crossed
-                downvoteCount: 1,
-                commentCount: 3,
-                userReaction: null,
-                createdAt: new Date().toISOString()
-            },
-            {
-                id: 39,
-                ownerId: 102,
-                ownerName: "Md. Tanvir Hossain",
-                isAnonymous: false,
-                department: "CSE",
-                category: "Technology/IT",
-                title: "Library WiFi Drops Repeatedly During Evening Hours (6 PM – 10 PM)",
-                description: "The WiFi network in the Main Library consistently drops every 15-30 minutes between 6 PM and 10 PM. This disrupts research, online coursework, and exam preparation.",
-                location: "Main Library, All Floors",
-                imageUrls: [],
-                status: "processing",
-                officialResponse: "Network infrastructure upgrade in progress. Expected completion: Oct 18.",
-                upvoteCount: 42,
-                downvoteCount: 3,
-                commentCount: 4,
-                userReaction: null,
-                createdAt: new Date(Date.now() - 86400000 * 3).toISOString()
-            }
-        ];
-    }
+    // Backend is fully responsible for complaints data
 
     computeStatsFromList();
     applyClientSideFilters();
@@ -278,23 +245,42 @@ function createComplaintCardHTML(item) {
     const authorName = item.isAnonymous ? 'Anonymous Student' : (item.ownerName || 'Student');
     const initials = item.isAnonymous ? 'AN' : authorName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
 
-    // Auto-escalated check: 50+ upvotes (agree)[cite: 1]
-    const isEscalated = (item.upvoteCount || 0) >= 50;
+    // Auto-escalated check: 1+ upvotes (agree)[cite: 1]
+    const isEscalated = (item.upvoteCount || 0) >= 1;
 
     let statusPillClass = `status-${item.status}`;
     let statusLabel = item.status ? item.status.replace('_', ' ').toUpperCase() : 'UNKNOWN';
 
     // Authority control: from 'pending' onwards authority can move status[cite: 1]
-    const isAuthority = currentUserRole === 'AUTHORITY' || currentUserRole === 'AUTHORITY_ADMIN';
+    const isAuthority = currentUserRole === 'AUTHORITY' || currentUserRole === 'AUTHORITY_ADMIN' || currentUserRole === 'ROLE_ADMIN';
     let statusRenderHTML = '';
 
     if (isAuthority && item.status !== 'not_approved') {
+        let optionsHtml = '';
+        if (item.status === 'pending') {
+            optionsHtml = `
+                <option value="pending" selected>Pending</option>
+                <option value="processing">Processing</option>
+                <option value="handled">Handled</option>
+                <option value="denied">Denied</option>
+            `;
+        } else if (item.status === 'processing') {
+            optionsHtml = `
+                <option value="processing" selected>Processing</option>
+                <option value="handled">Handled</option>
+                <option value="denied">Denied</option>
+            `;
+        } else if (item.status === 'handled') {
+            optionsHtml = `<option value="handled" selected>Handled</option>`;
+        } else if (item.status === 'denied') {
+            optionsHtml = `<option value="denied" selected>Denied</option>`;
+        }
+
+        const selectDisabled = (item.status === 'handled' || item.status === 'denied') ? 'disabled' : '';
+
         statusRenderHTML = `
-            <select class="authority-status-select ${statusPillClass}" onchange="updateComplaintStatus(${item.id}, this.value)">
-                <option value="pending" ${item.status === 'pending' ? 'selected' : ''}>Pending</option>
-                <option value="processing" ${item.status === 'processing' ? 'selected' : ''}>Processing</option>
-                <option value="handled" ${item.status === 'handled' ? 'selected' : ''}>Handled</option>
-                <option value="denied" ${item.status === 'denied' ? 'selected' : ''}>Denied</option>
+            <select class="authority-status-select ${statusPillClass}" onchange="updateComplaintStatus(${item.id}, this.value)" ${selectDisabled}>
+                ${optionsHtml}
             </select>
         `;
     } else {
@@ -323,6 +309,11 @@ function createComplaintCardHTML(item) {
     const isAgree = item.userReaction === 'like';
     const isDisagree = item.userReaction === 'dislike';
 
+    const isTerminal = item.status === 'handled' || item.status === 'denied';
+    const disableVoteClass = isTerminal ? 'disabled' : '';
+    const clickEventLike = isTerminal ? '' : `onclick="castVote(${item.id}, 'like')"`;
+    const clickEventDislike = isTerminal ? '' : `onclick="castVote(${item.id}, 'dislike')"`;
+
     return `
         <div class="complaint-card" id="complaint-card-${item.id}">
             <div class="complaint-card-header">
@@ -342,7 +333,7 @@ function createComplaintCardHTML(item) {
 
             <div class="complaint-badges-line">
                 <span class="badge-tag badge-category">${item.category || 'General'}</span>
-                ${isEscalated ? '<span class="badge-tag badge-escalated">&bull; Auto-escalated (50+ upvotes)</span>' : ''}
+                ${isEscalated ? '<span class="badge-tag badge-escalated">&bull; Auto-escalated (1+ upvote)</span>' : ''}
             </div>
 
             <h3 class="complaint-title">${item.title || 'Untitled Issue'}</h3>
@@ -355,14 +346,14 @@ function createComplaintCardHTML(item) {
             <div class="complaint-footer">
                 <div class="voting-group">
                     <!-- Agree (Upvote) Button -->
-                    <button class="vote-action-pill agree ${isAgree ? 'active' : ''}" onclick="castVote(${item.id}, 'like')" title="Agree with this issue">
+                    <button class="vote-action-pill agree ${isAgree ? 'active' : ''} ${disableVoteClass}" ${clickEventLike} title="Agree with this issue">
                         <i class="fa-${isAgree ? 'solid' : 'regular'} fa-circle-check"></i>
                         <span>Agree</span>
                         <span class="vote-count">${item.upvoteCount || 0}</span>
                     </button>
 
                     <!-- Disagree (Downvote) Button -->
-                    <button class="vote-action-pill disagree ${isDisagree ? 'active' : ''}" onclick="castVote(${item.id}, 'dislike')" title="Disagree with this issue">
+                    <button class="vote-action-pill disagree ${isDisagree ? 'active' : ''} ${disableVoteClass}" ${clickEventDislike} title="Disagree with this issue">
                         <i class="fa-${isDisagree ? 'solid' : 'regular'} fa-circle-xmark"></i>
                         <span>Disagree</span>
                         <span class="vote-count">${item.downvoteCount || 0}</span>
@@ -398,13 +389,15 @@ async function castVote(complaintId, reactionType) {
         item.userReaction = reactionType;
         if (reactionType === 'like') {
             item.upvoteCount++;
-            // Threshold check: 50+ Agree votes auto-escalates to 'pending'[cite: 1]
-            if (item.upvoteCount >= 50 && item.status === 'not_approved') {
-                item.status = 'pending';
-            }
         } else if (reactionType === 'dislike') {
             item.downvoteCount++;
         }
+    }
+
+    if (item.upvoteCount >= 1 && item.status === 'not_approved') {
+        item.status = 'pending';
+    } else if (item.upvoteCount < 1 && item.status === 'pending') {
+        item.status = 'not_approved';
     }
 
     // BACKEND API INTEGRATION:
@@ -463,37 +456,29 @@ async function submitNewComplaint() {
     const imgUrl = document.getElementById('complaintImage').value;
 
     const payload = {
-        id: Date.now(),
-        ownerId: currentUserId,
-        ownerName: "Sarah Rahman",
-        department: "CSE",
-        category,
-        location,
+        title,
+        category: category || null,
+        location: location || null,
         description,
         isAnonymous,
-        imageUrls: imgUrl ? [imgUrl] : [],
-        status: "not_approved",
-        upvoteCount: 0,
-        downvoteCount: 0,
-        commentCount: 0,
-        userReaction: null,
-        createdAt: new Date().toISOString()
+        imageUrls: imgUrl ? [imgUrl] : []
     };
-
-    complaintsList.unshift(payload);
 
     // BACKEND API INTEGRATION:
     // POST /api/v1/complaints
-    // Request Body: { title, category, location, description, isAnonymous, imageUrls }[cite: 1]
     try {
         if (typeof apiFetch === 'function') {
-            await apiFetch('/complaints', {
+            const res = await apiFetch('/complaints', {
                 method: 'POST',
                 body: JSON.stringify(payload)
             });
+            if (res && res.ok) {
+                const newComplaint = await res.json();
+                complaintsList.unshift(newComplaint);
+            }
         }
     } catch (err) {
-        console.warn('Backend offline, complaint prepended to list.');
+        console.warn('Backend offline, could not submit complaint.');
     }
 
     document.getElementById('complaintModal').style.display = 'none';

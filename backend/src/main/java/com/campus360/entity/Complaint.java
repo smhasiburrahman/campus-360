@@ -21,6 +21,18 @@ public class Complaint {
     @Column(name = "student_id", nullable = false)
     private Long studentId;
 
+    @Column(name = "title")
+    private String title;
+
+    @Column(name = "category")
+    private String category;
+
+    @Column(name = "location")
+    private String location;
+
+    @Column(name = "is_anonymous", nullable = false)
+    private Boolean isAnonymous = false;
+
     @Column(name = "description", nullable = false)
     private String description;
 

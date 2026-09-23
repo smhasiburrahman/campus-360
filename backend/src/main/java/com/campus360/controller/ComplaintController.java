@@ -3,6 +3,7 @@ package com.campus360.controller;
 import com.campus360.dto.ComplaintRequest;
 import com.campus360.dto.ComplaintResponse;
 import com.campus360.dto.ComplaintStatusUpdateRequest;
+import com.campus360.dto.ReactionRequest;
 import com.campus360.service.ComplaintService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -40,13 +41,27 @@ public class ComplaintController {
     public ResponseEntity<Page<ComplaintResponse>> getAllComplaints(
             @RequestParam(required = false) String status,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
-        return ResponseEntity.ok(complaintService.getAllComplaints(status, PageRequest.of(page, size)));
+            @RequestParam(defaultValue = "10") int size,
+            Authentication authentication) {
+        Long currentUserId = authentication != null ? Long.parseLong(authentication.getName()) : null;
+        return ResponseEntity.ok(complaintService.getAllComplaints(status, PageRequest.of(page, size), currentUserId));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ComplaintResponse> getComplaintById(@PathVariable Long id) {
-        return ResponseEntity.ok(complaintService.getComplaintById(id));
+    public ResponseEntity<ComplaintResponse> getComplaintById(@PathVariable Long id, Authentication authentication) {
+        Long currentUserId = authentication != null ? Long.parseLong(authentication.getName()) : null;
+        return ResponseEntity.ok(complaintService.getComplaintById(id, currentUserId));
+    }
+
+    @PutMapping("/{id}/reaction")
+    @PreAuthorize("hasRole('STUDENT')")
+    public ResponseEntity<Void> reactToComplaint(
+            @PathVariable Long id,
+            @RequestBody ReactionRequest request,
+            Authentication authentication) {
+        Long studentId = Long.parseLong(authentication.getName());
+        complaintService.reactToComplaint(id, request.getReaction(), studentId);
+        return ResponseEntity.ok().build();
     }
 
     @PutMapping("/{id}")

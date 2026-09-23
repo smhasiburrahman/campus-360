@@ -204,6 +204,73 @@
         </main>
     </div>
 
+    <!-- Modal: Create Vendor Profile -->
+    <div class="modal-overlay" id="createVendorModal" style="display: none;">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3>Create Vendor Profile</h3>
+                <button class="close-modal-btn" id="closeVendorModalBtn">&times;</button>
+            </div>
+            <div class="modal-body" style="padding: 1rem;">
+                <p style="margin-bottom: 1rem; color: #475569; font-size: 0.9rem;">Before you can list items for sale, you need to create a Vendor Profile. This will be your public seller identity on Campus 360.</p>
+                <form id="createVendorForm">
+                    <div class="form-group">
+                        <label for="vendorNameInput">Store / Vendor Name</label>
+                        <input type="text" id="vendorNameInput" placeholder="e.g. Sarah's Books" required>
+                    </div>
+                    <div class="modal-actions">
+                        <button type="button" class="btn-cancel" id="cancelVendorModalBtn">Cancel</button>
+                        <button type="submit" class="btn-submit">Create Profile & Continue</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Listing Details -->
+    <div class="modal-overlay" id="listingDetailsModal" style="display: none;">
+        <div class="modal-box" style="max-width: 600px;">
+            <div class="modal-header">
+                <h3>Listing Details</h3>
+                <button class="close-modal-btn" id="closeDetailsModalBtn">&times;</button>
+            </div>
+            <div class="modal-body" style="padding: 1.5rem;">
+                <div style="display: flex; gap: 1.5rem; margin-bottom: 1.5rem;">
+                    <img id="detailsImage" src="" alt="Product Image" style="width: 200px; height: 200px; object-fit: cover; border-radius: 8px;">
+                    <div style="flex-grow: 1;">
+                        <h2 id="detailsPrice" style="color: #2563eb; margin-bottom: 0.5rem;">BDT 0</h2>
+                        
+                        <div style="margin-bottom: 1rem;">
+                            <span id="detailsStatusDisplay" class="condition-badge" style="display: none; font-size: 0.85rem; padding: 0.25rem 0.75rem;">Status</span>
+                            <div id="detailsStatusControl" style="display: none;">
+                                <label style="font-size: 0.85rem; color: #64748b; margin-right: 0.5rem;">Update Status:</label>
+                                <select id="detailsStatusSelect" style="padding: 0.25rem; border-radius: 4px; border: 1px solid #cbd5e1; font-size: 0.85rem;">
+                                    <option value="Available">Available</option>
+                                    <option value="Sold">Sold</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <p id="detailsDescription" style="white-space: pre-wrap; font-size: 0.95rem; color: #334155; line-height: 1.5;"></p>
+                    </div>
+                </div>
+                
+                <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 1rem; border-top: 1px solid #e2e8f0;">
+                    <div style="display: flex; align-items: center; gap: 0.75rem;">
+                        <div id="detailsVendorAvatar" class="vendor-avatar" style="background: #2563eb;">V</div>
+                        <div>
+                            <div id="detailsVendorName" style="font-weight: 600; color: #1e293b;">Vendor</div>
+                            <div id="detailsTime" style="font-size: 0.85rem; color: #64748b;">Time</div>
+                        </div>
+                    </div>
+                    <button id="detailsMessageBtn" class="btn btn-primary">
+                        <i class="fa-regular fa-envelope"></i> Message Seller
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Modal: List a New Item -->
     <div class="modal-overlay" id="createListingModal" style="display: none;">
         <div class="modal-box">

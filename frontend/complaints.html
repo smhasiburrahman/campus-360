@@ -102,12 +102,9 @@
                 <div class="complaints-header-row">
                     <div>
                         <h1>Complaints</h1>
-                        <p class="subtitle">Voice campus issues — auto-escalated at 50 upvotes</p>
+                        <p class="subtitle">Voice campus issues — auto-escalated at 1 upvote</p>
                     </div>
                     <div class="header-action-group">
-                        <button class="btn-authority-view" id="authorityViewBtn">
-                            <i class="fa-solid fa-shield-halved"></i> Authority View
-                        </button>
                         <button class="btn-file-complaint" id="openComplaintModalBtn">
                             <i class="fa-solid fa-plus"></i> File Complaint
                         </button>
@@ -216,7 +213,7 @@
                                 </li>
                                 <li>
                                     <span class="step-num">2</span>
-                                    <p>Reach 50 upvotes to auto-escalate to Pending</p>
+                                    <p>Reach 1 upvote to auto-escalate to Pending</p>
                                 </li>
                                 <li>
                                     <span class="step-num">3</span>
@@ -248,8 +245,8 @@
                     <input type="text" id="complaintTitle" placeholder="Short description of the issue" required>
                 </div>
                 <div class="form-group">
-                    <label for="complaintCategory">Category</label>
-                    <select id="complaintCategory" required>
+                    <label for="complaintCategory">Category (Optional)</label>
+                    <select id="complaintCategory">
                         <option value="">Select Category</option>
                         <option value="Infrastructure">Infrastructure</option>
                         <option value="Academic">Academic</option>
@@ -259,8 +256,8 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="complaintLocation">Location</label>
-                    <input type="text" id="complaintLocation" placeholder="e.g. Lab 302, Building B, 3rd Floor" required>
+                    <label for="complaintLocation">Location (Optional)</label>
+                    <input type="text" id="complaintLocation" placeholder="e.g. Lab 302, Building B, 3rd Floor">
                 </div>
                 <div class="form-group">
                     <label for="complaintDescription">Description</label>

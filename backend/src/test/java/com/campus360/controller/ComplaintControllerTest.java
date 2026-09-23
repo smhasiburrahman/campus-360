@@ -85,9 +85,9 @@ class ComplaintControllerTest {
         item.setDescription("AC not working");
         Page<ComplaintResponse> page = new PageImpl<>(Collections.singletonList(item));
 
-        when(complaintService.getAllComplaints(eq(null), any(PageRequest.class))).thenReturn(page);
+        when(complaintService.getAllComplaints(eq(null), any(PageRequest.class), eq(null))).thenReturn(page);
 
-        ResponseEntity<Page<ComplaintResponse>> response = complaintController.getAllComplaints(null, 0, 10);
+        ResponseEntity<Page<ComplaintResponse>> response = complaintController.getAllComplaints(null, 0, 10, null);
 
         assertEquals(200, response.getStatusCode().value());
         assertNotNull(response.getBody());
@@ -102,7 +102,7 @@ class ComplaintControllerTest {
         item.setId(2L);
         item.setDescription("Wi-Fi unstable in library");
 
-        when(complaintService.getComplaintById(2L)).thenReturn(item);
+        when(complaintService.getComplaintById(2L, null)).thenReturn(item);
 
         mockMvc.perform(get("/api/v1/complaints/2"))
                 .andExpect(status().isOk())

@@ -1,4 +1,6 @@
 let currentUserId = 1;
+let currentUserRole = 'STUDENT';
+let currentVendorId = null;
 let marketplaceListings = [];
 let activeCategory = 'ALL';
 let showAvailableOnly = false;
@@ -14,8 +16,20 @@ document.addEventListener('DOMContentLoaded', async () => {
         const token = localStorage.getItem('token');
         const payload = JSON.parse(atob(token.split('.')[1]));
         currentUserId = payload.sub ? parseInt(payload.sub, 10) : 1;
+        currentUserRole = payload.role || 'STUDENT';
     } catch (e) {
         console.warn('Token decoding skipped, default student user applied.');
+    }
+
+    // Attempt to fetch current user's vendor profile on load
+    try {
+        const res = await apiFetch('/marketplace/vendors/me');
+        if (res && res.ok) {
+            const vendor = await res.json();
+            currentVendorId = vendor.id;
+        }
+    } catch (e) {
+        // user has no vendor profile yet
     }
 
     await loadUserProfile();
@@ -99,10 +113,67 @@ function setupMarketplaceListeners() {
     const openModalBtn = document.getElementById('openCreateListingModalBtn');
     const closeModalBtn = document.getElementById('closeListingModalBtn');
     const cancelModalBtn = document.getElementById('cancelListingModalBtn');
+    
+    const vendorModal = document.getElementById('createVendorModal');
+    const closeVendorBtn = document.getElementById('closeVendorModalBtn');
+    const cancelVendorBtn = document.getElementById('cancelVendorModalBtn');
+    const vendorForm = document.getElementById('createVendorForm');
 
-    if (openModalBtn) openModalBtn.addEventListener('click', () => modal.style.display = 'flex');
+    if (openModalBtn) {
+        openModalBtn.addEventListener('click', async () => {
+            if (currentUserRole !== 'STUDENT' && currentUserRole !== 'ROLE_STUDENT') {
+                alert("Only students can create marketplace listings.");
+                return;
+            }
+            
+            try {
+                const res = await apiFetch('/marketplace/vendors/me');
+                if (res && res.ok) {
+                    // Vendor profile exists
+                    modal.style.display = 'flex';
+                } else if (res && res.status === 404) {
+                    // Needs to create a vendor profile
+                    vendorModal.style.display = 'flex';
+                } else {
+                    alert("Could not verify vendor status.");
+                }
+            } catch (err) {
+                console.warn("Backend offline, mocking vendor profile.");
+                modal.style.display = 'flex';
+            }
+        });
+    }
+
     if (closeModalBtn) closeModalBtn.addEventListener('click', () => modal.style.display = 'none');
     if (cancelModalBtn) cancelModalBtn.addEventListener('click', () => modal.style.display = 'none');
+    
+    if (closeVendorBtn) closeVendorBtn.addEventListener('click', () => vendorModal.style.display = 'none');
+    if (cancelVendorBtn) cancelVendorBtn.addEventListener('click', () => vendorModal.style.display = 'none');
+
+    const detailsModal = document.getElementById('listingDetailsModal');
+    const closeDetailsBtn = document.getElementById('closeDetailsModalBtn');
+    if (closeDetailsBtn) closeDetailsBtn.addEventListener('click', () => detailsModal.style.display = 'none');
+    
+    // Create Vendor Form Submit
+    if (vendorForm) {
+        vendorForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const vendorName = document.getElementById('vendorNameInput').value;
+            
+            try {
+                const res = await apiFetch('/marketplace/vendors/me', {
+                    method: 'PUT',
+                    body: JSON.stringify({ vendorName: vendorName, bio: '' })
+                });
+                if (res && res.ok) {
+                    vendorModal.style.display = 'none';
+                    modal.style.display = 'flex'; // Proceed to list item
+                }
+            } catch (err) {
+                alert("Error creating vendor profile.");
+            }
+        });
+    }
 
     // Create Listing Form Submit
     const form = document.getElementById('createListingForm');
@@ -121,8 +192,8 @@ async function fetchMarketplaceListings() {
     let apiSuccess = false;
     try {
         // BACKEND API INTEGRATION:
-        // GET /api/v1/marketplace?page=0&size=50
-        const res = await apiFetch('/marketplace');
+        // GET /api/v1/marketplace/listings?page=0&size=50
+        const res = await apiFetch('/marketplace/listings');
         if (res && res.ok) {
             const data = await res.json();
             marketplaceListings = data.content || [];
@@ -132,131 +203,7 @@ async function fetchMarketplaceListings() {
         console.warn('Backend offline, using fallback dynamic mock marketplace data.');
     }
 
-    // Dynamic initial mock dataset matching the screenshot
-    if (!apiSuccess || marketplaceListings.length === 0) {
-        marketplaceListings = [
-            {
-                id: 1,
-                title: "Calculus: Early Transcendentals, 8th Edition — James Stewart",
-                category: "Textbooks",
-                condition: "Like New",
-                price: 1200,
-                originalPrice: 2800,
-                isSold: false,
-                isBookmarked: false,
-                vendorName: "Karim's Study Store",
-                vendorVerified: true,
-                vendorColor: "#10b981",
-                imageUrl: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=500&auto=format&fit=crop&q=80",
-                createdAt: new Date(Date.now() - 86400000 * 2).toISOString()
-            },
-            {
-                id: 2,
-                title: "Casio FX-991EX Scientific Calculator — ClassWiz",
-                category: "Electronics",
-                condition: "Good",
-                price: 800,
-                originalPrice: 1200,
-                isSold: false,
-                isBookmarked: false,
-                vendorName: "TechGadgets Hub",
-                vendorVerified: true,
-                vendorColor: "#2563eb",
-                imageUrl: "https://images.unsplash.com/photo-1587145820266-a5951ee6f620?w=500&auto=format&fit=crop&q=80",
-                createdAt: new Date(Date.now() - 86400000 * 3).toISOString()
-            },
-            {
-                id: 3,
-                title: "Introduction to Algorithms (CLRS), 3rd Edition — Cormen et al.",
-                category: "Textbooks",
-                condition: "Good",
-                price: 1500,
-                originalPrice: 3500,
-                isSold: false,
-                isBookmarked: true,
-                vendorName: "Book Exchange Hub",
-                vendorVerified: true,
-                vendorColor: "#8b5cf6",
-                imageUrl: "https://images.unsplash.com/photo-1512820790803-83ca734da794?w=500&auto=format&fit=crop&q=80",
-                createdAt: new Date(Date.now() - 86400000 * 7).toISOString()
-            },
-            {
-                id: 4,
-                title: "Sony WH-1000XM4 Wireless Noise-Cancelling Headphones",
-                category: "Electronics",
-                condition: "Like New",
-                price: 8500,
-                originalPrice: 16000,
-                isSold: false,
-                isBookmarked: false,
-                vendorName: "TechGadgets Hub",
-                vendorVerified: true,
-                vendorColor: "#2563eb",
-                imageUrl: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500&auto=format&fit=crop&q=80",
-                createdAt: new Date(Date.now() - 86400000 * 5).toISOString()
-            },
-            {
-                id: 5,
-                title: "White Lab Coat — Size M (Unisex)",
-                category: "Lab Supplies",
-                condition: "Good",
-                price: 350,
-                originalPrice: null,
-                isSold: false,
-                isBookmarked: false,
-                vendorName: "Nadia's Campus Corner",
-                vendorVerified: false,
-                vendorColor: "#ec4899",
-                imageUrl: "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=500&auto=format&fit=crop&q=80",
-                createdAt: new Date(Date.now() - 86400000 * 4).toISOString()
-            },
-            {
-                id: 6,
-                title: "Laptop Cooling Pad with 5 Fans — USB Powered",
-                category: "Electronics",
-                condition: "Good",
-                price: 700,
-                originalPrice: 1200,
-                isSold: true, // Marked as SOLD with overlay
-                isBookmarked: false,
-                vendorName: "TechGadgets Hub",
-                vendorVerified: true,
-                vendorColor: "#2563eb",
-                imageUrl: "https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=500&auto=format&fit=crop&q=80",
-                createdAt: new Date(Date.now() - 86400000 * 7).toISOString()
-            },
-            {
-                id: 7,
-                title: "Engineering Drawing Set — Rotring + Staedtler",
-                category: "Stationery",
-                condition: "Good",
-                price: 450,
-                originalPrice: 1100,
-                isSold: false,
-                isBookmarked: false,
-                vendorName: "Nadia's Campus Corner",
-                vendorVerified: false,
-                vendorColor: "#ec4899",
-                imageUrl: "https://images.unsplash.com/photo-1585776245991-cf89dd7fc73a?w=500&auto=format&fit=crop&q=80",
-                createdAt: new Date(Date.now() - 86400000 * 8).toISOString()
-            },
-            {
-                id: 8,
-                title: "Python for Data Science Handbook — Jake VanderPlas",
-                category: "Textbooks",
-                condition: "Good",
-                price: 900,
-                originalPrice: 1800,
-                isSold: false,
-                isBookmarked: false,
-                vendorName: "Book Exchange Hub",
-                vendorVerified: true,
-                vendorColor: "#8b5cf6",
-                imageUrl: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=500&auto=format&fit=crop&q=80",
-                createdAt: new Date(Date.now() - 86400000 * 3).toISOString()
-            }
-        ];
-    }
+    // Backend is fully responsible for marketplace listings data
 
     updateStatsRow();
     applyFiltersAndRender();
@@ -267,12 +214,12 @@ async function fetchMarketplaceListings() {
    ========================================================================== */
 function updateStatsRow() {
     const total = marketplaceListings.length;
-    const active = marketplaceListings.filter(item => !item.isSold).length;
+    const active = marketplaceListings.filter(item => !(item.status && item.status.toLowerCase() === 'sold')).length;
     const saved = marketplaceListings.filter(item => item.isBookmarked).length;
 
     // Distinct verified vendors count
     const verifiedVendors = new Set(
-        marketplaceListings.filter(item => item.vendorVerified).map(item => item.vendorName)
+        marketplaceListings.filter(item => item.vendor).map(item => item.vendor.vendorName)
     ).size;
 
     document.getElementById('statActiveListings').textContent = active;
@@ -287,23 +234,26 @@ function updateStatsRow() {
 function applyFiltersAndRender() {
     let list = [...marketplaceListings];
 
-    // Category Filter
+    // Category Filter (Extract from description tag e.g. [Textbooks - Good])
     if (activeCategory !== 'ALL') {
-        list = list.filter(item => item.category === activeCategory);
+        list = list.filter(item => {
+            if (!item.description) return false;
+            const descLower = item.description.toLowerCase();
+            return descLower.includes(`[${activeCategory.toLowerCase()} -`);
+        });
     }
 
     // Available Only Toggle
     if (showAvailableOnly) {
-        list = list.filter(item => !item.isSold);
+        list = list.filter(item => !(item.status && item.status.toLowerCase() === 'sold'));
     }
 
     // Search Query Filter
     const query = (document.getElementById('marketSearchInput')?.value || '').toLowerCase().trim();
     if (query) {
         list = list.filter(item => 
-            (item.title && item.title.toLowerCase().includes(query)) ||
-            (item.category && item.category.toLowerCase().includes(query)) ||
-            (item.vendorName && item.vendorName.toLowerCase().includes(query))
+            (item.description && item.description.toLowerCase().includes(query)) ||
+            (item.vendor && item.vendor.vendorName && item.vendor.vendorName.toLowerCase().includes(query))
         );
     }
 
@@ -337,56 +287,145 @@ function renderListingsGrid(items) {
 }
 
 function createProductCardHTML(item) {
-    // Condition class styling
-    const condClass = item.condition.toLowerCase().replace(' ', '-');
-    const vendorInitial = (item.vendorName || 'V')[0].toUpperCase();
+    const vendorName = item.vendor ? item.vendor.vendorName : 'Unknown Vendor';
+    const vendorInitial = vendorName[0].toUpperCase();
 
     // Time Ago calculation
     const daysAgo = Math.max(1, Math.round((new Date() - new Date(item.createdAt)) / (1000 * 60 * 60 * 24)));
     const timeStr = daysAgo >= 7 ? `${Math.floor(daysAgo / 7)} week ago` : `${daysAgo} days ago`;
 
+    // Status check (backend returns lowercase)
+    const currentStatus = item.status ? (item.status.charAt(0).toUpperCase() + item.status.slice(1).toLowerCase()) : 'Available';
+
     // Sold overlay
-    const soldOverlayHtml = item.isSold ? `
+    const soldOverlayHtml = (currentStatus === 'Sold') ? `
         <div class="sold-overlay">
             <div class="sold-badge">SOLD</div>
         </div>
     ` : '';
+    
+    const imageUrl = (item.imageUrls && item.imageUrls.length > 0) ? item.imageUrls[0] : 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=500';
 
     return `
-        <div class="market-card" id="listing-card-${item.id}">
+        <div class="market-card" id="listing-card-${item.id}" onclick="showListingDetails(${item.id})" style="cursor: pointer;">
             <div class="card-media-wrap">
-                <img src="${item.imageUrl || 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=500'}" alt="${item.title}">
-                <div class="condition-badge ${condClass}">${item.condition}</div>
+                <img src="${imageUrl}" alt="Product Image">
                 
                 <!-- Bookmark Button: Generic polymorphic bookmark endpoint -->
-                <button class="bookmark-btn ${item.isBookmarked ? 'active' : ''}" onclick="toggleBookmark(${item.id})" title="Save to bookmarks">
-                    <i class="fa-${item.isBookmarked ? 'solid' : 'regular'} fa-bookmark"></i>
+                <button class="bookmark-btn" onclick="event.stopPropagation(); toggleBookmark(${item.id})" title="Save to bookmarks">
+                    <i class="fa-regular fa-bookmark"></i>
                 </button>
 
                 ${soldOverlayHtml}
             </div>
 
             <div class="card-details">
-                <div class="card-category">${item.category}</div>
-                <h4 class="card-title" title="${item.title}">${item.title}</h4>
+                <p style="font-size: 0.95rem; color: #1e293b; font-weight: 500; margin-bottom: 0.75rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;" title="${item.description}">
+                    ${item.description}
+                </p>
 
                 <div class="card-pricing">
                     <span class="card-price">BDT ${item.price.toLocaleString()}</span>
-                    ${item.originalPrice ? `<span class="card-original-price">BDT ${item.originalPrice.toLocaleString()}</span>` : ''}
                 </div>
 
                 <div class="card-vendor-footer">
                     <!-- Vendor Profile Affordance -->
-                    <a href="vendor-profile.html?name=${encodeURIComponent(item.vendorName)}" class="vendor-profile-link" title="${item.vendorName}">
-                        <span class="vendor-avatar" style="background: ${item.vendorColor || '#2563eb'}">${vendorInitial}</span>
-                        <span>${item.vendorName}</span>
-                        ${item.vendorVerified ? '<i class="fa-solid fa-circle-check vendor-verified-badge"></i>' : ''}
+                    <a href="vendor-profile.html?id=${item.vendor ? item.vendor.id : ''}" onclick="event.stopPropagation();" class="vendor-profile-link" title="${vendorName}">
+                        <span class="vendor-avatar" style="background: #2563eb">${vendorInitial}</span>
+                        <span>${vendorName}</span>
                     </a>
                     <span class="listing-post-time">${timeStr}</span>
                 </div>
             </div>
         </div>
     `;
+}
+
+function showListingDetails(id) {
+    const item = marketplaceListings.find(i => i.id === id);
+    if (!item) return;
+
+    const vendorName = item.vendor ? item.vendor.vendorName : 'Unknown Vendor';
+    const vendorInitial = vendorName[0].toUpperCase();
+    const daysAgo = Math.max(1, Math.round((new Date() - new Date(item.createdAt)) / (1000 * 60 * 60 * 24)));
+    const timeStr = daysAgo >= 7 ? `${Math.floor(daysAgo / 7)} week ago` : `${daysAgo} days ago`;
+    const imageUrl = (item.imageUrls && item.imageUrls.length > 0) ? item.imageUrls[0] : 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=500';
+
+    document.getElementById('detailsImage').src = imageUrl;
+    document.getElementById('detailsPrice').textContent = `BDT ${item.price.toLocaleString()}`;
+    document.getElementById('detailsDescription').textContent = item.description;
+    
+    document.getElementById('detailsVendorAvatar').textContent = vendorInitial;
+    document.getElementById('detailsVendorName').textContent = vendorName;
+    document.getElementById('detailsTime').textContent = timeStr;
+    
+    const currentStatus = item.status ? (item.status.charAt(0).toUpperCase() + item.status.slice(1).toLowerCase()) : 'Available';
+
+    const msgBtn = document.getElementById('detailsMessageBtn');
+    if (!item.contactEnabled || currentStatus === 'Sold') {
+        msgBtn.style.display = 'none';
+    } else {
+        msgBtn.style.display = 'inline-block';
+        msgBtn.onclick = (e) => {
+            e.stopPropagation();
+            alert("Messaging system is not implemented in this demo.");
+        };
+    }
+
+    const isOwner = (currentVendorId !== null && item.vendor && item.vendor.id === currentVendorId);
+    const statusDisplay = document.getElementById('detailsStatusDisplay');
+    const statusControl = document.getElementById('detailsStatusControl');
+    const statusSelect = document.getElementById('detailsStatusSelect');
+
+    if (isOwner) {
+        statusDisplay.style.display = 'none';
+        statusControl.style.display = 'block';
+        statusSelect.value = currentStatus;
+        statusSelect.onchange = (e) => updateListingStatus(item.id, e.target.value);
+    } else {
+        statusControl.style.display = 'none';
+        statusDisplay.style.display = 'inline-block';
+        statusDisplay.textContent = currentStatus;
+        // Give it a color based on status
+        if (currentStatus === 'Sold') {
+            statusDisplay.style.backgroundColor = '#fecdd3';
+            statusDisplay.style.color = '#e11d48';
+        } else {
+            statusDisplay.style.backgroundColor = '#dcfce7';
+            statusDisplay.style.color = '#16a34a';
+        }
+    }
+
+    document.getElementById('listingDetailsModal').style.display = 'flex';
+}
+
+async function updateListingStatus(id, newStatus) {
+    try {
+        if (typeof apiFetch === 'function') {
+            const res = await apiFetch(`/marketplace/listings/${id}/status`, {
+                method: 'PATCH',
+                body: JSON.stringify({ status: newStatus, showStatus: true })
+            });
+            if (res && res.ok) {
+                // Update local memory and re-render grid to show "SOLD" overlay
+                const updatedListing = await res.json();
+                const index = marketplaceListings.findIndex(i => i.id === id);
+                if (index !== -1) {
+                    marketplaceListings[index].status = updatedListing.status;
+                    applyFiltersAndRender();
+                }
+            } else {
+                alert("Failed to update status.");
+            }
+        }
+    } catch (e) {
+        console.warn("Backend offline, updating status locally.");
+        const index = marketplaceListings.findIndex(i => i.id === id);
+        if (index !== -1) {
+            marketplaceListings[index].status = newStatus;
+            applyFiltersAndRender();
+        }
+    }
 }
 
 /* ==========================================================================
@@ -420,45 +459,52 @@ async function submitNewListing() {
     const category = document.getElementById('listingCategory').value;
     const condition = document.getElementById('listingCondition').value;
     const price = parseFloat(document.getElementById('listingPrice').value);
-    const originalPrice = document.getElementById('listingOriginalPrice').value ? parseFloat(document.getElementById('listingOriginalPrice').value) : null;
-    const description = document.getElementById('listingDescription').value;
+    const rawDescription = document.getElementById('listingDescription').value;
     const imageUrl = document.getElementById('listingImageUrl').value;
 
+    // Combine into a single description since backend only stores description
+    const fullDescription = `[${category} - ${condition}] ${title}\n\n${rawDescription}`;
+
     const payload = {
-        id: Date.now(),
-        title,
-        category,
-        condition,
-        price,
-        originalPrice,
-        description,
-        isSold: false,
-        isBookmarked: false,
-        vendorName: "Sarah's Store", // Derived from user's vendor profile
-        vendorVerified: true,
-        vendorColor: "#ec4899",
-        imageUrl: imageUrl || "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=500",
-        createdAt: new Date().toISOString()
+        description: fullDescription,
+        price: price,
+        imageUrls: imageUrl ? [imageUrl] : [],
+        showStatus: true,
+        contactEnabled: true
     };
 
-    marketplaceListings.unshift(payload);
-
     // BACKEND API INTEGRATION:
-    // POST /api/v1/marketplace
-    // Request Body: { title, category, condition, price, originalPrice, description, imageUrl }
+    // POST /api/v1/marketplace/listings
     try {
         if (typeof apiFetch === 'function') {
-            await apiFetch('/marketplace', {
+            const res = await apiFetch('/marketplace/listings', {
                 method: 'POST',
                 body: JSON.stringify(payload)
             });
+            if (res && res.ok) {
+                const newListing = await res.json();
+                marketplaceListings.unshift(newListing);
+                
+                document.getElementById('createListingModal').style.display = 'none';
+                document.getElementById('createListingForm').reset();
+                updateStatsRow();
+                applyFiltersAndRender();
+            } else {
+                const errData = await res.json();
+                alert('Failed to publish listing: ' + (errData.message || 'Unknown error'));
+            }
         }
     } catch (err) {
         console.warn('Backend offline, listing added to client memory.');
+        payload.id = Date.now();
+        payload.vendor = { id: 1, vendorName: "Mock Vendor", avgRating: 5.0, reviewCount: 1 };
+        payload.status = "Available";
+        payload.createdAt = new Date().toISOString();
+        marketplaceListings.unshift(payload);
+        
+        document.getElementById('createListingModal').style.display = 'none';
+        document.getElementById('createListingForm').reset();
+        updateStatsRow();
+        applyFiltersAndRender();
     }
-
-    document.getElementById('createListingModal').style.display = 'none';
-    document.getElementById('createListingForm').reset();
-    updateStatsRow();
-    applyFiltersAndRender();
 }

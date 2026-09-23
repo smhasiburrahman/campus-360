@@ -91,7 +91,7 @@ CREATE TABLE app_settings (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 INSERT INTO app_settings (setting_key, setting_value) VALUES
-    ('complaint_upvote_threshold', '10');
+    ('complaint_upvote_threshold', '1');
 
 -- =====================================================================
 -- SECTION 2: ACCOUNTS (each with its own login)
@@ -222,6 +222,10 @@ CREATE TABLE events (
 CREATE TABLE complaints (
     id                      BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     student_id              BIGINT UNSIGNED NOT NULL,        -- post owner
+    title                   VARCHAR(255) NULL,
+    category                VARCHAR(100) NULL,
+    location                VARCHAR(255) NULL,
+    is_anonymous            BOOLEAN NOT NULL DEFAULT FALSE,
     description             TEXT NOT NULL,
     status                  ENUM('not_approved','pending','processing','handled','denied')
                              NOT NULL DEFAULT 'not_approved',
