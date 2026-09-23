@@ -2,17 +2,22 @@ document.addEventListener('DOMContentLoaded', () => {
     // Topbar Profile Init
     const avatar = document.getElementById('topbarAvatar');
     const name = document.getElementById('topbarName');
-    if (window.currentUser) {
-        name.textContent = window.currentUser.name;
-        if (window.currentUser.name) {
-            avatar.textContent = window.currentUser.name.charAt(0).toUpperCase();
-        }
-        
-        // Only students can share materials
-        if (window.currentUser.accountType === 'STUDENT') {
-            document.getElementById('shareMaterialBtn').style.display = 'inline-flex';
+    async function fetchUserProfile() {
+        try {
+            const res = await apiFetch('/students/me');
+            if (res && res.ok) {
+                const user = await res.json();
+                name.textContent = user.fullName;
+                const initials = user.fullName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+                avatar.textContent = initials;
+                
+                document.getElementById('shareMaterialBtn').style.display = 'inline-flex';
+            }
+        } catch (err) {
+            console.error('Failed to load user profile', err);
         }
     }
+    fetchUserProfile();
 
     // Dropdown toggle
     const toggle = document.getElementById('userProfileDropdownToggle');
