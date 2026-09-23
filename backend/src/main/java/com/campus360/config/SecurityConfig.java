@@ -39,6 +39,7 @@ public class SecurityConfig {
                 auth.requestMatchers("/api/v1/auth/**").permitAll()
                     .requestMatchers("/api/v1/departments/**", "/api/v1/courses/**", "/api/v1/trimesters/**").permitAll()
                     .requestMatchers("/api/v1/shuttle-routes/**", "/api/v1/shuttle-trips/**", "/ws/**").permitAll()
+                    .requestMatchers("/api/v1/course-planner/curriculum", "/api/v1/course-planner/specializations").permitAll()
                     .requestMatchers("/error").permitAll()
                     .anyRequest().authenticated()
             );

@@ -1,0 +1,315 @@
+.planner-container {
+    padding: 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.planner-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.planner-header h1 {
+    font-size: 1.8rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.ai-badge {
+    background: linear-gradient(135deg, #6366f1, #a855f7, #ec4899);
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Setup Wizard View */
+.setup-wizard {
+    background: white;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    padding: 3rem;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.wizard-step {
+    display: none;
+    animation: fadeIn 0.4s ease-out forwards;
+}
+
+.wizard-step.active {
+    display: block;
+}
+
+.step-title {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+    color: var(--text-main);
+}
+
+.preference-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+}
+
+.workload-selector {
+    display: flex;
+    gap: 1rem;
+    margin-top: 0.5rem;
+}
+
+.workload-option {
+    flex: 1;
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 1rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.workload-option:hover {
+    border-color: var(--primary-color);
+    background: var(--alert-bg);
+}
+
+.workload-option.selected {
+    border-color: var(--primary-color);
+    background: var(--alert-bg);
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+.wizard-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border-color);
+}
+
+/* Loading State */
+.loading-state {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 2rem;
+    text-align: center;
+}
+
+.loader-animation {
+    width: 80px;
+    height: 80px;
+    position: relative;
+    margin-bottom: 2rem;
+}
+
+.loader-circle {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border: 4px solid transparent;
+    border-top-color: #6366f1;
+    border-radius: 50%;
+    animation: spin 1.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
+}
+
+.loader-circle:nth-child(2) {
+    width: 70%;
+    height: 70%;
+    top: 15%;
+    left: 15%;
+    border-top-color: #ec4899;
+    animation: spin 2s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite reverse;
+}
+
+.loading-text {
+    font-size: 1.25rem;
+    font-weight: 500;
+    color: var(--text-main);
+    margin-bottom: 0.5rem;
+}
+
+.loading-subtext {
+    color: var(--text-muted);
+    max-width: 400px;
+}
+
+/* Results View */
+.results-view {
+    display: none;
+    animation: fadeIn 0.5s ease-out forwards;
+}
+
+.plan-summary-card {
+    background: linear-gradient(to right, #ffffff, #f8fafc);
+    border: 1px solid var(--border-color);
+    border-left: 4px solid #6366f1;
+    padding: 1.5rem;
+    border-radius: var(--radius-md);
+    margin-bottom: 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.summary-stats {
+    display: flex;
+    gap: 2rem;
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.stat-label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    font-weight: 600;
+}
+
+.stat-value {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text-main);
+}
+
+.plan-reasoning {
+    margin-top: 1rem;
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    font-style: italic;
+    background: #f1f5f9;
+    padding: 1rem;
+    border-radius: var(--radius-md);
+}
+
+/* Trimester Grid */
+.trimesters-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 1.5rem;
+}
+
+.trimester-card {
+    background: white;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 1.25rem;
+    box-shadow: var(--shadow-sm);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.trimester-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.trimester-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.trimester-title {
+    font-weight: 700;
+    font-size: 1.1rem;
+}
+
+.trimester-credits {
+    font-size: 0.85rem;
+    background: var(--bg-gray);
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-weight: 600;
+}
+
+.course-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.course-item {
+    padding: 0.75rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    background: #fafaf9;
+    border-left-width: 4px;
+    font-size: 0.9rem;
+}
+
+/* Color coding by category */
+.course-core { border-left-color: #3b82f6; }
+.course-elective, .course-ds_option_i, .course-ds_option_ii { border-left-color: #8b5cf6; }
+.course-basic_science, .course-mathematics { border-left-color: #10b981; }
+.course-gen_ed_compulsory, .course-gen_ed_optional, .course-language { border-left-color: #f59e0b; }
+.course-other_engineering, .course-capstone, .course-ds_systems_optional { border-left-color: #ef4444; }
+
+.course-code-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.25rem;
+}
+
+.course-code {
+    font-weight: 700;
+    color: var(--text-main);
+}
+
+.course-credit-pill {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+.course-name {
+    color: var(--text-main);
+    line-height: 1.3;
+}
+
+.trimester-reasoning {
+    margin-top: 1rem;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    padding: 0.5rem;
+    background: #f8fafc;
+    border-radius: 4px;
+    font-style: italic;
+}
+
+/* Utility Animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Multiselect Styling overrides if needed */
+.select2-container--default .select2-selection--multiple {
+    border-color: var(--border-color) !important;
+    border-radius: var(--radius-md) !important;
+    padding: 0.25rem !important;
+}
+
+.select2-container--default.select2-container--focus .select2-selection--multiple {
+    border-color: var(--primary-color) !important;
+}

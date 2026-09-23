@@ -267,11 +267,3 @@ window.toggleDropdown = function(event, id) {
         el.style.display = el.style.display === 'none' ? 'block' : 'none';
     }
 };
-
-
-    }
-
-    if (logoutBtn) {
-        
-    }
-});
