@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="css/dashboard.css">
     <link rel="stylesheet" href="css/lost-found.css">
     <link rel="stylesheet" href="css/announcements.css">
+    <link rel="stylesheet" href="css/chat-widget.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
@@ -30,6 +31,9 @@
             <div class="sidebar-nav">
                 <a href="dashboard.html" class="nav-item active">
                     <i class="fa-solid fa-house"></i> Home
+                </a>
+                <a href="chatbot.html" class="nav-item">
+                    <i class="fa-solid fa-robot"></i> AI CampusBot <span class="nav-badge" style="background: linear-gradient(135deg, #2563eb, #8b5cf6);">AI</span>
                 </a>
                 <a href="lost-found.html" class="nav-item">
                     <i class="fa-solid fa-magnifying-glass"></i> Lost & Found
@@ -169,6 +173,7 @@
 
     <script src="js/api.js?v=4"></script>
     <script src="js/dashboard.js?v=3"></script>
+    <script src="js/chat-widget.js"></script>
     <script>
         // Check authentication
         const token = localStorage.getItem('token');
