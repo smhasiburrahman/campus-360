@@ -1,0 +1,2269 @@
+/* =====================================================================
+   CAMPUS 360 — BloodHero CSS Stylesheet
+   Theme: Life-saving Emergency Crimson & Clean Modern Glassmorphism
+   ===================================================================== */
+
+:root {
+    --blood-primary: #dc2626;
+    --blood-primary-hover: #b91c1c;
+    --blood-light: #fee2e2;
+    --blood-dark: #991b1b;
+    --blood-bg-gradient: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
+    --blood-card-shadow: 0 10px 25px -5px rgba(220, 38, 38, 0.1), 0 8px 10px -6px rgba(220, 38, 38, 0.05);
+}
+
+.blood-container {
+    padding: 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* =====================================================================
+   Page Header Row (Campus 360 Standard Pattern)
+   ===================================================================== */
+.blood-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.blood-header-row h1 {
+    margin: 0;
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: #0f172a;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    letter-spacing: -0.02em;
+}
+
+.blood-header-row .subtitle {
+    margin: 0.3rem 0 0 0;
+    color: #64748b;
+    font-size: 0.92rem;
+    line-height: 1.4;
+}
+
+.blood-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.btn-header-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 9px 18px;
+    border-radius: 10px;
+    font-size: 0.88rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    text-decoration: none;
+}
+
+.btn-header-action.btn-outline {
+    background: white;
+    border: 1.5px solid #cbd5e1;
+    color: #334155;
+}
+
+.btn-header-action.btn-outline:hover {
+    background: #f8fafc;
+    border-color: #94a3b8;
+    color: #0f172a;
+}
+
+.btn-header-action.btn-primary {
+    background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
+    border: none;
+    color: white;
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+}
+
+.btn-header-action.btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(239, 68, 68, 0.4);
+}
+
+/* =====================================================================
+   Top Stats 4-Card Strip (Campus 360 Standard Pattern)
+   ===================================================================== */
+.stats-strip-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    margin-bottom: 1.75rem;
+}
+
+@media (max-width: 900px) {
+    .stats-strip-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 500px) {
+    .stats-strip-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.stat-card {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    padding: 1.1rem 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
+    border-color: #cbd5e1;
+}
+
+.stat-icon-wrap {
+    width: 46px;
+    height: 46px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    flex-shrink: 0;
+}
+
+.stat-icon-wrap.icon-red { background: #fef2f2; color: #ef4444; }
+.stat-icon-wrap.icon-green { background: #f0fdf4; color: #16a34a; }
+.stat-icon-wrap.icon-orange { background: #fff7ed; color: #ea580c; }
+.stat-icon-wrap.icon-purple { background: #f5f3ff; color: #7c3aed; }
+.stat-icon-wrap.icon-pink { background: #fdf2f8; color: #db2777; }
+.stat-icon-wrap.icon-blue { background: #eff6ff; color: #2563eb; }
+
+.stat-meta h3 {
+    margin: 0;
+    font-size: 1.45rem;
+    font-weight: 800;
+    color: #0f172a;
+    line-height: 1.15;
+}
+
+.stat-meta p {
+    margin: 0.2rem 0 0 0;
+    font-size: 0.78rem;
+    color: #64748b;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+/* =====================================================================
+   Harmonized 5 Tab Navigation
+   ===================================================================== */
+.blood-tabs {
+    display: flex;
+    gap: 8px;
+    background: white;
+    padding: 7px;
+    border-radius: 14px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+    margin-bottom: 1.75rem;
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+
+.blood-tabs::-webkit-scrollbar {
+    display: none;
+}
+
+.blood-tab-btn {
+    padding: 9.5px 16px;
+    border: none;
+    background: transparent;
+    border-radius: 10px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: #475569;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+    user-select: none;
+}
+
+.blood-tab-btn i {
+    font-size: 0.92rem;
+    color: #64748b;
+    transition: color 0.2s;
+}
+
+.blood-tab-btn:hover {
+    color: #0f172a;
+    background: #f8fafc;
+}
+
+.blood-tab-btn:hover i {
+    color: #ef4444;
+}
+
+.blood-tab-btn.active {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    color: white;
+    box-shadow: 0 4px 14px rgba(220, 38, 38, 0.28);
+    font-weight: 700;
+}
+
+.blood-tab-btn.active i {
+    color: white;
+}
+
+.blood-tab-badge {
+    background: #f1f5f9;
+    color: #475569;
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    transition: all 0.2s;
+}
+
+.blood-tab-btn.active .blood-tab-badge {
+    background: rgba(255, 255, 255, 0.22);
+    color: white;
+}
+
+.pulse-dot-sm {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #ef4444;
+    animation: livePulseDot 1.4s infinite;
+}
+
+.blood-tab-btn.active .pulse-dot-sm {
+    background: #ffffff;
+}
+
+@keyframes livePulseDot {
+    0% { transform: scale(0.9); opacity: 0.8; }
+    50% { transform: scale(1.35); opacity: 1; }
+    100% { transform: scale(0.9); opacity: 0.8; }
+}
+
+/* =====================================================================
+   Emergency SOS Feed Tab Banner (Only on Feed Tab)
+   ===================================================================== */
+.emergency-feed-hero-banner {
+    background: linear-gradient(135deg, #991b1b 0%, #b91c1c 45%, #ef4444 100%);
+    border-radius: 16px;
+    padding: 1.5rem 1.8rem;
+    color: white;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 10px 24px rgba(185, 28, 28, 0.2);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1.5rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.emergency-feed-hero-banner::after {
+    content: '';
+    position: absolute;
+    top: -40%;
+    right: -10%;
+    width: 320px;
+    height: 320px;
+    background: radial-gradient(circle, rgba(255,255,255,0.14) 0%, rgba(255,255,255,0) 70%);
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+.feed-hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(6px);
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.74rem;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.4rem;
+}
+
+.feed-hero-left h2 {
+    font-size: 1.35rem;
+    font-weight: 800;
+    margin: 0 0 0.25rem 0;
+    letter-spacing: -0.3px;
+}
+
+.feed-hero-left p {
+    font-size: 0.88rem;
+    color: #fecaca;
+    margin: 0;
+    max-width: 620px;
+    line-height: 1.4;
+}
+
+.feed-hero-actions {
+    display: flex;
+    gap: 10px;
+    flex-shrink: 0;
+    z-index: 1;
+}
+
+.btn-feed-action-white {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    background: white;
+    color: #991b1b;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 18px;
+    font-size: 0.88rem;
+    font-weight: 800;
+    cursor: pointer;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    white-space: nowrap;
+}
+
+.btn-feed-action-white:hover {
+    background: #fef2f2;
+    transform: translateY(-1px);
+    box-shadow: 0 5px 14px rgba(0, 0, 0, 0.2);
+}
+
+.btn-feed-action-ghost {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    background: rgba(255, 255, 255, 0.16);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 10px;
+    padding: 10px 16px;
+    font-size: 0.88rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    white-space: nowrap;
+}
+
+.btn-feed-action-ghost:hover {
+    background: rgba(255, 255, 255, 0.26);
+    transform: translateY(-1px);
+}
+
+@media (max-width: 768px) {
+    .emergency-feed-hero-banner {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .feed-hero-actions {
+        width: 100%;
+    }
+}
+
+/* Tab Panes */
+.blood-tab-pane {
+    display: none;
+    animation: fadeIn 0.3s ease forwards;
+}
+
+.blood-tab-pane.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Filter Strip */
+/* =====================================================================
+   Redesigned Emergency Filter Command Bar
+   ===================================================================== */
+.filter-strip {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 1.15rem 1.35rem;
+    box-shadow: 0 2px 8px -2px rgba(15, 23, 42, 0.05), 0 1px 3px rgba(15, 23, 42, 0.03);
+    margin-bottom: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+}
+
+/* Top Row: Search and Status Meta */
+.filter-strip-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.filter-search-wrap {
+    flex: 1;
+    min-width: 260px;
+    max-width: 520px;
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.filter-search-wrap .search-icon {
+    position: absolute;
+    left: 13px;
+    color: #94a3b8;
+    font-size: 0.88rem;
+    pointer-events: none;
+    transition: color 0.2s;
+}
+
+.filter-search-wrap input {
+    width: 100%;
+    padding: 9px 36px 9px 38px;
+    background: #f8fafc;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 10px;
+    font-size: 0.88rem;
+    font-family: inherit;
+    color: #0f172a;
+    outline: none;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.filter-search-wrap input::placeholder {
+    color: #94a3b8;
+}
+
+.filter-search-wrap input:hover {
+    border-color: #cbd5e1;
+    background: #ffffff;
+}
+
+.filter-search-wrap input:focus {
+    border-color: #ef4444;
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.12);
+}
+
+.filter-search-wrap:focus-within .search-icon {
+    color: #ef4444;
+}
+
+.filter-search-clear {
+    position: absolute;
+    right: 10px;
+    border: none;
+    background: none;
+    color: #94a3b8;
+    cursor: pointer;
+    font-size: 0.85rem;
+    padding: 3px 6px;
+    border-radius: 4px;
+    transition: color 0.15s;
+}
+
+.filter-search-clear:hover {
+    color: #ef4444;
+}
+
+.filter-top-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.active-count-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #475569;
+    background: #f1f5f9;
+    padding: 6px 12px;
+    border-radius: 20px;
+    letter-spacing: -0.01em;
+}
+
+.active-count-tag .pulse-beacon {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #ef4444;
+    animation: livePulseDot 1.4s infinite;
+}
+
+.btn-reset-filters {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #64748b;
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    padding: 6px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-reset-filters:hover {
+    background: #f8fafc;
+    color: #0f172a;
+    border-color: #94a3b8;
+}
+
+/* Hairline Divider */
+.filter-strip-divider {
+    height: 1px;
+    background: #f1f5f9;
+    width: 100%;
+}
+
+/* Bottom Row: Unified Filter Rows */
+.filter-strip-bottom {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    flex-wrap: wrap;
+}
+
+.filter-row-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.filter-row-label {
+    font-size: 0.82rem;
+    font-weight: 800;
+    color: #334155;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    white-space: nowrap;
+    letter-spacing: -0.01em;
+}
+
+.filter-vertical-sep {
+    width: 1px;
+    height: 24px;
+    background: #e2e8f0;
+}
+
+@media (max-width: 900px) {
+    .filter-vertical-sep {
+        display: none;
+    }
+}
+
+.blood-group-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+}
+
+.group-chip {
+    padding: 5px 12px;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+    background: #f8fafc;
+    color: #475569;
+    font-size: 0.82rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+    display: inline-flex;
+    align-items: center;
+    line-height: 1.4;
+    user-select: none;
+}
+
+.group-chip:hover {
+    border-color: #fca5a5;
+    color: #b91c1c;
+    background: #fef2f2;
+    transform: translateY(-1px);
+}
+
+.group-chip.active {
+    background: #ef4444;
+    color: #ffffff;
+    border-color: #ef4444;
+    box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
+}
+
+.urgency-filter-chips {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.urgency-chip {
+    padding: 5px 12px;
+    border-radius: 8px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    cursor: pointer;
+    border: 1px solid #e2e8f0;
+    background: #f8fafc;
+    color: #475569;
+    transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    line-height: 1.4;
+    user-select: none;
+}
+
+.urgency-chip .urgency-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.urgency-dot.critical { background: #ef4444; box-shadow: 0 0 5px rgba(239, 68, 68, 0.5); }
+.urgency-dot.same-day { background: #f97316; }
+.urgency-dot.planned { background: #3b82f6; }
+
+.urgency-chip:hover {
+    border-color: #cbd5e1;
+    color: #0f172a;
+    background: #ffffff;
+    transform: translateY(-1px);
+}
+
+.urgency-chip.active {
+    background: #0f172a;
+    color: #ffffff;
+    border-color: #0f172a;
+    box-shadow: 0 2px 6px rgba(15, 23, 42, 0.2);
+}
+
+.urgency-chip.active.chip-critical {
+    background: #fef2f2;
+    color: #b91c1c;
+    border-color: #ef4444;
+    box-shadow: 0 2px 8px rgba(239, 68, 68, 0.18);
+}
+
+.urgency-chip.active.chip-same-day {
+    background: #fff7ed;
+    color: #c2410c;
+    border-color: #f97316;
+    box-shadow: 0 2px 8px rgba(249, 115, 22, 0.18);
+}
+
+.urgency-chip.active.chip-planned {
+    background: #eff6ff;
+    color: #1d4ed8;
+    border-color: #3b82f6;
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.18);
+}
+
+/* =====================================================================
+   Redesigned Emergency SOS Request Cards
+   ===================================================================== */
+.requests-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
+    gap: 1.5rem;
+}
+
+.emergency-card {
+    background: #ffffff;
+    border-radius: 18px;
+    border: 1px solid #f1f5f9;
+    box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.06), 0 2px 6px -1px rgba(15, 23, 42, 0.04);
+    padding: 1.6rem;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+}
+
+.emergency-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 32px -4px rgba(220, 38, 38, 0.12), 0 8px 16px -4px rgba(220, 38, 38, 0.06);
+    border-color: #fecaca;
+}
+
+/* Card Urgency Borders & Glowing Accents */
+.emergency-card.critical {
+    border-top: 5px solid #dc2626;
+    background: linear-gradient(180deg, #fffdfd 0%, #ffffff 100%);
+}
+
+.emergency-card.same-day {
+    border-top: 5px solid #f97316;
+    background: linear-gradient(180deg, #fffbf7 0%, #ffffff 100%);
+}
+
+.emergency-card.within-48h {
+    border-top: 5px solid #3b82f6;
+    background: linear-gradient(180deg, #f8faff 0%, #ffffff 100%);
+}
+
+/* Card Top Ribbon */
+.emergency-card-topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.1rem;
+    padding-bottom: 0.8rem;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.urgency-badge {
+    padding: 5px 11px;
+    border-radius: 20px;
+    font-size: 0.73rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    letter-spacing: 0.6px;
+}
+
+.urgency-badge.critical {
+    background: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #fca5a5;
+}
+
+.urgency-badge.critical .pulse-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #dc2626;
+    animation: radarPulse 1.4s infinite;
+}
+
+@keyframes radarPulse {
+    0% { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.7); }
+    70% { transform: scale(1.1); box-shadow: 0 0 0 8px rgba(220, 38, 38, 0); }
+    100% { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(220, 38, 38, 0); }
+}
+
+.urgency-badge.same-day {
+    background: #ffedd5;
+    color: #9a3412;
+    border: 1px solid #fed7aa;
+}
+
+.urgency-badge.within-48h {
+    background: #dbeafe;
+    color: #1e40af;
+    border: 1px solid #bfdbfe;
+}
+
+.badge-ai-verified {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: #ecfdf5;
+    color: #065f46;
+    border: 1px solid #a7f3d0;
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 4px 9px;
+    border-radius: 12px;
+}
+
+/* Card Main Hero Profile Row */
+.emergency-hero-row {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    margin-bottom: 1.1rem;
+}
+
+/* 3D Glassy Blood Droplet Badge */
+.blood-hero-droplet {
+    width: 68px;
+    height: 68px;
+    border-radius: 18px;
+    background: linear-gradient(135deg, #ef4444 0%, #b91c1c 50%, #991b1b 100%);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    box-shadow: 0 8px 18px -2px rgba(220, 38, 38, 0.45);
+    border: 2px solid rgba(255, 255, 255, 0.4);
+    position: relative;
+    overflow: hidden;
+}
+
+.blood-hero-droplet::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 40%;
+    background: linear-gradient(180deg, rgba(255,255,255,0.35) 0%, rgba(255,255,255,0) 100%);
+    border-radius: 16px 16px 0 0;
+}
+
+.blood-hero-droplet .blood-type-text {
+    font-size: 1.55rem;
+    font-weight: 900;
+    line-height: 1;
+    letter-spacing: -0.5px;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.25);
+}
+
+.blood-hero-droplet .blood-sub-text {
+    font-size: 0.6rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    opacity: 0.9;
+    margin-top: 3px;
+}
+
+.emergency-hero-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.patient-name-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 8px;
+    margin-bottom: 4px;
+}
+
+.emergency-patient-name {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: #0f172a;
+    line-height: 1.2;
+}
+
+.units-needed-badge {
+    background: #fee2e2;
+    color: #991b1b;
+    font-size: 0.78rem;
+    font-weight: 800;
+    padding: 3px 8px;
+    border-radius: 6px;
+    white-space: nowrap;
+    border: 1px solid #fca5a5;
+}
+
+.hospital-title-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #334155;
+    font-size: 0.92rem;
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+
+.hospital-title-row a {
+    color: #2563eb;
+    text-decoration: none;
+    font-size: 0.78rem;
+    font-weight: 600;
+    margin-left: 4px;
+}
+
+.hospital-title-row a:hover {
+    text-decoration: underline;
+}
+
+.ward-bed-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #475569;
+    background: #f1f5f9;
+    padding: 2px 8px;
+    border-radius: 6px;
+}
+
+/* Patient Condition Callout */
+.emergency-condition-box {
+    background: #f8fafc;
+    border-left: 3px solid #cbd5e1;
+    padding: 0.75rem 0.9rem;
+    border-radius: 0 8px 8px 0;
+    font-size: 0.86rem;
+    color: #334155;
+    line-height: 1.45;
+    margin-bottom: 1rem;
+}
+
+.emergency-card.critical .emergency-condition-box {
+    border-left-color: #ef4444;
+    background: #fef2f2;
+    color: #7f1d1d;
+}
+
+/* Compatibility & Live Match Pill */
+.compat-match-strip {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    background: #f8fafc;
+    padding: 8px 12px;
+    border-radius: 10px;
+    border: 1px solid #e2e8f0;
+    margin-bottom: 1rem;
+    font-size: 0.8rem;
+}
+
+.compat-groups-list {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex-wrap: wrap;
+}
+
+.compat-pill {
+    background: #ffffff;
+    color: #0f172a;
+    border: 1px solid #cbd5e1;
+    font-weight: 700;
+    font-size: 0.75rem;
+    padding: 1px 6px;
+    border-radius: 4px;
+}
+
+.peer-match-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    color: #15803d;
+    font-weight: 700;
+    font-size: 0.75rem;
+    background: #dcfce7;
+    padding: 3px 9px;
+    border-radius: 12px;
+    border: 1px solid #bbf7d0;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    user-select: none;
+}
+
+.peer-match-chip.clickable {
+    cursor: pointer;
+}
+
+.peer-match-chip.clickable:hover {
+    background: #bbf7d0;
+    color: #166534;
+    border-color: #86efac;
+    transform: translateY(-1px);
+    box-shadow: 0 3px 8px rgba(22, 101, 52, 0.15);
+}
+
+.peer-match-chip.clickable:active {
+    transform: translateY(0);
+}
+
+.peer-match-chip.zero-match {
+    background: #f1f5f9;
+    color: #64748b;
+    border-color: #e2e8f0;
+}
+
+.peer-match-chip.zero-match:hover {
+    background: #e2e8f0;
+    color: #334155;
+    border-color: #cbd5e1;
+}
+
+/* Enhanced Units Progress Bar */
+.units-progress-container {
+    margin-bottom: 1.2rem;
+}
+
+.units-progress-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #475569;
+    margin-bottom: 6px;
+}
+
+.units-progress-bar {
+    height: 10px;
+    background: #e2e8f0;
+    border-radius: 5px;
+    overflow: hidden;
+    position: relative;
+}
+
+.units-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #ef4444, #10b981);
+    border-radius: 5px;
+    transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Action Buttons Grid */
+.card-actions-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: auto;
+    padding-top: 1rem;
+    border-top: 1px solid #f1f5f9;
+}
+
+.btn-card-action {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    padding: 10px 14px;
+    border-radius: 10px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    border: none;
+}
+
+.btn-card-call {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.25);
+}
+
+.btn-card-call:hover {
+    background: linear-gradient(135deg, #059669 0%, #047857 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.35);
+}
+
+.btn-card-whatsapp {
+    background: linear-gradient(135deg, #25d366 0%, #128c7e 100%);
+    color: white;
+    box-shadow: 0 2px 8px rgba(37, 211, 102, 0.25);
+}
+
+.btn-card-whatsapp:hover {
+    background: linear-gradient(135deg, #20ba5a 0%, #0e7266 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(37, 211, 102, 0.35);
+}
+
+.btn-card-broadcast {
+    background: #f8fafc;
+    color: #334155;
+    border: 1px solid #cbd5e1;
+}
+
+.btn-card-broadcast:hover {
+    background: #f1f5f9;
+    color: #0f172a;
+    border-color: #94a3b8;
+}
+
+.btn-card-donate {
+    background: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #fca5a5;
+}
+
+.btn-card-donate:hover {
+    background: #fecaca;
+    color: #7f1d1d;
+}
+
+/* =====================================================================
+   Studio Layout for "Post SOS Request" (Tab 3)
+   ===================================================================== */
+.request-studio-layout {
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    gap: 2rem;
+    align-items: flex-start;
+}
+
+.studio-form-card {
+    background: white;
+    border-radius: 18px;
+    border: 1px solid #e2e8f0;
+    box-shadow: var(--shadow-sm);
+    padding: 2.2rem;
+}
+
+.studio-preview-pane {
+    position: sticky;
+    top: 1.5rem;
+    max-height: calc(100vh - 2.5rem);
+    overflow-y: auto;
+    padding-right: 6px;
+}
+
+.studio-preview-pane::-webkit-scrollbar {
+    width: 5px;
+}
+
+.studio-preview-pane::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
+}
+
+.studio-preview-pane::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.studio-preview-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.studio-preview-title {
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: #0f172a;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.preview-tab-pill {
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    cursor: pointer;
+    border: 1px solid #e2e8f0;
+    background: #f8fafc;
+    color: #64748b;
+}
+
+.preview-tab-pill.active {
+    background: #1e293b;
+    color: white;
+    border-color: #1e293b;
+}
+
+/* AI Slip Scanner Dropzone Upgrade */
+.slip-scanner-zone {
+    border: 2px dashed #f87171;
+    border-radius: 16px;
+    background: linear-gradient(180deg, #fff5f5 0%, #ffffff 100%);
+    padding: 2.2rem 1.6rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    margin-bottom: 1.8rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.slip-scanner-zone:hover, .slip-scanner-zone.dragover {
+    background: #fee2e2;
+    border-color: #dc2626;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(220, 38, 38, 0.15);
+}
+
+.scanner-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 16px;
+    background: #fee2e2;
+    color: #dc2626;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    margin: 0 auto 0.8rem auto;
+    transition: transform 0.2s;
+}
+
+.slip-scanner-zone:hover .scanner-icon {
+    transform: scale(1.08);
+}
+
+/* Scanning Animation Laser Line */
+.slip-scanner-zone.is-scanning::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, transparent, #ef4444, #10b981, transparent);
+    box-shadow: 0 0 12px #ef4444;
+    animation: laserScan 1.6s ease-in-out infinite;
+}
+
+@keyframes laserScan {
+    0% { top: 0%; opacity: 0; }
+    20% { opacity: 1; }
+    80% { opacity: 1; }
+    100% { top: 100%; opacity: 0; }
+}
+
+/* =====================================================================
+   Clinical Form System & Studio Form Controls
+   ===================================================================== */
+/* Interactive Urgency Radio Cards */
+.urgency-selector-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 1.25rem;
+}
+
+.urgency-card-option {
+    border: 2px solid #e2e8f0;
+    border-radius: 14px;
+    padding: 13px 14px;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    background: #f8fafc;
+    text-align: center;
+    position: relative;
+    user-select: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.urgency-card-option:hover {
+    border-color: #cbd5e1;
+    background: #ffffff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.urgency-card-option.selected.critical {
+    border-color: #ef4444;
+    background: #fef2f2;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.18), 0 4px 14px rgba(239, 68, 68, 0.1);
+}
+
+.urgency-card-option.selected.same-day {
+    border-color: #f97316;
+    background: #fff7ed;
+    box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.18), 0 4px 14px rgba(249, 115, 22, 0.1);
+}
+
+.urgency-card-option.selected.within-48h {
+    border-color: #3b82f6;
+    background: #eff6ff;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.18), 0 4px 14px rgba(59, 130, 246, 0.1);
+}
+
+.urgency-card-option .option-title {
+    font-weight: 800;
+    font-size: 0.9rem;
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    letter-spacing: 0.3px;
+}
+
+.urgency-card-option .option-desc {
+    font-size: 0.74rem;
+    color: #64748b;
+    line-height: 1.35;
+}
+
+/* Two-column responsive form grid */
+.form-grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.15rem;
+    margin-bottom: 1.1rem;
+}
+
+@media (max-width: 680px) {
+    .form-grid-2 {
+        grid-template-columns: 1fr;
+        gap: 0.85rem;
+    }
+}
+
+/* Form Group & Labels */
+.form-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1.15rem;
+    position: relative;
+}
+
+.form-group label {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.84rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 7px;
+    letter-spacing: -0.01em;
+}
+
+.form-group label .label-title {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.form-group label .required-star {
+    color: #ef4444;
+    font-weight: 800;
+    margin-left: 2px;
+}
+
+.form-group label .label-hint {
+    font-size: 0.72rem;
+    font-weight: 500;
+    color: #94a3b8;
+}
+
+/* Base input / select / textarea styles */
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    box-sizing: border-box;
+    background-color: #ffffff;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 11px;
+    padding: 10.5px 14px;
+    font-size: 0.9rem;
+    font-family: inherit;
+    color: #0f172a;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+    outline: none;
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+    color: #94a3b8;
+    font-size: 0.86rem;
+}
+
+.form-group input:hover,
+.form-group select:hover,
+.form-group textarea:hover {
+    border-color: #cbd5e1;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    border-color: #ef4444;
+    box-shadow: 0 0 0 3.5px rgba(239, 68, 68, 0.12);
+    background-color: #ffffff;
+}
+
+/* Input with Left Icon wrapper */
+.input-with-icon {
+    position: relative;
+    width: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.input-with-icon .input-icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #94a3b8;
+    font-size: 0.9rem;
+    pointer-events: none;
+    transition: color 0.2s;
+    z-index: 2;
+}
+
+.input-with-icon input,
+.input-with-icon select {
+    padding-left: 42px !important;
+}
+
+.input-with-icon:focus-within .input-icon {
+    color: #ef4444;
+}
+
+/* Select specific customization */
+.form-group select,
+.input-with-icon select {
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2364748b' stroke-width='2.2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    background-size: 15px 15px;
+    padding-right: 38px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+/* Textarea customization */
+.form-group textarea {
+    min-height: 84px;
+    line-height: 1.5;
+    resize: vertical;
+    border-radius: 11px;
+}
+
+/* Number input customization */
+.form-group input[type="number"] {
+    font-weight: 700;
+    color: #0f172a;
+}
+
+/* Hospital chips selector section */
+.hospital-selector-section {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 13px;
+    padding: 12px 14px;
+    margin-bottom: 1.15rem;
+}
+
+.hospital-selector-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+
+.hospital-subtext {
+    font-size: 0.74rem;
+    color: #64748b;
+    font-weight: 500;
+}
+
+.quick-hospitals-strip {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+    margin: 0;
+}
+
+.hospital-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 20px;
+    font-size: 0.77rem;
+    font-weight: 600;
+    color: #334155;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    user-select: none;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+.hospital-chip i {
+    font-size: 0.75rem;
+    color: #94a3b8;
+    transition: color 0.2s;
+}
+
+.hospital-chip:hover {
+    background: #fef2f2;
+    color: #b91c1c;
+    border-color: #fca5a5;
+    transform: translateY(-1px);
+    box-shadow: 0 3px 8px rgba(239, 68, 68, 0.12);
+}
+
+.hospital-chip:hover i {
+    color: #ef4444;
+}
+
+.hospital-chip.selected {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    color: #ffffff;
+    border-color: #dc2626;
+    box-shadow: 0 3px 10px rgba(220, 38, 38, 0.3);
+}
+
+.hospital-chip.selected i {
+    color: #ffffff;
+}
+
+/* Action buttons row */
+.form-actions-row {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    align-items: center;
+    margin-top: 1.25rem;
+    padding-top: 1rem;
+    border-top: 1px solid #f1f5f9;
+}
+
+.btn-preview-broadcast {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 22px;
+    background: #ffffff;
+    border: 1.5px solid #ddd6fe;
+    color: #6d28d9;
+    border-radius: 12px;
+    font-size: 0.92rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 1px 3px rgba(109, 40, 217, 0.06);
+}
+
+.btn-preview-broadcast:hover {
+    background: #f5f3ff;
+    border-color: #8b5cf6;
+    color: #5b21b6;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.18);
+}
+
+.btn-preview-broadcast i {
+    color: #8b5cf6;
+    font-size: 0.95rem;
+}
+
+.btn-publish-sos {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 26px;
+    background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
+    border: none;
+    color: #ffffff;
+    border-radius: 12px;
+    font-size: 0.95rem;
+    font-weight: 800;
+    letter-spacing: 0.2px;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(239, 68, 68, 0.35);
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-publish-sos:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 18px rgba(239, 68, 68, 0.45);
+    background: linear-gradient(135deg, #dc2626 0%, #991c1c 100%);
+}
+
+.btn-publish-sos:active {
+    transform: translateY(0);
+}
+
+/* WhatsApp Real Bubble Preview inside Studio */
+.whatsapp-chat-preview {
+    background: #efeae2;
+    border-radius: 16px;
+    padding: 1.2rem;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    border: 1px solid #d1d7db;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+}
+
+.whatsapp-bubble {
+    background: #ffffff;
+    border-radius: 8px 8px 8px 0;
+    padding: 12px 14px;
+    max-width: 90%;
+    position: relative;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.13);
+    font-size: 0.88rem;
+    line-height: 1.45;
+    color: #111b21;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+.whatsapp-bubble-time {
+    font-size: 0.68rem;
+    color: #667781;
+    text-align: right;
+    margin-top: 4px;
+}
+
+/* =====================================================================
+   Donor Cards & Directory
+   ===================================================================== */
+.donors-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 1.3rem;
+}
+
+.donor-card {
+    background: white;
+    border-radius: 14px;
+    border: 1px solid #e2e8f0;
+    padding: 1.4rem;
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    gap: 15px;
+    align-items: flex-start;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.donor-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
+    border-color: #cbd5e1;
+}
+
+.donor-avatar {
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #ef4444, #991b1b);
+    color: white;
+    font-weight: 800;
+    font-size: 1.15rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    box-shadow: 0 4px 12px rgba(220, 38, 38, 0.25);
+}
+
+.donor-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.donor-name-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 4px;
+}
+
+.donor-name {
+    font-weight: 800;
+    font-size: 1.05rem;
+    color: #0f172a;
+}
+
+.donor-blood-tag {
+    background: #fee2e2;
+    color: #991b1b;
+    font-weight: 800;
+    font-size: 0.85rem;
+    padding: 3px 9px;
+    border-radius: 6px;
+    border: 1px solid #fca5a5;
+}
+
+.donor-meta {
+    font-size: 0.82rem;
+    color: #64748b;
+    margin-bottom: 6px;
+}
+
+.donor-status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.74rem;
+    font-weight: 700;
+    padding: 3px 9px;
+    border-radius: 12px;
+    margin-bottom: 10px;
+}
+
+.donor-status-pill.available {
+    background: #dcfce7;
+    color: #15803d;
+}
+
+.donor-status-pill.cooldown {
+    background: #fef3c7;
+    color: #b45309;
+}
+
+.donor-contact-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    padding: 7px 12px;
+    border-radius: 8px;
+    background: #f1f5f9;
+    color: #0f172a;
+    border: 1px solid #cbd5e1;
+    text-decoration: none;
+    transition: all 0.2s;
+}
+
+.donor-contact-btn:hover {
+    background: #e2e8f0;
+}
+
+/* =====================================================================
+   Modal Overlays
+   ===================================================================== */
+.blood-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(15, 23, 42, 0.65);
+    backdrop-filter: blur(6px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.blood-modal {
+    background: white;
+    border-radius: 20px;
+    width: 92%;
+    max-width: 650px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    padding: 2.2rem;
+    animation: modalPop 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes modalPop {
+    from { opacity: 0; transform: scale(0.92); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+/* =====================================================================
+   My Emergency Requests Studio & Profile Cards
+   ===================================================================== */
+.my-requests-studio-card {
+    margin-top: 1.5rem;
+    background: white;
+    border-radius: 16px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+    padding: 1.25rem;
+    transition: all 0.25s ease;
+}
+
+.my-requests-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.35rem;
+}
+
+.my-requests-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1.02rem;
+    font-weight: 800;
+    color: #0f172a;
+}
+
+.my-requests-count-badge {
+    background: #fee2e2;
+    color: #dc2626;
+    font-size: 0.72rem;
+    font-weight: 800;
+    padding: 2px 7px;
+    border-radius: 9999px;
+}
+
+.my-requests-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-height: 460px;
+    overflow-y: auto;
+    padding-right: 4px;
+}
+
+.my-requests-list::-webkit-scrollbar {
+    width: 4px;
+}
+
+.my-requests-list::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
+}
+
+.my-request-item {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 1rem;
+    transition: all 0.2s ease;
+}
+
+.my-request-item:hover {
+    border-color: #cbd5e1;
+    background: white;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.my-request-item.active-sos {
+    border-left: 4px solid #ef4444;
+}
+
+.my-request-item.fulfilled-sos {
+    border-left: 4px solid #10b981;
+    background: #f0fdf4;
+}
+
+.my-request-item.closed-sos {
+    border-left: 4px solid #94a3b8;
+    opacity: 0.85;
+}
+
+.my-req-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 8px;
+}
+
+.my-req-patient-title {
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: #1e293b;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.my-req-hospital {
+    font-size: 0.8rem;
+    color: #64748b;
+    margin-top: 2px;
+}
+
+.my-req-status-pill {
+    font-size: 0.72rem;
+    font-weight: 800;
+    padding: 3px 8px;
+    border-radius: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.my-req-status-pill.open {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+.my-req-status-pill.fulfilled {
+    background: #dcfce7;
+    color: #15803d;
+}
+
+.my-req-status-pill.closed {
+    background: #f1f5f9;
+    color: #475569;
+}
+
+.my-req-progress-bar {
+    height: 7px;
+    background: #e2e8f0;
+    border-radius: 4px;
+    overflow: hidden;
+    margin: 8px 0;
+}
+
+.my-req-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #f97316, #10b981);
+    border-radius: 4px;
+}
+
+.my-req-progress-text {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.76rem;
+    font-weight: 700;
+    color: #64748b;
+}
+
+.my-req-actions-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 10px;
+    padding-top: 8px;
+    border-top: 1px solid #edf2f7;
+}
+
+.my-req-btn {
+    padding: 6px 11px;
+    border-radius: 8px;
+    font-size: 0.76rem;
+    font-weight: 700;
+    cursor: pointer;
+    border: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    transition: all 0.15s ease;
+}
+
+.my-req-btn-add {
+    background: #ecfdf5;
+    color: #059669;
+    border: 1px solid #a7f3d0;
+}
+.my-req-btn-add:hover {
+    background: #10b981;
+    color: white;
+}
+
+.my-req-btn-resolve {
+    background: #fef2f2;
+    color: #dc2626;
+    border: 1px solid #fecaca;
+}
+.my-req-btn-resolve:hover {
+    background: #ef4444;
+    color: white;
+}
+
+.my-req-btn-standdown {
+    background: #f0fdf4;
+    color: #166534;
+    border: 1px solid #bbf7d0;
+}
+.my-req-btn-standdown:hover {
+    background: #25d366;
+    color: white;
+}
+
+/* Resolution Radio Cards in Modal */
+.resolution-options-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
+.resolution-radio-option {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 10px 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+    background: white;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.resolution-radio-option:has(input:checked) {
+    border-color: #10b981;
+    background: #f0fdf4;
+    box-shadow: 0 0 0 1px #10b981;
+}
+
+.resolution-radio-option input {
+    margin-top: 3px;
+    accent-color: #10b981;
+}
+
+.option-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.option-badge {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: #64748b;
+}
+
+.option-name {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #1e293b;
+    line-height: 1.25;
+    margin-top: 2px;
+}
+
+@media (max-width: 1024px) {
+    .request-studio-layout {
+        grid-template-columns: 1fr;
+    }
+    .studio-preview-pane {
+        position: static;
+    }
+}
+
+@media (max-width: 768px) {
+    .blood-container { padding: 1rem; }
+    .blood-hero-header { padding: 1.5rem; }
+    .blood-hero-title { font-size: 1.6rem; }
+    .requests-grid, .donors-grid { grid-template-columns: 1fr; }
+    .card-actions-grid { grid-template-columns: 1fr; }
+    .urgency-selector-grid { grid-template-columns: 1fr; }
+}
+
+/* =====================================================================
+   Matched Campus Peer Donors Modal Styles
+   ===================================================================== */
+.matched-peers-header-card {
+    background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    padding: 1.1rem 1.25rem;
+    margin-bottom: 1.4rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+}
+
+.matched-peers-patient-title {
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: #0f172a;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 4px;
+}
+
+.matched-peers-subtext {
+    font-size: 0.85rem;
+    color: #475569;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.matched-peers-blood-pill {
+    background: linear-gradient(135deg, #ef4444, #b91c1c);
+    color: white;
+    font-weight: 800;
+    font-size: 1.1rem;
+    padding: 0.5rem 1rem;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.25);
+    white-space: nowrap;
+}
+
+.matched-peers-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-height: 440px;
+    overflow-y: auto;
+    padding-right: 4px;
+}
+
+.matched-peer-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    padding: 1rem 1.15rem;
+    transition: all 0.2s ease;
+    gap: 1rem;
+}
+
+.matched-peer-card:hover {
+    border-color: #cbd5e1;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
+}
+
+.matched-peer-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+    min-width: 0;
+}
+
+.matched-peer-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: #fee2e2;
+    color: #dc2626;
+    font-weight: 800;
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    border: 2px solid #fecaca;
+}
+
+.matched-peer-info {
+    min-width: 0;
+    flex: 1;
+}
+
+.matched-peer-name-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 2px;
+}
+
+.matched-peer-name {
+    font-weight: 700;
+    font-size: 0.96rem;
+    color: #0f172a;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.matched-peer-dept {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: #475569;
+    background: #f1f5f9;
+    padding: 2px 7px;
+    border-radius: 6px;
+}
+
+.matched-peer-meta {
+    font-size: 0.8rem;
+    color: #64748b;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 3px;
+}
+
+.matched-peer-avail-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #166534;
+    background: #dcfce7;
+    padding: 1px 7px;
+    border-radius: 6px;
+}
+
+.matched-peer-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.matched-peer-group-pill {
+    font-weight: 800;
+    font-size: 0.88rem;
+    color: #b91c1c;
+    background: #fee2e2;
+    padding: 4px 10px;
+    border-radius: 8px;
+    border: 1px solid #fecaca;
+}
+
+.btn-peer-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 8px 12px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    border-radius: 8px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    border: none;
+}
+
+.btn-peer-call {
+    background: #16a34a;
+    color: white;
+}
+
+.btn-peer-call:hover {
+    background: #15803d;
+    box-shadow: 0 2px 8px rgba(22, 163, 74, 0.3);
+}
+
+.btn-peer-whatsapp {
+    background: #25d366;
+    color: white;
+}
+
+.btn-peer-whatsapp:hover {
+    background: #1eb956;
+    box-shadow: 0 2px 8px rgba(37, 211, 102, 0.3);
+}
+
+.matched-peers-empty {
+    text-align: center;
+    padding: 2.8rem 1.5rem;
+    background: #f8fafc;
+    border-radius: 16px;
+    border: 1.5px dashed #cbd5e1;
+}

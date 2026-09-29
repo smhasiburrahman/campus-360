@@ -1,0 +1,1015 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BloodHero - Emergency Campus Blood Network | Campus 360</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/chat-widget.css">
+    <link rel="stylesheet" href="css/blood-hero.css?v=16">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="dashboard-layout">
+        
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="brand-icon">
+                    <i class="fa-solid fa-layer-group"></i>
+                </div>
+                <div>
+                    <h2>Campus 360</h2>
+                    <p>Student Platform</p>
+                </div>
+            </div>
+
+            <!-- Notice: 'Create Post' button removed as per request -->
+
+            <div class="sidebar-nav">
+                <a href="dashboard.html" class="nav-item">
+                    <i class="fa-solid fa-house"></i> Home
+                </a>
+                <a href="chatbot.html" class="nav-item">
+                    <i class="fa-solid fa-robot"></i> AI CampusBot <span class="nav-badge" style="background: linear-gradient(135deg, #2563eb, #8b5cf6);">AI</span>
+                </a>
+                <a href="lost-found.html" class="nav-item">
+                    <i class="fa-solid fa-magnifying-glass"></i> Lost & Found
+                </a>
+                <a href="announcements.html" class="nav-item">
+                    <i class="fa-solid fa-bullhorn"></i> Announcements
+                </a>
+                <a href="events.html" class="nav-item">
+                    <i class="fa-regular fa-calendar"></i> Events
+                </a>
+                <a href="complaints.html" class="nav-item">
+                    <i class="fa-solid fa-flag"></i> Complaints
+                </a>
+                <a href="marketplace.html" class="nav-item">
+                    <i class="fa-solid fa-store"></i> Marketplace
+                </a>
+                <a href="course-planner.html" class="nav-item">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i> Course Planner <span class="nav-badge" style="background: var(--primary-color);">AI</span>
+                </a>
+                <a href="study-zone.html" class="nav-item">
+                    <i class="fa-solid fa-book-open"></i> Study Zone
+                </a>
+                <a href="materials.html" class="nav-item">
+                    <i class="fa-solid fa-folder-open"></i> Material Sharing
+                </a>
+
+                <div class="nav-section" style="margin-top: 2rem;">
+                    <div class="nav-section-title">Other</div>
+                    <a href="blood-hero.html" class="nav-item active">
+                        <i class="fa-solid fa-hand-holding-droplet" style="color: #ef4444;"></i> BloodHero <span class="nav-badge" style="background: linear-gradient(135deg, #ef4444, #b91c1c);">SOS</span>
+                    </a>
+                    <a href="shuttle.html" class="nav-item">
+                        <i class="fa-solid fa-bus"></i> Shuttle Tracking
+                    </a>
+                    <a href="#" class="nav-item">
+                        <i class="fa-regular fa-bell"></i> Notifications <span class="nav-badge">5</span>
+                    </a>
+                    <a href="my-profile.html" class="nav-item">
+                        <i class="fa-regular fa-user"></i> My Profile
+                    </a>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            
+            <!-- Top Navbar -->
+            <header class="topbar">
+                <div class="search-bar">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" placeholder="Search donors, hospitals, blood requests...">
+                </div>
+
+                <div class="topbar-actions">
+                    <div class="notification-bell">
+                        <i class="fa-regular fa-bell"></i>
+                        <div class="notification-dot"></div>
+                    </div>
+
+                    <div class="user-profile" id="userProfileBtn" style="cursor: pointer; position: relative;">
+                        <div class="avatar" id="navAvatar">U</div>
+                        <div class="user-name" id="navName">User</div>
+                        <i class="fa-solid fa-chevron-down" style="color: #94a3b8; font-size: 0.8rem;"></i>
+                        
+                        <div class="profile-dropdown" id="profileDropdown" style="display: none; position: absolute; top: 100%; right: 0; background: white; border: 1px solid var(--border-color); border-radius: var(--radius-md); box-shadow: var(--shadow-md); padding: 0.5rem 0; min-width: 150px; z-index: 100; margin-top: 0.5rem;">
+                            <button id="logoutBtn" style="width: 100%; text-align: left; padding: 0.75rem 1rem; background: none; border: none; cursor: pointer; color: #ef4444; font-weight: 500; display: flex; align-items: center; gap: 0.5rem;">
+                                <i class="fa-solid fa-arrow-right-from-bracket"></i> Log Out
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- BloodHero Container -->
+            <div class="blood-container">
+                
+                <!-- Page Header Row (Campus 360 Standard Pattern) -->
+                <div class="blood-header-row">
+                    <div>
+                        <h1>
+                            <i class="fa-solid fa-hand-holding-droplet" style="color: #ef4444;"></i> BloodHero AI
+                        </h1>
+                        <p class="subtitle">
+                            Real-time emergency blood donor matching, multimodal prescription OCR, and 1-click campus broadcast
+                        </p>
+                    </div>
+                    <div class="blood-header-actions">
+                        <button class="btn-header-action btn-outline" onclick="document.querySelector('[data-tab=\'profileTab\']').click()">
+                            <i class="fa-solid fa-id-card"></i> My Donor Profile
+                        </button>
+                        <button class="btn-header-action btn-primary" onclick="document.querySelector('[data-tab=\'requestTab\']').click()">
+                            <i class="fa-solid fa-plus"></i> Post Blood SOS
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Top Stats 4-Card Strip (Campus 360 Standard Pattern) -->
+                <div class="stats-strip-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon-wrap icon-red">
+                            <i class="fa-solid fa-users"></i>
+                        </div>
+                        <div class="stat-meta">
+                            <h3 id="statTotalDonors">3</h3>
+                            <p>Registered Donors</p>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon-wrap icon-green">
+                            <i class="fa-solid fa-circle-check"></i>
+                        </div>
+                        <div class="stat-meta">
+                            <h3 id="statActiveDonors">3</h3>
+                            <p>Available Today</p>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon-wrap icon-orange">
+                            <i class="fa-solid fa-bell-concierge"></i>
+                        </div>
+                        <div class="stat-meta">
+                            <h3 id="statOpenRequests">2</h3>
+                            <p>Open Emergencies</p>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon-wrap icon-pink">
+                            <i class="fa-solid fa-shield-heart"></i>
+                        </div>
+                        <div class="stat-meta">
+                            <h3 id="statTotalDonations">0</h3>
+                            <p>Lives Impacted</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Harmonized 5 Tab Navigation -->
+                <div class="blood-tabs">
+                    <button class="blood-tab-btn active" data-tab="feedTab">
+                        <i class="fa-solid fa-bullhorn"></i> Emergency SOS Feed 
+                        <span class="blood-tab-badge"><span class="pulse-dot-sm"></span>Live</span>
+                    </button>
+                    <button class="blood-tab-btn" data-tab="donorsTab">
+                        <i class="fa-solid fa-address-book"></i> Verified Donors
+                        <span class="blood-tab-badge">Directory</span>
+                    </button>
+                    <button class="blood-tab-btn" data-tab="requestTab">
+                        <i class="fa-solid fa-circle-plus"></i> Post Blood Request
+                        <span class="blood-tab-badge"><i class="fa-solid fa-wand-magic-sparkles" style="color: #8b5cf6;"></i> AI Scanner</span>
+                    </button>
+                    <button class="blood-tab-btn" data-tab="screenerTab">
+                        <i class="fa-solid fa-stethoscope"></i> Eligibility AI Triage
+                        <span class="blood-tab-badge">WHO Rules</span>
+                    </button>
+                    <button class="blood-tab-btn" data-tab="profileTab">
+                        <i class="fa-solid fa-id-card"></i> My Donor Profile
+                        <span class="blood-tab-badge" id="tabProfileBadge">Donor</span>
+                    </button>
+                </div>
+
+                <!-- TAB 1: Emergency SOS Feed -->
+                <div class="blood-tab-pane active" id="feedTab">
+                    <!-- Emergency SOS Feed Banner (Only on Feed Tab) -->
+                    <div class="emergency-feed-hero-banner">
+                        <div class="feed-hero-left">
+                            <div class="feed-hero-badge">
+                                <span class="pulse-dot-sm" style="background: white;"></span> LIVE SOS RADAR
+                            </div>
+                            <h2>Emergency Blood Broadcasts</h2>
+                            <p>Active hospital blood requisitions for university students, faculty, and families. Fast matching with verified campus donors.</p>
+                        </div>
+                        <div class="feed-hero-actions">
+                            <button class="btn-feed-action-white" onclick="document.querySelector('[data-tab=\'requestTab\']').click()">
+                                <i class="fa-solid fa-plus"></i> Post Blood SOS
+                            </button>
+                            <button class="btn-feed-action-ghost" onclick="document.querySelector('[data-tab=\'donorsTab\']').click()">
+                                <i class="fa-solid fa-address-book"></i> Find Donors
+                            </button>
+                        </div>
+                    </div>
+                    <!-- Filter and Search Strip -->
+                    <div class="filter-strip">
+                        <!-- Top Bar: Quick Search & Meta -->
+                        <div class="filter-strip-top">
+                            <div class="filter-search-wrap">
+                                <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                                <input type="text" id="reqSearchInput" placeholder="Search by patient, hospital, area, or condition...">
+                                <button type="button" id="clearReqSearchBtn" class="filter-search-clear" style="display: none;" title="Clear search">
+                                    <i class="fa-solid fa-xmark"></i>
+                                </button>
+                            </div>
+
+                            <div class="filter-top-actions">
+                                <span class="active-count-tag">
+                                    <span class="pulse-beacon"></span>
+                                    <span id="reqActiveCount">2</span> Open Requests
+                                </span>
+                                <button type="button" class="btn-reset-filters" onclick="resetRequestFilters()" title="Reset all filters">
+                                    <i class="fa-solid fa-rotate-left"></i> Reset
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="filter-strip-divider"></div>
+
+                        <!-- Bottom Bar: Blood Group & Urgency Chips -->
+                        <div class="filter-strip-bottom">
+                            <div class="filter-row-group">
+                                <span class="filter-row-label">
+                                    <i class="fa-solid fa-droplet" style="color: #ef4444;"></i> Blood Group:
+                                </span>
+                                <div class="blood-group-chips" id="reqGroupFilters">
+                                    <button class="group-chip active" data-group="">All</button>
+                                    <button class="group-chip" data-group="O+">O+</button>
+                                    <button class="group-chip" data-group="O-">O-</button>
+                                    <button class="group-chip" data-group="A+">A+</button>
+                                    <button class="group-chip" data-group="A-">A-</button>
+                                    <button class="group-chip" data-group="B+">B+</button>
+                                    <button class="group-chip" data-group="B-">B-</button>
+                                    <button class="group-chip" data-group="AB+">AB+</button>
+                                    <button class="group-chip" data-group="AB-">AB-</button>
+                                </div>
+                            </div>
+
+                            <div class="filter-vertical-sep"></div>
+
+                            <div class="filter-row-group">
+                                <span class="filter-row-label">
+                                    <i class="fa-solid fa-clock-rotate-left" style="color: #64748b;"></i> Urgency:
+                                </span>
+                                <div class="urgency-filter-chips" id="reqUrgencyFilters">
+                                    <button class="urgency-chip active" data-urgency="">All</button>
+                                    <button class="urgency-chip chip-critical" data-urgency="CRITICAL">
+                                        <span class="urgency-dot critical"></span> Critical
+                                    </button>
+                                    <button class="urgency-chip chip-same-day" data-urgency="SAME_DAY">
+                                        <span class="urgency-dot same-day"></span> Same Day
+                                    </button>
+                                    <button class="urgency-chip chip-planned" data-urgency="WITHIN_48H">
+                                        <span class="urgency-dot planned"></span> Planned
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Cards Feed -->
+                    <div class="requests-grid" id="requestsFeed">
+                        <!-- Loaded dynamically via blood-hero.js -->
+                    </div>
+                </div>
+
+                <!-- TAB 2: Verified Donors Directory -->
+                <div class="blood-tab-pane" id="donorsTab">
+                    <div class="filter-strip" style="flex-direction: row; align-items: center; justify-content: space-between;">
+                        <div class="filter-row-group">
+                            <span class="filter-row-label">
+                                <i class="fa-solid fa-droplet" style="color: #ef4444;"></i> Filter Group:
+                            </span>
+                            <div class="blood-group-chips" id="donorGroupFilters">
+                                <button class="group-chip active" data-group="">All</button>
+                                <button class="group-chip" data-group="O+">O+</button>
+                                <button class="group-chip" data-group="O-">O-</button>
+                                <button class="group-chip" data-group="A+">A+</button>
+                                <button class="group-chip" data-group="A-">A-</button>
+                                <button class="group-chip" data-group="B+">B+</button>
+                                <button class="group-chip" data-group="B-">B-</button>
+                                <button class="group-chip" data-group="AB+">AB+</button>
+                                <button class="group-chip" data-group="AB-">AB-</button>
+                            </div>
+                        </div>
+
+                        <div style="display: flex; gap: 12px; align-items: center;">
+                            <div class="filter-search-wrap" style="max-width: 250px;">
+                                <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                                <input type="text" id="donorSearchInput" placeholder="Search area or name...">
+                            </div>
+                            <label style="display: flex; align-items: center; gap: 6px; font-size: 0.85rem; font-weight: 600; cursor: pointer; white-space: nowrap;">
+                                <input type="checkbox" id="availableDonorsOnly" checked style="accent-color: #10b981; width: 16px; height: 16px;">
+                                <span>Available Only</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="donors-grid" id="donorsFeed">
+                        <!-- Loaded dynamically via blood-hero.js -->
+                    </div>
+                </div>
+
+                <!-- TAB 3: Post Blood Request + AI Doctor Slip Scanner Studio -->
+                <div class="blood-tab-pane" id="requestTab">
+                    <div class="request-studio-layout">
+                        
+                        <!-- Left Column: Form & Scanner -->
+                        <div class="studio-form-card">
+                            <div style="margin-bottom: 1.5rem;">
+                                <h2 style="font-size: 1.45rem; color: #0f172a; margin-bottom: 0.35rem; display: flex; align-items: center; gap: 10px;">
+                                    <i class="fa-solid fa-tower-broadcast" style="color: #ef4444;"></i> Broadcast Campus SOS
+                                </h2>
+                                <p style="color: #64748b; font-size: 0.9rem; line-height: 1.45;">
+                                    Upload a doctor prescription slip to let Gemini AI auto-populate medical fields, or fill details manually below.
+                                </p>
+                            </div>
+
+                            <!-- Multimodal AI Slip Scanner Zone -->
+                            <div class="slip-scanner-zone" id="slipDropzone">
+                                <input type="file" id="slipFileInput" accept="image/*" style="display: none;">
+                                <div class="scanner-icon">
+                                    <i class="fa-solid fa-file-waveform"></i>
+                                </div>
+                                <h3 style="font-size: 1.1rem; font-weight: 800; color: #991b1b; margin-bottom: 0.25rem;">
+                                    Gemini Vision Doctor Slip Scanner
+                                </h3>
+                                <p style="color: #64748b; font-size: 0.84rem; margin-bottom: 0.9rem; max-width: 480px; margin-left: auto; margin-right: auto;">
+                                    Drag & drop or tap to scan hospital prescription memo, blood requisition form, or ICU chart (JPG, PNG)
+                                </p>
+                                <span class="btn btn-outline" style="font-size: 0.84rem; padding: 7px 16px; background: white; font-weight: 700; border-color: #fca5a5; color: #991b1b;">
+                                    <i class="fa-solid fa-camera"></i> Snap or Browse Slip Photo
+                                </span>
+
+                                <div id="slipPreviewContainer" style="display: none; margin-top: 1rem;">
+                                    <img id="slipPreviewImg" src="" alt="Doctor Slip Preview" style="max-height: 140px; border-radius: 8px; border: 1px solid #cbd5e1; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+                                </div>
+                                <div id="scannerStatus" style="margin-top: 0.8rem;"></div>
+                            </div>
+
+                            <!-- Interactive Urgency Selector Cards -->
+                            <div style="margin-bottom: 1.2rem;">
+                                <label style="display: block; font-weight: 800; font-size: 0.88rem; color: #1e293b; margin-bottom: 8px;">
+                                    Select Emergency Urgency Level *
+                                </label>
+                                <div class="urgency-selector-grid">
+                                    <div class="urgency-card-option critical" data-urgency="CRITICAL">
+                                        <div class="option-title" style="color: #dc2626;">🚨 CRITICAL</div>
+                                        <div class="option-desc">Immediate surgery / ICU (Under 6h)</div>
+                                    </div>
+                                    <div class="urgency-card-option same-day selected" data-urgency="SAME_DAY">
+                                        <div class="option-title" style="color: #ea580c;">⏳ SAME DAY</div>
+                                        <div class="option-desc">Needed within 12 - 24 Hours</div>
+                                    </div>
+                                    <div class="urgency-card-option within-48h" data-urgency="WITHIN_48H">
+                                        <div class="option-title" style="color: #2563eb;">📅 PLANNED</div>
+                                        <div class="option-desc">Within 48h / Scheduled procedure</div>
+                                    </div>
+                                </div>
+                                <input type="hidden" id="reqUrgencyLevel" value="SAME_DAY">
+                            </div>
+
+                            <!-- Request Form -->
+                            <form id="createRequestForm">
+                                <div class="form-grid-2">
+                                    <div class="form-group">
+                                        <label for="reqPatientName">
+                                            <span class="label-title"><i class="fa-solid fa-user-injured" style="color: #ef4444; font-size: 0.82rem;"></i> Patient Full Name</span>
+                                            <span class="required-star">*</span>
+                                        </label>
+                                        <div class="input-with-icon">
+                                            <i class="fa-solid fa-user input-icon"></i>
+                                            <input type="text" id="reqPatientName" required placeholder="e.g. Tanvir Ahmed">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="reqBloodGroup">
+                                            <span class="label-title"><i class="fa-solid fa-droplet" style="color: #dc2626; font-size: 0.82rem;"></i> Required Blood Group</span>
+                                            <span class="required-star">*</span>
+                                        </label>
+                                        <div class="input-with-icon">
+                                            <i class="fa-solid fa-droplet input-icon" style="color: #dc2626;"></i>
+                                            <select id="reqBloodGroup" required>
+                                                <option value="O+">O+ (Positive)</option>
+                                                <option value="O-">O- (Negative)</option>
+                                                <option value="A+">A+ (Positive)</option>
+                                                <option value="A-">A- (Negative)</option>
+                                                <option value="B+">B+ (Positive)</option>
+                                                <option value="B-">B- (Negative)</option>
+                                                <option value="AB+">AB+ (Positive)</option>
+                                                <option value="AB-">AB- (Negative)</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-grid-2">
+                                    <div class="form-group">
+                                        <label for="reqUnitsNeeded">
+                                            <span class="label-title"><i class="fa-solid fa-boxes-stacked" style="color: #4f46e5; font-size: 0.82rem;"></i> Units / Bags Needed</span>
+                                            <span class="required-star">*</span>
+                                        </label>
+                                        <div class="input-with-icon">
+                                            <i class="fa-solid fa-hand-holding-medical input-icon" style="color: #6366f1;"></i>
+                                            <input type="number" id="reqUnitsNeeded" min="1" max="10" value="1" required>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="reqContactNumber">
+                                            <span class="label-title"><i class="fa-solid fa-phone-volume" style="color: #059669; font-size: 0.82rem;"></i> Direct Phone / Call Number</span>
+                                            <span class="required-star">*</span>
+                                        </label>
+                                        <div class="input-with-icon">
+                                            <i class="fa-solid fa-phone input-icon" style="color: #10b981;"></i>
+                                            <input type="tel" id="reqContactNumber" required placeholder="e.g. 01711XXXXXX">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Quick Hospital Selector Chips -->
+                                <div class="hospital-selector-section">
+                                    <div class="hospital-selector-header">
+                                        <label style="font-weight: 700; font-size: 0.84rem; color: #1e293b; display: flex; align-items: center; gap: 6px; margin: 0;">
+                                            <i class="fa-solid fa-hospital" style="color: #ef4444; font-size: 0.82rem;"></i> Hospital Details
+                                            <span class="required-star">*</span>
+                                        </label>
+                                        <span class="hospital-subtext">Click Dhaka hospital preset or type manually below</span>
+                                    </div>
+                                    <div class="quick-hospitals-strip">
+                                        <span class="hospital-chip" data-name="Square Hospital" data-loc="18/F Panthapath, Dhaka">
+                                            <i class="fa-solid fa-building-circle-check"></i> Square Hospital
+                                        </span>
+                                        <span class="hospital-chip" data-name="Evercare Hospital" data-loc="Plot 81, Block E, Bashundhara R/A, Dhaka">
+                                            <i class="fa-solid fa-building-circle-check"></i> Evercare
+                                        </span>
+                                        <span class="hospital-chip" data-name="Dhaka Medical College Hospital (DMCH)" data-loc="Secretariat Rd, Dhaka">
+                                            <i class="fa-solid fa-building-circle-check"></i> DMCH
+                                        </span>
+                                        <span class="hospital-chip" data-name="BSMMU (PG Hospital)" data-loc="Shahbag, Dhaka">
+                                            <i class="fa-solid fa-building-circle-check"></i> BSMMU
+                                        </span>
+                                        <span class="hospital-chip" data-name="United Hospital" data-loc="Plot 15, Rd 71, Gulshan 2, Dhaka">
+                                            <i class="fa-solid fa-building-circle-check"></i> United Hospital
+                                        </span>
+                                        <span class="hospital-chip" data-name="Kurmitola General Hospital" data-loc="Airport Rd, Dhaka Cantonment">
+                                            <i class="fa-solid fa-building-circle-check"></i> Kurmitola Gen.
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div class="form-grid-2">
+                                    <div class="form-group">
+                                        <label for="reqHospitalName">
+                                            <span class="label-title"><i class="fa-regular fa-hospital" style="color: #64748b; font-size: 0.82rem;"></i> Hospital Name</span>
+                                            <span class="required-star">*</span>
+                                        </label>
+                                        <div class="input-with-icon">
+                                            <i class="fa-solid fa-hospital-user input-icon"></i>
+                                            <input type="text" id="reqHospitalName" required placeholder="e.g. Square Hospital">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="reqHospitalLocation">
+                                            <span class="label-title"><i class="fa-solid fa-location-dot" style="color: #ef4444; font-size: 0.82rem;"></i> Hospital Location / Area</span>
+                                            <span class="required-star">*</span>
+                                        </label>
+                                        <div class="input-with-icon">
+                                            <i class="fa-solid fa-map-pin input-icon"></i>
+                                            <input type="text" id="reqHospitalLocation" required placeholder="e.g. Panthapath, Dhaka">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-grid-2">
+                                    <div class="form-group">
+                                        <label for="reqWardBed">
+                                            <span class="label-title"><i class="fa-solid fa-bed-pulse" style="color: #8b5cf6; font-size: 0.82rem;"></i> Ward / Cabin / Bed Number</span>
+                                            <span class="label-hint">Optional</span>
+                                        </label>
+                                        <div class="input-with-icon">
+                                            <i class="fa-solid fa-bed input-icon"></i>
+                                            <input type="text" id="reqWardBed" placeholder="e.g. ICU Bed 4, Post-Op Cabin 302">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="reqNeededDate">
+                                            <span class="label-title"><i class="fa-regular fa-clock" style="color: #f59e0b; font-size: 0.82rem;"></i> Required By (Deadline)</span>
+                                            <span class="label-hint">Optional</span>
+                                        </label>
+                                        <div class="input-with-icon">
+                                            <i class="fa-regular fa-calendar input-icon"></i>
+                                            <input type="datetime-local" id="reqNeededDate">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group" style="margin-bottom: 1.25rem;">
+                                    <label for="reqCondition">
+                                        <span class="label-title"><i class="fa-solid fa-notes-medical" style="color: #06b6d4; font-size: 0.82rem;"></i> Patient Medical Condition / Surgery Note</span>
+                                        <span class="label-hint">Helps donors respond quickly</span>
+                                    </label>
+                                    <textarea id="reqCondition" rows="3" placeholder="e.g. Emergency bypass surgery, accident trauma recovery, hemoglobin dropped below 7"></textarea>
+                                </div>
+
+                                <div class="form-actions-row">
+                                    <button type="button" class="btn-preview-broadcast" id="previewBroadcastBtn">
+                                        <i class="fa-solid fa-wand-magic-sparkles"></i> Preview AI Broadcasts
+                                    </button>
+                                    <button type="submit" class="btn-publish-sos">
+                                        <i class="fa-solid fa-bullhorn"></i> Publish Emergency SOS
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- Right Column: Live Real-Time Card Preview -->
+                        <div class="studio-preview-pane">
+                            <div class="studio-preview-header">
+                                <div class="studio-preview-title">
+                                    <i class="fa-solid fa-eye" style="color: #ef4444;"></i> Live Preview
+                                </div>
+                                <div style="display: flex; gap: 6px;">
+                                    <button class="preview-tab-pill active" id="previewTabCardBtn">Feed Card</button>
+                                    <button class="preview-tab-pill" id="previewTabWABtn">WhatsApp SOS</button>
+                                </div>
+                            </div>
+
+                            <!-- Live Feed Card Mockup -->
+                            <div id="liveCardPreviewContainer">
+                                <div class="emergency-card same-day" id="liveMockCard" style="margin-bottom: 0;">
+                                    <div class="emergency-card-topbar">
+                                        <span class="urgency-badge same-day" id="mockUrgencyBadge">
+                                            <span class="pulse-dot"></span> <span id="mockUrgencyText">SAME DAY</span>
+                                        </span>
+                                        <span class="badge-ai-verified">
+                                            <i class="fa-solid fa-shield-check"></i> Campus 360 Verified
+                                        </span>
+                                    </div>
+
+                                    <div class="emergency-hero-row">
+                                        <div class="blood-hero-droplet" id="mockDroplet">
+                                            <span class="blood-type-text" id="mockBloodGroup">O+</span>
+                                            <span class="blood-sub-text">BLOOD</span>
+                                        </div>
+                                        <div class="emergency-hero-info">
+                                            <div class="patient-name-row">
+                                                <div class="emergency-patient-name" id="mockPatientName">Patient Name</div>
+                                                <span class="units-needed-badge" id="mockUnitsBadge">1 Bag Needed</span>
+                                            </div>
+                                            <div class="hospital-title-row">
+                                                <i class="fa-solid fa-hospital" style="color: #ef4444; font-size: 0.85rem;"></i>
+                                                <span id="mockHospitalName">Hospital Name, Dhaka</span>
+                                            </div>
+                                            <div class="ward-bed-tag" id="mockWardTag">
+                                                <i class="fa-solid fa-bed-pulse"></i> <span id="mockWardText">ICU / Bed Unspecified</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="emergency-condition-box" id="mockConditionBox">
+                                        Emergency blood required for patient medical procedure.
+                                    </div>
+
+                                    <div class="compat-match-strip">
+                                        <div class="compat-groups-list">
+                                            <span style="font-weight: 700; color: #475569;">Accepts:</span>
+                                            <span class="compat-pill" id="mockCompatPill">O-, O+</span>
+                                        </div>
+                                        <span class="peer-match-chip">
+                                            <i class="fa-solid fa-bolt"></i> Live matching active
+                                        </span>
+                                    </div>
+
+                                    <div class="units-progress-container">
+                                        <div class="units-progress-header">
+                                            <span>Units Status</span>
+                                            <span id="mockProgressText">0 / 1 Arranged (0%)</span>
+                                        </div>
+                                        <div class="units-progress-bar">
+                                            <div class="units-progress-fill" style="width: 0%;"></div>
+                                        </div>
+                                    </div>
+
+                                    <div class="card-actions-grid">
+                                        <div class="btn-card-action btn-card-call" style="opacity: 0.9;">
+                                            <i class="fa-solid fa-phone"></i> Call Contact
+                                        </div>
+                                        <div class="btn-card-action btn-card-whatsapp" style="opacity: 0.9;">
+                                            <i class="fa-brands fa-whatsapp"></i> WhatsApp SOS
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Live WhatsApp Bubble Mockup (Hidden by default) -->
+                            <div id="liveWAPreviewContainer" style="display: none;">
+                                <div class="whatsapp-chat-preview">
+                                    <div style="font-size: 0.72rem; font-weight: 700; color: #075e54; margin-bottom: 6px; display: flex; align-items: center; gap: 4px;">
+                                        <i class="fa-brands fa-whatsapp"></i> WhatsApp Broadcast Preview
+                                    </div>
+                                    <div class="whatsapp-bubble" id="mockWABubbleText">
+🚨 *URGENT BLOOD REQUIRED (SAME DAY)* 🚨
+🩸 *Blood Group:* O+
+🏥 *Hospital:* Square Hospital, Dhaka
+📦 *Units Required:* 1 Bag
+📞 *Contact:* 01711XXXXXX
+🛡️ *Verified via Campus 360 BloodHero*
+                                    </div>
+                                    <div class="whatsapp-bubble-time">Just now &#10003;&#10003;</div>
+                                </div>
+                            </div>
+
+                            <!-- My Active Emergency Requests & Outside Resolution Manager -->
+                            <div class="my-requests-studio-card" id="myStudioRequestsCard">
+                                <div class="my-requests-header">
+                                    <div class="my-requests-title">
+                                        <i class="fa-solid fa-clipboard-check" style="color: #ef4444;"></i>
+                                        <span>My Active SOS Requests</span>
+                                        <span class="my-requests-count-badge" id="myRequestsCountBadge">0</span>
+                                    </div>
+                                    <button class="btn btn-outline btn-xs" onclick="loadMyRequests()" title="Refresh requests" style="padding: 4px 8px; font-size: 0.75rem;">
+                                        <i class="fa-solid fa-rotate"></i>
+                                    </button>
+                                </div>
+                                <p style="font-size: 0.78rem; color: #64748b; margin-bottom: 0.75rem;">
+                                    Track your published emergencies. Log bags arranged outside or stand down the SOS.
+                                </p>
+                                <div id="myStudioRequestsList" class="my-requests-list">
+                                    <div style="text-align: center; padding: 1.5rem; color: #94a3b8; font-size: 0.85rem;">
+                                        <i class="fa-solid fa-spinner fa-spin"></i> Loading your requests...
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB 4: "Can I Donate?" AI Triage Screener -->
+                <div class="blood-tab-pane" id="screenerTab">
+                    <div style="max-width: 750px; margin: 0 auto; background: white; padding: 2.2rem; border-radius: 16px; border: 1px solid var(--border-color); box-shadow: var(--shadow-sm);">
+                        <div style="text-align: center; margin-bottom: 2rem;">
+                            <div style="width: 56px; height: 56px; border-radius: 14px; background: #fee2e2; color: #dc2626; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; margin: 0 auto 0.8rem auto;">
+                                <i class="fa-solid fa-stethoscope"></i>
+                            </div>
+                            <h2 style="font-size: 1.5rem; color: #0f172a; margin-bottom: 0.4rem;">"Can I Donate?" AI Health Screener</h2>
+                            <p style="color: #64748b; font-size: 0.92rem; max-width: 500px; margin: 0 auto;">
+                                Check your eligibility in seconds against WHO and Red Crescent guidelines before traveling to the hospital.
+                            </p>
+                        </div>
+
+                        <!-- Quick Prompts Chips -->
+                        <div style="margin-bottom: 1.5rem;">
+                            <span style="font-size: 0.82rem; font-weight: 700; color: #475569; display: block; margin-bottom: 8px;">
+                                Quick Health Scenarios:
+                            </span>
+                            <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                                <button class="screener-chip group-chip">Recovered from Dengue 2 months ago</button>
+                                <button class="screener-chip group-chip">Had jaundice in childhood / school</button>
+                                <button class="screener-chip group-chip">Took antibiotics 3 days ago</button>
+                                <button class="screener-chip group-chip">Donated blood 70 days ago</button>
+                                <button class="screener-chip group-chip">My weight is 47 kg (below 50 kg)</button>
+                                <button class="screener-chip group-chip">I am fasting (Roza) today</button>
+                            </div>
+                        </div>
+
+                        <!-- Input Query Box -->
+                        <div style="display: flex; gap: 10px; margin-bottom: 1.5rem;">
+                            <input type="text" id="screenerQuery" placeholder="Ask anything (e.g. 'I had dengue last month' or 'took paracetamol yesterday, can I donate?')" style="flex: 1; padding: 12px 16px; border: 1.5px solid #cbd5e1; border-radius: 10px; font-size: 0.92rem; outline: none;">
+                            <button id="checkEligibilityBtn" class="btn btn-primary" style="background: linear-gradient(135deg, #2563eb, #1d4ed8); border: none; padding: 12px 22px; font-size: 0.95rem; font-weight: 700; border-radius: 10px; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.28);">
+                                <i class="fa-solid fa-stethoscope"></i> Check Eligibility
+                            </button>
+                        </div>
+
+                        <!-- AI Result Display Box -->
+                        <div id="screenerResult" style="display: none;"></div>
+                    </div>
+                </div>
+
+                <!-- TAB 5: My Donor Profile -->
+                <div class="blood-tab-pane" id="profileTab">
+                    <div style="max-width: 650px; margin: 0 auto; background: white; padding: 2rem; border-radius: 16px; border: 1px solid var(--border-color); box-shadow: var(--shadow-sm);">
+                        
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.5rem;">
+                            <div>
+                                <h2 style="font-size: 1.35rem; color: #0f172a; margin-bottom: 0.25rem;">My Campus Donor Profile</h2>
+                                <p style="color: #64748b; font-size: 0.88rem;">Manage your availability and emergency notification preferences.</p>
+                            </div>
+                            <!-- Live Availability Toggle -->
+                            <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 4px;">
+                                <label style="display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 0.85rem; cursor: pointer;">
+                                    <input type="checkbox" id="myAvailabilityToggle" checked style="width: 18px; height: 18px; accent-color: #10b981;">
+                                    <span>Available for Calls</span>
+                                </label>
+                                <span style="font-size: 0.72rem; color: #64748b;">Turn off if traveling / unwell</span>
+                            </div>
+                        </div>
+
+                        <form id="donorProfileForm">
+                            <div class="form-group">
+                                <label for="myBloodGroup">
+                                    <span class="label-title"><i class="fa-solid fa-droplet" style="color: #ef4444; font-size: 0.82rem;"></i> My Blood Group</span>
+                                    <span class="required-star">*</span>
+                                </label>
+                                <div class="input-with-icon">
+                                    <i class="fa-solid fa-droplet input-icon" style="color: #ef4444;"></i>
+                                    <select id="myBloodGroup" required>
+                                        <option value="O+">O+ (O Positive)</option>
+                                        <option value="O-">O- (O Negative)</option>
+                                        <option value="A+">A+ (A Positive)</option>
+                                        <option value="A-">A- (A Negative)</option>
+                                        <option value="B+">B+ (B Positive)</option>
+                                        <option value="B-">B- (B Negative)</option>
+                                        <option value="AB+">AB+ (AB Positive)</option>
+                                        <option value="AB-">AB- (AB Negative)</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="myContactNumber">
+                                    <span class="label-title"><i class="fa-solid fa-phone-volume" style="color: #059669; font-size: 0.82rem;"></i> Emergency Phone Number</span>
+                                    <span class="required-star">*</span>
+                                </label>
+                                <div class="input-with-icon">
+                                    <i class="fa-solid fa-phone input-icon" style="color: #10b981;"></i>
+                                    <input type="tel" id="myContactNumber" required placeholder="e.g. 01711XXXXXX">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="myHallArea">
+                                    <span class="label-title"><i class="fa-solid fa-building-user" style="color: #6366f1; font-size: 0.82rem;"></i> Campus Hall or Residential Area</span>
+                                    <span class="label-hint">Optional</span>
+                                </label>
+                                <div class="input-with-icon">
+                                    <i class="fa-solid fa-location-dot input-icon"></i>
+                                    <input type="text" id="myHallArea" placeholder="e.g. Madani Avenue Student Hall, Bashundhara Block C, Badda">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="myLastDonationDate">
+                                    <span class="label-title"><i class="fa-regular fa-calendar-check" style="color: #f59e0b; font-size: 0.82rem;"></i> Last Donation Date (if applicable)</span>
+                                    <span class="label-hint">Optional</span>
+                                </label>
+                                <div class="input-with-icon">
+                                    <i class="fa-regular fa-calendar input-icon"></i>
+                                    <input type="date" id="myLastDonationDate">
+                                </div>
+                                <small style="color: #64748b; font-size: 0.74rem; margin-top: 5px; display: inline-flex; align-items: center; gap: 4px;">
+                                    <i class="fa-solid fa-circle-info" style="color: #94a3b8;"></i> Used to calculate your 90-day cooldown period accurately.
+                                </small>
+                            </div>
+
+                            <div class="form-group" style="margin-bottom: 1.5rem;">
+                                <label for="myNotes">
+                                    <span class="label-title"><i class="fa-regular fa-clipboard" style="color: #06b6d4; font-size: 0.82rem;"></i> Notes / Preferred Timings</span>
+                                    <span class="label-hint">Optional</span>
+                                </label>
+                                <textarea id="myNotes" rows="2" placeholder="e.g. Available on campus on weekdays. Free after 3 PM."></textarea>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary" style="width: 100%; background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%); border: none; padding: 12px; font-weight: 700; border-radius: 12px; box-shadow: 0 4px 14px rgba(239, 68, 68, 0.3);">
+                                <i class="fa-solid fa-floppy-disk"></i> Save Donor Profile
+                            </button>
+                        </form>
+
+                        <!-- Synced My Emergency Requests in Profile -->
+                        <div style="margin-top: 2rem; border-top: 1px solid #e2e8f0; padding-top: 1.5rem;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.8rem;">
+                                <div>
+                                    <h3 style="font-size: 1.15rem; color: #0f172a; margin-bottom: 0.2rem; display: flex; align-items: center; gap: 8px;">
+                                        <i class="fa-solid fa-tower-broadcast" style="color: #ef4444;"></i> My Broadcasted SOS Posts
+                                    </h3>
+                                    <p style="color: #64748b; font-size: 0.82rem;">Manage requests you published for patients and log external blood arrangements.</p>
+                                </div>
+                                <button class="btn btn-outline btn-xs" onclick="loadMyRequests()" style="padding: 4px 10px; font-size: 0.78rem;">
+                                    <i class="fa-solid fa-rotate"></i> Refresh
+                                </button>
+                            </div>
+                            <div id="myProfileRequestsList" class="my-requests-list">
+                                <!-- Populated dynamically -->
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- Log / Record Donation Modal -->
+    <div class="blood-modal-overlay" id="recordDonationModalOverlay">
+        <div class="blood-modal" style="max-width: 500px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+                <h3 style="margin: 0; font-size: 1.25rem; color: #0f172a; display: flex; align-items: center; gap: 8px;">
+                    <i class="fa-solid fa-hand-holding-droplet" style="color: #ef4444;"></i> Record Blood Donation
+                </h3>
+                <button onclick="closeDonationModal()" style="border: none; background: none; font-size: 1.25rem; cursor: pointer; color: #64748b;">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div style="background: #fef2f2; border: 1px solid #fecaca; padding: 1rem; border-radius: 12px; margin-bottom: 1.2rem;">
+                <div style="font-weight: 800; font-size: 1.05rem; color: #991b1b;" id="donateModalPatient">Patient Name</div>
+                <div style="font-size: 0.85rem; color: #475569;" id="donateModalHospital">Hospital Name</div>
+                <div style="margin-top: 6px; font-size: 0.82rem; font-weight: 700; color: #dc2626;" id="donateModalUnits">Units Required: 2 Bags</div>
+            </div>
+
+            <form id="recordDonationForm">
+                <input type="hidden" id="donateModalRequestId">
+                <div class="form-group" style="margin-bottom: 1.2rem;">
+                    <label for="donateModalNotes">Donation Notes / Bag Identifier</label>
+                    <textarea id="donateModalNotes" rows="2" placeholder="e.g. 1 Bag arranged by peer at hospital blood bank"></textarea>
+                </div>
+
+                <div style="display: flex; gap: 10px; justify-content: flex-end;">
+                    <button type="button" class="btn btn-outline" onclick="closeDonationModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary" style="background: linear-gradient(135deg, #ef4444, #b91c1c); border: none; font-weight: 700;">
+                        <i class="fa-solid fa-circle-check"></i> Confirm Donation
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Blood Managed Outside / Close SOS -->
+    <div class="blood-modal-overlay" id="outsideResolutionModalOverlay" style="display: none;">
+        <div class="blood-modal" style="max-width: 520px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+                <h3 style="margin: 0; font-size: 1.25rem; color: #0f172a; display: flex; align-items: center; gap: 8px;">
+                    <i class="fa-solid fa-circle-check" style="color: #10b981;"></i> Manage Outside Resolution
+                </h3>
+                <button onclick="closeOutsideResolutionModal()" style="border: none; background: none; font-size: 1.25rem; cursor: pointer; color: #64748b;">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div style="background: #f0fdf4; border: 1px solid #bbf7d0; padding: 0.9rem 1rem; border-radius: 12px; margin-bottom: 1.2rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div style="font-weight: 800; font-size: 1rem; color: #166534;" id="resolveModalPatient">Patient Name</div>
+                    <span id="resolveModalGroup" style="background: #15803d; color: white; font-weight: 800; font-size: 0.78rem; padding: 2px 7px; border-radius: 4px;">O+</span>
+                </div>
+                <div style="font-size: 0.84rem; color: #374151; margin-top: 3px;" id="resolveModalHospital">Hospital Name</div>
+                <div style="margin-top: 6px; font-size: 0.82rem; font-weight: 700; color: #15803d;" id="resolveModalProgress">Bags: 1 / 2 Arranged</div>
+            </div>
+
+            <form id="outsideResolutionForm">
+                <input type="hidden" id="resolveRequestId">
+                
+                <div class="form-group" style="margin-bottom: 1rem;">
+                    <label style="font-weight: 700; font-size: 0.85rem; color: #1e293b; margin-bottom: 6px; display: block;">
+                        Where was the blood arranged from? *
+                    </label>
+                    <div class="resolution-options-grid">
+                        <label class="resolution-radio-option">
+                            <input type="radio" name="resSource" value="QUANTUM_FOUNDATION" checked>
+                            <div class="option-content">
+                                <span class="option-badge">🏢 Organization</span>
+                                <span class="option-name">Quantum Foundation / Red Crescent</span>
+                            </div>
+                        </label>
+                        <label class="resolution-radio-option">
+                            <input type="radio" name="resSource" value="FAMILY_NETWORK">
+                            <div class="option-content">
+                                <span class="option-badge">👨‍👩‍👧 Family</span>
+                                <span class="option-name">Family / Relative / Personal Network</span>
+                            </div>
+                        </label>
+                        <label class="resolution-radio-option">
+                            <input type="radio" name="resSource" value="HOSPITAL_BANK">
+                            <div class="option-content">
+                                <span class="option-badge">🏥 Hospital</span>
+                                <span class="option-name">Hospital In-house Blood Bank</span>
+                            </div>
+                        </label>
+                        <label class="resolution-radio-option">
+                            <input type="radio" name="resSource" value="POSTPONED_STABILIZED">
+                            <div class="option-content">
+                                <span class="option-badge">🩺 Medical</span>
+                                <span class="option-name">Patient Stabilized / Requirement Postponed</span>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 1rem;">
+                    <label for="resolveUnitsToAdd" style="font-weight: 700; font-size: 0.85rem; color: #1e293b; display: block; margin-bottom: 4px;">
+                        Bags Arranged Externally This Time
+                    </label>
+                    <select id="resolveUnitsToAdd" style="width: 100%; padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 0.9rem;">
+                        <option value="1">1 Bag</option>
+                        <option value="2">2 Bags</option>
+                        <option value="3">3 Bags</option>
+                        <option value="4">All Remaining Required Bags</option>
+                    </select>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 1rem;">
+                    <label style="display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 0.85rem; color: #1e293b; cursor: pointer;">
+                        <input type="checkbox" id="resolveMarkClosed" checked style="width: 17px; height: 17px; accent-color: #10b981;">
+                        <span>Close SOS Request (Stop further public calls & emergency alerts)</span>
+                    </label>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 1.2rem;">
+                    <label for="resolveNotes" style="font-weight: 700; font-size: 0.85rem; color: #1e293b; display: block; margin-bottom: 4px;">
+                        Notes / Donor Source Details (Optional)
+                    </label>
+                    <textarea id="resolveNotes" rows="2" placeholder="e.g. Arranged from cousin at blood bank, patient entering surgery smoothly" style="width: 100%; padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 0.85rem;"></textarea>
+                </div>
+
+                <div style="display: flex; gap: 10px; justify-content: flex-end;">
+                    <button type="button" class="btn btn-outline" onclick="closeOutsideResolutionModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary" style="background: #10b981; border-color: #10b981; font-weight: 700;">
+                        <i class="fa-solid fa-check"></i> Save & Resolve SOS
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: 1-Click Stand-Down WhatsApp Broadcast -->
+    <div class="blood-modal-overlay" id="standDownModalOverlay" style="display: none;">
+        <div class="blood-modal" style="max-width: 500px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+                <h3 style="margin: 0; font-size: 1.2rem; color: #0f172a; display: flex; align-items: center; gap: 8px;">
+                    <i class="fa-brands fa-whatsapp" style="color: #25d366;"></i> Stand-Down / Thank You Message
+                </h3>
+                <button onclick="closeStandDownModal()" style="border: none; background: none; font-size: 1.25rem; cursor: pointer; color: #64748b;">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 0.9rem;">
+                Copy and share this to your batch, club, or hall WhatsApp groups so peers know the blood has been arranged and they can call off further searches:
+            </p>
+            <div class="whatsapp-bubble" id="standDownTextPreview" style="margin-bottom: 1.2rem; max-height: 220px; overflow-y: auto; white-space: pre-line;">
+            </div>
+            <div style="display: flex; gap: 10px; justify-content: flex-end;">
+                <button type="button" class="btn btn-outline" onclick="closeStandDownModal()">Done</button>
+                <button type="button" class="btn btn-primary" id="copyStandDownBtn" style="background: #25d366; border-color: #25d366; font-weight: 700;" onclick="copyStandDownMessage()">
+                    <i class="fa-regular fa-copy"></i> Copy Message
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Matched Campus Peer Donors -->
+    <div class="blood-modal-overlay" id="matchedPeersModalOverlay" style="display: none;">
+        <div class="blood-modal" style="max-width: 620px;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.25rem;">
+                <div>
+                    <h3 style="font-size: 1.25rem; font-weight: 800; color: #0f172a; margin-bottom: 0.2rem; display: flex; align-items: center; gap: 8px;">
+                        <i class="fa-solid fa-bolt" style="color: #16a34a;"></i> Matched Campus Donors
+                    </h3>
+                    <p style="font-size: 0.85rem; color: #64748b; margin: 0;">
+                        Available verified campus peers matching this emergency recipient group.
+                    </p>
+                </div>
+                <button type="button" onclick="closeMatchedPeersModal()" style="border: none; background: none; font-size: 1.3rem; cursor: pointer; color: #64748b; padding: 4px;">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <!-- Patient Context Header Card -->
+            <div id="matchedModalHeaderInfo"></div>
+
+            <!-- Matched Donors List or Empty State -->
+            <div id="matchedModalBody" style="min-height: 180px;"></div>
+
+            <!-- Footer Actions -->
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid #e2e8f0; flex-wrap: wrap; gap: 10px;">
+                <button type="button" class="btn btn-outline" style="font-size: 0.85rem;" onclick="viewAllDonorsInDirectory()">
+                    <i class="fa-solid fa-address-book"></i> Open Full Donor Directory
+                </button>
+                <button type="button" class="btn btn-secondary" onclick="closeMatchedPeersModal()" style="padding: 8px 18px; font-size: 0.88rem;">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Core Scripts -->
+    <script src="js/api.js?v=5"></script>
+    <script src="js/chat-widget.js"></script>
+    <script src="js/blood-hero.js?v=16"></script>
+</body>
+</html>
