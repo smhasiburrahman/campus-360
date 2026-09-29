@@ -106,14 +106,28 @@
                 </div>
                 
                 <div style="display:flex; gap:1rem; align-items:center;">
-                    <div class="search-bar" style="width:400px;">
-                        <i class="fas fa-search"></i>
-                        <input type="text" id="courseSearchInput" placeholder="Search by course code...">
-                    </div>
                     <button class="btn btn-primary" id="shareMaterialBtn">
                         <i class="fas fa-plus"></i> Share Material
                     </button>
                 </div>
+            </div>
+
+            <!-- Premium AI Search Bar -->
+            <div class="ai-search-container">
+                <div class="ai-search-icon">
+                    <i class="fas fa-wand-magic-sparkles"></i>
+                </div>
+                <div class="ai-search-input-group">
+                    <select id="semanticCourseSelect" class="ai-search-select">
+                        <option value="">All Courses</option>
+                    </select>
+                    <div class="ai-search-divider"></div>
+                    <input type="text" id="semanticSearchInput" class="ai-search-input" placeholder="Ask AI a concept (e.g. 'How does CPU concurrency work?')">
+                </div>
+                <button class="ai-search-btn" id="semanticSearchBtn">
+                    <span>AI Search</span>
+                    <i class="fas fa-arrow-right"></i>
+                </button>
             </div>
 
             <div class="content-grid">
@@ -225,8 +239,8 @@
             </div>
 
             <div class="form-group">
-                <label for="materialUrl">Google Drive Link (or any URL)</label>
-                <input type="url" id="materialUrl" class="form-control" placeholder="https://drive.google.com/..." required>
+                <label for="materialFile">Upload File</label>
+                <input type="file" id="materialFile" class="form-control" required>
             </div>
 
             <div class="form-group">
@@ -236,6 +250,19 @@
 
             <button type="submit" class="btn btn-primary btn-full" id="submitMaterialBtn">Share Material</button>
         </form>
+    </div>
+</div>
+
+<!-- File Preview Modal -->
+<div class="modal-overlay" id="previewModal" style="display: none; z-index: 1000;">
+    <div class="modal-content" style="max-width: 90%; width: 1000px; height: 90vh; display: flex; flex-direction: column;">
+        <div class="modal-header">
+            <h2 id="previewModalTitle">File Preview</h2>
+            <button class="close-modal" id="closePreviewModal"><i class="fas fa-times"></i></button>
+        </div>
+        <div id="previewContainer" style="flex: 1; overflow: hidden; background: #f3f4f6; display: flex; align-items: center; justify-content: center; border-radius: 8px;">
+            <!-- Content gets injected here -->
+        </div>
     </div>
 </div>
 

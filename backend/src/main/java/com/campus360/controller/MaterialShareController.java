@@ -19,6 +19,12 @@ public class MaterialShareController {
     @Autowired
     private MaterialShareService materialShareService;
 
+    @Autowired
+    private com.campus360.service.SemanticIngestionService semanticIngestionService;
+
+    @org.springframework.beans.factory.annotation.Value("${app.upload.dir:uploads}")
+    private String uploadDir;
+
     private String getAccountType(Authentication authentication) {
         for (GrantedAuthority auth : authentication.getAuthorities()) {
             String role = auth.getAuthority();
@@ -45,7 +51,22 @@ public class MaterialShareController {
     @PreAuthorize("hasRole('STUDENT')")
     public ResponseEntity<MaterialShareResponse> createMaterialShare(@RequestBody MaterialShareRequest request, Authentication authentication) {
         Long studentId = Long.parseLong(authentication.getName());
-        return ResponseEntity.ok(materialShareService.createMaterialShare(request, studentId));
+        MaterialShareResponse response = materialShareService.createMaterialShare(request, studentId);
+        
+        // Trigger Semantic Ingestion asynchronously so it doesn't block the request
+        new Thread(() -> {
+            if (request.getFiles() != null && !request.getFiles().isEmpty()) {
+                for (com.campus360.dto.MaterialFileDTO fReq : request.getFiles()) {
+                    if (fReq.getFileUrl() != null && fReq.getFileUrl().startsWith("/uploads/")) {
+                        String filename = fReq.getFileUrl().substring(9); // remove "/uploads/"
+                        java.nio.file.Path filePath = java.nio.file.Paths.get(uploadDir).resolve(filename);
+                        semanticIngestionService.ingestFile(filePath.toString(), fReq.getOriginalFilename(), studentId, request.getCourseId(), fReq.getFileUrl());
+                    }
+                }
+            }
+        }).start();
+
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping
