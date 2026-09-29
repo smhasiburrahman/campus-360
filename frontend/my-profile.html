@@ -9,9 +9,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-<link rel="stylesheet" href="css/style.css">
-<link rel="stylesheet" href="css/dashboard.css">
-<link rel="stylesheet" href="css/my-profile.css">
+<link rel="stylesheet" href="css/style.css?v=6.0">
+<link rel="stylesheet" href="css/dashboard.css?v=6.0">
+<link rel="stylesheet" href="css/my-profile.css?v=6.0">
 </head>
 <body>
 
@@ -71,9 +71,6 @@
                 <a href="shuttle.html" class="nav-item">
                     <i class="fa-solid fa-bus"></i> Shuttle Tracking
                 </a>
-                <a href="#" class="nav-item">
-                    <i class="fa-regular fa-bell"></i> Notifications <span class="nav-badge">5</span>
-                </a>
                 <a href="my-profile.html" class="nav-item active">
                     <i class="fa-regular fa-user"></i> My Profile
                 </a>
@@ -90,17 +87,18 @@
             </div>
 
             <div class="topbar-actions">
-                <div class="notification-bell">
-                    <i class="fa-regular fa-bell"></i>
-                    <span class="notification-dot"></span>
-                </div>
-                <button class="btn btn-primary btn-topbar">
-                    <i class="fa-solid fa-plus"></i>&nbsp; New Post
+                <button class="btn btn-primary btn-topbar" onclick="window.location.href='dashboard.html'">
+                    <i class="fa-solid fa-house"></i>&nbsp; Dashboard
                 </button>
-                <div class="user-profile">
-                    <div class="avatar">SR</div>
-                    <span class="user-name">Sarah</span>
-                    <i class="fa-solid fa-chevron-down"></i>
+                <div class="user-profile" id="userProfileBtn">
+                    <div class="avatar" id="topbarAvatar">--</div>
+                    <span class="user-name" id="topbarName">Student</span>
+                    <i class="fa-solid fa-chevron-down" style="color: #94a3b8; font-size: 0.8rem;"></i>
+                    <div class="profile-dropdown" id="profileDropdown" style="display: none;">
+                        <button id="logoutBtn">
+                            <i class="fa-solid fa-arrow-right-from-bracket"></i> Log Out
+                        </button>
+                    </div>
                 </div>
             </div>
         </header>
@@ -113,277 +111,114 @@
             <!-- Profile summary card -->
             <div class="profile-summary-card">
 
-                <button class="btn btn-outline btn-edit-profile" id="editProfileBtn">
+                <button type="button" class="btn btn-outline btn-edit-profile" id="editProfileBtn" onclick="openEditProfileModal(event)">
                     <i class="fa-regular fa-pen-to-square"></i> Edit Profile
                 </button>
 
                 <div class="profile-avatar-wrap">
                     <div class="profile-avatar" id="profileAvatar">
-                        <span id="profileInitials">SR</span>
-                        <button class="avatar-edit-btn" id="avatarEditBtn" title="Change photo">
+                        <span id="profileInitials">--</span>
+                        <button type="button" class="avatar-edit-btn" id="avatarEditBtn" onclick="openEditProfileModal(event)" title="Change photo">
                             <i class="fa-solid fa-camera"></i>
                         </button>
                     </div>
+                    <input type="file" id="avatarFileInput" accept="image/*" style="display: none;">
                 </div>
 
                 <!-- View mode -->
                 <div class="profile-details" id="profileViewMode">
                     <h1 class="profile-name">
-                        Sarah Rahman
-                        <span class="badge-year" id="viewYear">Year 3</span>
+                        <span id="viewFullName">Loading Profile...</span>
+                        <span class="badge-year" id="viewYear">Year 1</span>
+                        <span class="badge-donor" id="viewBloodDonorBadge" style="display: none;">
+                            <i class="fa-solid fa-droplet"></i> <span id="viewBloodGroup">O+</span> Donor
+                        </span>
                     </h1>
-                    <p class="profile-department" id="viewDepartment">Computer Science &amp; Engineering</p>
-                    <p class="profile-email" id="viewEmail">sarah.rahman@campus360.edu</p>
+                    <p class="profile-department" id="viewDepartment">Loading department...</p>
+                    <div class="profile-meta-row" style="display: flex; flex-wrap: wrap; gap: 1.25rem; font-size: 0.8rem; color: var(--text-muted); margin: 0.4rem 0 0.75rem 0;">
+                        <span><i class="fa-solid fa-id-card" style="color: var(--primary-color);"></i> ID: <strong id="viewUniversityId" style="color: var(--text-main);">-</strong></span>
+                        <span><i class="fa-regular fa-envelope" style="color: var(--primary-color);"></i> <span id="viewEmail">-</span></span>
+                        <span id="viewPhoneWrap" style="display: none;"><i class="fa-solid fa-phone" style="color: var(--primary-color);"></i> <span id="viewPhone">-</span></span>
+                        <span id="viewGenderWrap" style="display: none;"><i class="fa-solid fa-user" style="color: var(--primary-color);"></i> <span id="viewGender">-</span></span>
+                    </div>
                     <p class="profile-bio" id="viewBio">
-                        CSE student passionate about AI and web development. Always looking for study
-                        partners and happy to collaborate on projects.
+                        No bio provided yet. Click "Edit Profile" to tell your peers about your interests, courses, and skills.
                     </p>
                 </div>
-
-                <!-- Edit mode (hidden by default) -->
-                <form class="profile-edit-form" id="profileEditForm" hidden>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="inputName">Full Name</label>
-                            <input type="text" id="inputName" value="Sarah Rahman">
-                        </div>
-                        <div class="form-group form-group-sm">
-                            <label for="inputYear">Year</label>
-                            <select id="inputYear">
-                                <option value="Year 1">Year 1</option>
-                                <option value="Year 2">Year 2</option>
-                                <option value="Year 3" selected>Year 3</option>
-                                <option value="Year 4">Year 4</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="inputDepartment">Department</label>
-                        <input type="text" id="inputDepartment" value="Computer Science & Engineering">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="inputEmail">Email</label>
-                        <input type="email" id="inputEmail" value="sarah.rahman@campus360.edu">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="inputBio">Bio</label>
-                        <textarea id="inputBio" rows="3">CSE student passionate about AI and web development. Always looking for study partners and happy to collaborate on projects.</textarea>
-                    </div>
-
-                    <div class="form-actions">
-                        <button type="button" class="btn btn-outline" id="cancelEditBtn">Cancel</button>
-                        <button type="submit" class="btn btn-primary" id="saveEditBtn">Save Changes</button>
-                    </div>
-                </form>
 
                 <!-- Stats row -->
                 <div class="profile-stats">
                     <button class="stat-item" data-target-tab="posts">
-                        <span class="stat-num" id="statPosts">3</span> Posts
+                        <span class="stat-num" id="statPosts">0</span> Posts
                     </button>
                     <button class="stat-item" data-target-tab="bookmarks">
-                        <span class="stat-num" id="statBookmarks">3</span> Bookmarks
+                        <span class="stat-num" id="statBookmarks">0</span> Bookmarks
+                    </button>
+                    <button class="stat-item stat-item-static" id="statDonorItem">
+                        <span class="stat-num" id="statDonorText"><i class="fa-solid fa-graduation-cap" style="color:var(--primary-color);"></i> Student</span>
                     </button>
                     <button class="stat-item stat-item-static">
-                        <span class="stat-num">48</span> Connections
+                        <span class="stat-num" id="statJoined">-</span> Joined
                     </button>
                 </div>
 
-                <!-- Tabs -->
+                <!-- Tabs (Equal consistent width and alignment) -->
                 <div class="profile-tabs" id="profileTabs">
                     <button class="profile-tab active" data-tab="posts">
-                        My Posts <span class="tab-count" id="tabCountPosts">3</span>
+                        <i class="fa-solid fa-table-cells-large"></i> <span>My Posts</span> <span class="tab-count" id="tabCountPosts">0</span>
                     </button>
                     <button class="profile-tab" data-tab="bookmarks">
-                        Bookmarks <span class="tab-count" id="tabCountBookmarks">3</span>
+                        <i class="fa-regular fa-bookmark"></i> <span>Bookmarks</span> <span class="tab-count" id="tabCountBookmarks">0</span>
                     </button>
-                    <button class="profile-tab" data-tab="about">About</button>
+                    <button class="profile-tab" data-tab="about">
+                        <i class="fa-regular fa-id-card"></i> <span>About</span> <span class="tab-count" id="tabCountAbout"><i class="fa-solid fa-user-check" style="font-size: 0.65rem;"></i></span>
+                    </button>
                 </div>
             </div>
 
-            <!-- Tab panels -->
+            <!-- Tab panels (Consistent minimum height and layout) -->
             <div class="profile-tab-panels">
 
                 <!-- My Posts -->
                 <section class="tab-panel active" id="panel-posts">
+                    <!-- Filter Chips -->
+                    <div class="filter-chips" id="postsFilterChips">
+                        <button class="filter-chip active" data-type="all">All</button>
+                        <button class="filter-chip" data-type="lost_found"><i class="fa-solid fa-magnifying-glass"></i> Lost &amp; Found</button>
+                        <button class="filter-chip" data-type="marketplace"><i class="fa-solid fa-store"></i> Marketplace</button>
+                        <button class="filter-chip" data-type="material_share"><i class="fa-solid fa-folder-open"></i> Materials</button>
+                        <button class="filter-chip" data-type="complaint"><i class="fa-solid fa-flag"></i> Complaints</button>
+                        <button class="filter-chip" data-type="study_session"><i class="fa-solid fa-book-open"></i> Study Zone</button>
+                    </div>
 
-                    <article class="post-card" data-post-id="1">
-                        <div class="post-header">
-                            <span class="tag-pill tag-study">Study Zone</span>
-                            <span class="post-time">2 days ago</span>
-                        </div>
-                        <div class="post-content">
-                            <h3>Data Structures &amp; Algorithms — Pre-Exam Group Study</h3>
-                            <p>
-                                Focused group study before the mid-term. Covering Trees, Graphs, and Dynamic
-                                Programming. Everyone should come having reviewed the lecture notes.
-                            </p>
-                        </div>
-                        <div class="post-actions">
-                            <button class="action-btn" data-action="like">
-                                <i class="fa-regular fa-heart"></i> <span class="like-count">9</span>
-                            </button>
-                            <button class="action-btn" data-action="comment">
-                                <i class="fa-regular fa-comment"></i> 5
-                            </button>
-                            <div class="action-right">
-                                <button class="action-btn" data-action="more">
-                                    <i class="fa-solid fa-ellipsis"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </article>
-
-                    <article class="post-card" data-post-id="2">
-                        <div class="post-header">
-                            <span class="tag-pill tag-marketplace">Marketplace</span>
-                            <span class="post-time">5 days ago</span>
-                        </div>
-                        <div class="post-content">
-                            <h3>Selling: Introduction to Algorithms (CLRS) — 3rd Edition</h3>
-                            <p>
-                                Lightly used, no highlights or notes. Original price BDT 3,200. Selling for
-                                BDT 1,400. Pickup available on campus.
-                            </p>
-                        </div>
-                        <div class="post-actions">
-                            <button class="action-btn" data-action="like">
-                                <i class="fa-regular fa-heart"></i> <span class="like-count">6</span>
-                            </button>
-                            <button class="action-btn" data-action="comment">
-                                <i class="fa-regular fa-comment"></i> 2
-                            </button>
-                            <div class="action-right">
-                                <button class="action-btn" data-action="more">
-                                    <i class="fa-solid fa-ellipsis"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </article>
-
-                    <article class="post-card" data-post-id="3">
-                        <div class="post-header">
-                            <span class="tag-pill tag-lostfound">Lost &amp; Found</span>
-                            <span class="post-time">1 week ago</span>
-                        </div>
-                        <div class="post-content">
-                            <h3>Found: Blue Water Bottle near Library Entrance</h3>
-                            <p>
-                                Found a blue steel water bottle near the library entrance on Tuesday
-                                afternoon. Message me with a description to claim it.
-                            </p>
-                        </div>
-                        <div class="post-actions">
-                            <button class="action-btn" data-action="like">
-                                <i class="fa-regular fa-heart"></i> <span class="like-count">3</span>
-                            </button>
-                            <button class="action-btn" data-action="comment">
-                                <i class="fa-regular fa-comment"></i> 1
-                            </button>
-                            <div class="action-right">
-                                <button class="action-btn" data-action="more">
-                                    <i class="fa-solid fa-ellipsis"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </article>
-
+                    <!-- Posts Container -->
+                    <div id="postsListContainer" class="posts-list" style="display: flex; flex-direction: column; gap: 1rem;">
+                        <!-- Injected dynamically -->
+                    </div>
                 </section>
 
                 <!-- Bookmarks -->
                 <section class="tab-panel" id="panel-bookmarks">
+                    <!-- Filter Chips for consistent height & category browsing -->
+                    <div class="filter-chips" id="bookmarksFilterChips">
+                        <button class="filter-chip active" data-type="all">All</button>
+                        <button class="filter-chip" data-type="lost_found"><i class="fa-solid fa-magnifying-glass"></i> Lost &amp; Found</button>
+                        <button class="filter-chip" data-type="marketplace"><i class="fa-solid fa-store"></i> Marketplace</button>
+                        <button class="filter-chip" data-type="material_share"><i class="fa-solid fa-folder-open"></i> Materials</button>
+                        <button class="filter-chip" data-type="complaint"><i class="fa-solid fa-flag"></i> Complaints</button>
+                        <button class="filter-chip" data-type="study_session"><i class="fa-solid fa-book-open"></i> Study Zone</button>
+                    </div>
 
-                    <article class="post-card" data-post-id="4">
-                        <div class="post-header">
-                            <span class="tag-pill tag-material">Material Sharing</span>
-                            <span class="post-time">3 days ago</span>
-                        </div>
-                        <div class="post-content">
-                            <h3>CSE220 Midterm Question Bank (2021–2024)</h3>
-                            <p>Compiled previous midterm questions with solutions for quick revision.</p>
-                        </div>
-                        <div class="post-actions">
-                            <button class="action-btn" data-action="like">
-                                <i class="fa-regular fa-heart"></i> <span class="like-count">14</span>
-                            </button>
-                            <button class="action-btn" data-action="comment">
-                                <i class="fa-regular fa-comment"></i> 4
-                            </button>
-                            <div class="action-right">
-                                <button class="action-btn active" data-action="bookmark">
-                                    <i class="fa-solid fa-bookmark"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </article>
-
-                    <article class="post-card" data-post-id="5">
-                        <div class="post-header">
-                            <span class="tag-pill tag-event">Events</span>
-                            <span class="post-time">1 week ago</span>
-                        </div>
-                        <div class="post-content">
-                            <h3>TechFest 2024 — Registration Now Open</h3>
-                            <p>Annual tech festival with workshops, competitions, and guest speakers.</p>
-                        </div>
-                        <div class="post-actions">
-                            <button class="action-btn" data-action="like">
-                                <i class="fa-regular fa-heart"></i> <span class="like-count">21</span>
-                            </button>
-                            <button class="action-btn" data-action="comment">
-                                <i class="fa-regular fa-comment"></i> 8
-                            </button>
-                            <div class="action-right">
-                                <button class="action-btn active" data-action="bookmark">
-                                    <i class="fa-solid fa-bookmark"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </article>
-
-                    <article class="post-card" data-post-id="6">
-                        <div class="post-header">
-                            <span class="tag-pill tag-study">Study Zone</span>
-                            <span class="post-time">2 weeks ago</span>
-                        </div>
-                        <div class="post-content">
-                            <h3>Database Lab Final Prep — Group Session</h3>
-                            <p>Reviewing SQL joins, normalization, and past lab exam patterns together.</p>
-                        </div>
-                        <div class="post-actions">
-                            <button class="action-btn" data-action="like">
-                                <i class="fa-regular fa-heart"></i> <span class="like-count">7</span>
-                            </button>
-                            <button class="action-btn" data-action="comment">
-                                <i class="fa-regular fa-comment"></i> 3
-                            </button>
-                            <div class="action-right">
-                                <button class="action-btn active" data-action="bookmark">
-                                    <i class="fa-solid fa-bookmark"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </article>
-
+                    <!-- Bookmarks Container -->
+                    <div id="bookmarksListContainer" class="posts-list" style="display: flex; flex-direction: column; gap: 1rem;">
+                        <!-- Injected dynamically -->
+                    </div>
                 </section>
 
                 <!-- About -->
                 <section class="tab-panel" id="panel-about">
-                    <div class="about-card">
-                        <h3>About Sarah</h3>
-                        <ul class="about-list">
-                            <li><i class="fa-solid fa-graduation-cap"></i> Computer Science &amp; Engineering, Year 3</li>
-                            <li><i class="fa-regular fa-envelope"></i> sarah.rahman@campus360.edu</li>
-                            <li><i class="fa-solid fa-users"></i> 48 Connections</li>
-                            <li><i class="fa-regular fa-calendar"></i> Joined Campus 360 in January 2024</li>
-                        </ul>
-                        <p class="about-bio-full">
-                            CSE student passionate about AI and web development. Always looking for study
-                            partners and happy to collaborate on projects.
-                        </p>
+                    <div class="about-card" id="aboutCardContainer">
+                        <!-- Populated dynamically -->
                     </div>
                 </section>
 
@@ -393,8 +228,122 @@
     </main>
 </div>
 
-<script src="js/auth.js"></script>
-<script src="js/api.js"></script>
-<script src="js/my-profile.js"></script>
+<!-- Edit Profile Modal -->
+<div class="modal-overlay" id="editProfileModal" style="display: none;">
+    <div class="modal-box profile-modal-box">
+        <div class="modal-header">
+            <div style="display: flex; align-items: center; gap: 0.6rem;">
+                <div class="modal-header-icon"><i class="fa-regular fa-pen-to-square"></i></div>
+                <div>
+                    <h3 style="margin: 0; font-size: 1.15rem; color: var(--text-main);">Edit Profile</h3>
+                    <p style="margin: 0; font-size: 0.78rem; color: var(--text-muted);">Update your student details, photo, and academic bio</p>
+                </div>
+            </div>
+            <button type="button" class="close-modal-btn" id="closeProfileModalBtn" onclick="closeEditProfileModal(event)" aria-label="Close">&times;</button>
+        </div>
+
+        <form id="profileEditModalForm" class="modal-body-form">
+            <!-- Modal Avatar Picker -->
+            <div class="modal-avatar-section">
+                <div class="modal-avatar-preview" id="modalAvatarPreview">
+                    <span id="modalAvatarInitials">ST</span>
+                </div>
+                <div class="modal-avatar-controls">
+                    <button type="button" class="btn btn-outline btn-sm" id="modalUploadPhotoBtn">
+                        <i class="fa-solid fa-camera"></i> Change Photo
+                    </button>
+                    <input type="file" id="modalAvatarFileInput" accept="image/*" style="display: none;">
+                    <span style="font-size: 0.72rem; color: var(--text-muted); display: block; margin-top: 0.25rem;">
+                        JPG, PNG, WebP up to 3MB
+                    </span>
+                </div>
+            </div>
+
+            <!-- Full Name & Study Year -->
+            <div class="form-row">
+                <div class="form-group" style="flex: 2;">
+                    <label for="modalInputName">Full Name *</label>
+                    <input type="text" id="modalInputName" required placeholder="Enter full name">
+                </div>
+                <div class="form-group" style="flex: 1;">
+                    <label for="modalInputYear">Study Year *</label>
+                    <select id="modalInputYear">
+                        <option value="Year 1">Year 1</option>
+                        <option value="Year 2">Year 2</option>
+                        <option value="Year 3">Year 3</option>
+                        <option value="Year 4">Year 4</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Department & Gender -->
+            <div class="form-row">
+                <div class="form-group" style="flex: 2;">
+                    <label for="modalInputDepartment">Department</label>
+                    <select id="modalInputDepartment">
+                        <option value="">Select Department...</option>
+                        <option value="1">Computer Science and Engineering (CSE)</option>
+                        <option value="2">Data Science (DS)</option>
+                    </select>
+                </div>
+                <div class="form-group" style="flex: 1;">
+                    <label for="modalInputGender">Gender</label>
+                    <select id="modalInputGender">
+                        <option value="">Select...</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Other">Other</option>
+                        <option value="Prefer not to say">Prefer not to say</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Phone & Photo URL -->
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="modalInputPhone">Phone Number</label>
+                    <input type="tel" id="modalInputPhone" placeholder="+880 1XXXXXXXXX">
+                </div>
+                <div class="form-group">
+                    <label for="modalInputAvatarUrl">Photo URL <small style="color:var(--text-muted);">(optional)</small></label>
+                    <input type="url" id="modalInputAvatarUrl" placeholder="https://example.com/photo.jpg">
+                </div>
+            </div>
+
+            <!-- Bio -->
+            <div class="form-group">
+                <label for="modalInputBio">Bio / Academic Interests</label>
+                <textarea id="modalInputBio" rows="3" placeholder="Tell peers about your interests, current courses, or project ideas..."></textarea>
+            </div>
+
+            <!-- Academic Info (Read-only badges) -->
+            <div class="modal-academic-info">
+                <div class="academic-chip">
+                    <i class="fa-solid fa-id-card"></i> Student ID: <strong id="modalViewUniId">-</strong>
+                </div>
+                <div class="academic-chip">
+                    <i class="fa-regular fa-envelope"></i> Email: <strong id="modalViewEmail">-</strong>
+                </div>
+            </div>
+
+            <div class="modal-actions">
+                <button type="button" class="btn btn-outline" id="modalCancelBtn" onclick="closeEditProfileModal(event)">Cancel</button>
+                <button type="submit" class="btn btn-primary" id="modalSaveBtn">
+                    <i class="fa-solid fa-check"></i> Save Changes
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Floating Toast Notification -->
+<div id="profileToast" class="profile-toast">
+    <i class="fa-solid fa-circle-check"></i>
+    <span id="toastMessage">Success</span>
+</div>
+
+<script src="js/auth.js?v=6.0"></script>
+<script src="js/api.js?v=6.0"></script>
+<script src="js/my-profile.js?v=6.0"></script>
 </body>
 </html>

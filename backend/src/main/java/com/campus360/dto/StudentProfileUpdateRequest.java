@@ -8,5 +8,8 @@ public class StudentProfileUpdateRequest {
     private String gender;
     private Long departmentId;
     private String profilePictureUrl;
+    private String bio;
+    private String studyYear;
+    private String phone;
 }
 

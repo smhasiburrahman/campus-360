@@ -67,9 +67,6 @@
                 <a href="shuttle.html" class="nav-item">
                     <i class="fa-solid fa-bus"></i> Shuttle Tracking
                 </a>
-                <a href="#" class="nav-item">
-                    <i class="fa-regular fa-bell"></i> Notifications <span class="nav-badge">5</span>
-                </a>
                 <a href="my-profile.html" class="nav-item">
                     <i class="fa-regular fa-user"></i> My Profile
                 </a>
@@ -86,17 +83,14 @@
                 <input type="text" placeholder="Search posts, people, materials...">
             </div>
             <div class="topbar-actions">
-                <div class="notification-bell">
-                    <i class="far fa-bell"></i>
-                    <div class="notification-dot"></div>
-                </div>
-                <div class="user-profile" id="userProfileDropdownToggle" style="position:relative;">
-                    <div class="avatar" id="topbarAvatar">U</div>
-                    <span class="user-name" id="topbarName">User</span>
-                    <i class="fas fa-chevron-down" style="font-size: 0.8rem; color: var(--text-muted);"></i>
-                    
-                    <div class="profile-dropdown-menu" id="profileDropdownMenu" style="display:none; position:absolute; top:100%; right:0; background:white; border:1px solid var(--border-color); border-radius:8px; box-shadow:var(--shadow-sm); min-width:150px; z-index:100; margin-top:0.5rem; padding:0.5rem 0;">
-                        <a href="#" id="logoutBtn" style="display:block; padding:0.5rem 1rem; color:var(--text-main); text-decoration:none;"><i class="fas fa-sign-out-alt"></i> Log Out</a>
+                <div class="user-profile" id="userProfileBtn">
+                    <div class="avatar" id="navAvatar">U</div>
+                    <div class="user-name" id="navName">User</div>
+                    <i class="fa-solid fa-chevron-down" style="color: #94a3b8; font-size: 0.8rem;"></i>
+                    <div class="profile-dropdown" id="profileDropdown" style="display: none;">
+                        <button id="logoutBtn">
+                            <i class="fa-solid fa-arrow-right-from-bracket"></i> Log Out
+                        </button>
                     </div>
                 </div>
             </div>

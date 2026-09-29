@@ -20,8 +20,15 @@ public class StudentProfileResponse {
     private String departmentName;
     private String gender;
     private String profilePictureUrl;
+    private String bio;
+    private String studyYear;
+    private String phone;
     private Boolean onboardingComplete;
     private Boolean isActive;
     private LocalDateTime createdAt;
+    private Long postsCount;
+    private Long bookmarksCount;
+    private Boolean isBloodDonor;
+    private String bloodGroup;
 }
 

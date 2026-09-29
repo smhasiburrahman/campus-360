@@ -57,9 +57,9 @@ async function apiFetch(endpoint, options = {}) {
                 role: payload.role || 'ROLE_STUDENT'
             };
 
-            // Wait for DOM to load to inject admin menu
-            document.addEventListener('DOMContentLoaded', () => {
-                if (window.currentUser.role === 'ROLE_ADMIN') {
+            // Setup DOM components reliably
+            function initApiDom() {
+                if (window.currentUser && window.currentUser.role === 'ROLE_ADMIN') {
                     const sidebarNav = document.querySelector('.sidebar-nav');
                     if (sidebarNav && !document.getElementById('adminSidebarSection')) {
                         const adminHtml = `
@@ -81,8 +81,8 @@ async function apiFetch(endpoint, options = {}) {
                 }
 
                 // 2. Setup Topbar Dropdown
-                const userProfileBtn = document.getElementById('userProfileBtn');
-                let profileDropdown = document.getElementById('profileDropdown');
+                const userProfileBtn = document.getElementById('userProfileBtn') || document.getElementById('userProfileDropdownToggle');
+                let profileDropdown = document.getElementById('profileDropdown') || document.getElementById('profileDropdownMenu');
 
                 if (userProfileBtn) {
                     // Inject dropdown if it doesn't exist
@@ -112,15 +112,54 @@ async function apiFetch(endpoint, options = {}) {
                     });
                 }
 
-                // 3. Setup Logout Logic (re-query to get the one we just injected)
+                // 3. Setup Logout Logic (re-query to get the one we just injected or present)
                 const logoutBtn = document.getElementById('logoutBtn');
                 if (logoutBtn) {
-                    logoutBtn.addEventListener('click', () => {
+                    logoutBtn.addEventListener('click', (e) => {
+                        e.preventDefault();
                         localStorage.removeItem('token');
+                        localStorage.removeItem('jwt');
+                        localStorage.removeItem('user');
                         window.location.href = 'index.html';
                     });
                 }
-            });
+
+                // 4. Uniformly Sync User Profile & Avatar Across All Pages
+                async function syncUserNav() {
+                    try {
+                        const res = await apiFetch('/students/me');
+                        if (res && res.ok) {
+                            const user = await res.json();
+                            const navNames = [document.getElementById('navName'), document.getElementById('topbarName')].filter(Boolean);
+                            const navAvatars = [document.getElementById('navAvatar'), document.getElementById('topbarAvatar')].filter(Boolean);
+
+                            if (user.fullName) {
+                                navNames.forEach(el => el.textContent = user.fullName);
+                                const initials = user.fullName.split(' ').filter(Boolean).map(n => n[0]).join('').substring(0, 2).toUpperCase() || 'U';
+                                navAvatars.forEach(el => {
+                                    if (user.profilePictureUrl && user.profilePictureUrl.trim().length > 0) {
+                                        el.style.backgroundImage = `url("${user.profilePictureUrl}")`;
+                                        el.style.backgroundSize = 'cover';
+                                        el.style.backgroundPosition = 'center';
+                                        el.textContent = '';
+                                    } else {
+                                        el.textContent = initials;
+                                    }
+                                });
+                            }
+                        }
+                    } catch (e) {
+                        // Ignore if non-student or network issue
+                    }
+                }
+                syncUserNav();
+            }
+
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', initApiDom);
+            } else {
+                initApiDom();
+            }
 
         } catch (e) {
             console.error('Failed to parse token payload', e);

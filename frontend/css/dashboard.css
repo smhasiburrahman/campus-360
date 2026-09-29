@@ -193,6 +193,8 @@ body {
     align-items: center;
     gap: 0.75rem;
     cursor: pointer;
+    position: relative;
+    user-select: none;
 }
 
 .avatar {
@@ -211,6 +213,43 @@ body {
     font-size: 0.95rem;
     font-weight: 600;
     color: var(--text-main);
+}
+
+.profile-dropdown {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    background: #ffffff;
+    border: 1px solid var(--border-color, #e2e8f0);
+    border-radius: var(--radius-md, 8px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    padding: 0.5rem 0;
+    min-width: 160px;
+    z-index: 1000;
+}
+
+.profile-dropdown button,
+.profile-dropdown a {
+    width: 100%;
+    text-align: left;
+    padding: 0.65rem 1rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #ef4444;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    transition: background-color 0.15s ease;
+    text-decoration: none;
+    box-sizing: border-box;
+}
+
+.profile-dropdown button:hover,
+.profile-dropdown a:hover {
+    background-color: #fef2f2;
 }
 
 /* Dashboard Content Grid */

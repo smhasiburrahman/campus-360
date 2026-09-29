@@ -1,17 +1,27 @@
 document.addEventListener('DOMContentLoaded', () => {
     // Topbar Profile Init
-    const avatar = document.getElementById('topbarAvatar');
-    const name = document.getElementById('topbarName');
+    const avatar = document.getElementById('navAvatar') || document.getElementById('topbarAvatar');
+    const name = document.getElementById('navName') || document.getElementById('topbarName');
     async function fetchUserProfile() {
         try {
             const res = await apiFetch('/students/me');
             if (res && res.ok) {
                 const user = await res.json();
-                name.textContent = user.fullName;
-                const initials = user.fullName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
-                avatar.textContent = initials;
+                if (name && user.fullName) name.textContent = user.fullName;
+                if (avatar && user.fullName) {
+                    const initials = user.fullName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+                    if (user.profilePictureUrl) {
+                        avatar.style.backgroundImage = `url("${user.profilePictureUrl}")`;
+                        avatar.style.backgroundSize = 'cover';
+                        avatar.style.backgroundPosition = 'center';
+                        avatar.textContent = '';
+                    } else {
+                        avatar.textContent = initials;
+                    }
+                }
                 
-                document.getElementById('shareMaterialBtn').style.display = 'inline-flex';
+                const shareBtn = document.getElementById('shareMaterialBtn');
+                if (shareBtn) shareBtn.style.display = 'inline-flex';
             }
         } catch (err) {
             console.error('Failed to load user profile', err);
@@ -20,22 +30,28 @@ document.addEventListener('DOMContentLoaded', () => {
     fetchUserProfile();
 
     // Dropdown toggle
-    const toggle = document.getElementById('userProfileDropdownToggle');
-    const menu = document.getElementById('profileDropdownMenu');
-    toggle.addEventListener('click', (e) => {
-        e.stopPropagation();
-        menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
-    });
-    document.addEventListener('click', () => {
-        menu.style.display = 'none';
-    });
+    const toggle = document.getElementById('userProfileBtn') || document.getElementById('userProfileDropdownToggle');
+    const menu = document.getElementById('profileDropdown') || document.getElementById('profileDropdownMenu');
+    if (toggle && menu) {
+        toggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
+        });
+        document.addEventListener('click', () => {
+            menu.style.display = 'none';
+        });
+    }
 
-    document.getElementById('logoutBtn').addEventListener('click', (e) => {
-        e.preventDefault();
-        localStorage.removeItem('jwt');
-        localStorage.removeItem('user');
-        window.location.href = 'index.html';
-    });
+    const logoutEl = document.getElementById('logoutBtn');
+    if (logoutEl) {
+        logoutEl.addEventListener('click', (e) => {
+            e.preventDefault();
+            localStorage.removeItem('token');
+            localStorage.removeItem('jwt');
+            localStorage.removeItem('user');
+            window.location.href = 'index.html';
+        });
+    }
     
     // Search by course code
     const searchInput = document.getElementById('courseSearchInput');

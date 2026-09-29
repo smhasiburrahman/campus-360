@@ -49,6 +49,15 @@ public class StudentService {
     @Autowired
     private EventRepository eventRepository;
 
+    @Autowired(required = false)
+    private ComplaintRepository complaintRepository;
+
+    @Autowired(required = false)
+    private StudySessionRepository studySessionRepository;
+
+    @Autowired(required = false)
+    private BloodDonorRepository bloodDonorRepository;
+
     // ==========================================
     // PROFILE MANAGEMENT
     // ==========================================
@@ -89,6 +98,15 @@ public class StudentService {
         }
         if (request.getProfilePictureUrl() != null) {
             student.setProfilePictureUrl(request.getProfilePictureUrl().trim());
+        }
+        if (request.getBio() != null) {
+            student.setBio(request.getBio().trim());
+        }
+        if (request.getStudyYear() != null) {
+            student.setStudyYear(request.getStudyYear().trim());
+        }
+        if (request.getPhone() != null) {
+            student.setPhone(request.getPhone().trim());
         }
 
         Student saved = studentRepository.save(student);
@@ -134,6 +152,40 @@ public class StudentService {
             }
         }
 
+        // Count posts across modules
+        long lfCount = lostFoundPostRepository.findByStudentIdAndIsDeletedFalse(student.getId(), Pageable.unpaged()).getTotalElements();
+        long matCount = materialShareRepository.findByStudentIdAndIsDeletedFalse(student.getId(), Pageable.unpaged()).getTotalElements();
+        long mktCount = 0;
+        if (vendorProfileRepository != null) {
+            var vOpt = vendorProfileRepository.findByStudentId(student.getId());
+            if (vOpt.isPresent()) {
+                mktCount = marketplaceListingRepository.findByVendorIdAndIsDeletedFalse(vOpt.get().getId(), Pageable.unpaged()).getTotalElements();
+            }
+        }
+        long compCount = 0;
+        if (complaintRepository != null) {
+            compCount = complaintRepository.findByIsDeletedFalseAndStudentId(student.getId(), Pageable.unpaged()).getTotalElements();
+        }
+        long studyCount = 0;
+        if (studySessionRepository != null) {
+            studyCount = studySessionRepository.findByIsDeletedFalseAndStudentId(student.getId(), Pageable.unpaged()).getTotalElements();
+        }
+        long totalPosts = lfCount + matCount + mktCount + compCount + studyCount;
+
+        // Count bookmarks
+        long totalBookmarks = bookmarkRepository.countByStudentId(student.getId());
+
+        // Blood donor info
+        boolean isDonor = false;
+        String bloodGroup = null;
+        if (bloodDonorRepository != null) {
+            var donorOpt = bloodDonorRepository.findByStudentId(student.getId());
+            if (donorOpt.isPresent()) {
+                isDonor = true;
+                bloodGroup = donorOpt.get().getBloodGroup();
+            }
+        }
+
         return StudentProfileResponse.builder()
                 .id(student.getId())
                 .email(student.getEmail())
@@ -144,6 +196,13 @@ public class StudentService {
                 .departmentName(deptName)
                 .gender(student.getGender())
                 .profilePictureUrl(student.getProfilePictureUrl())
+                .bio(student.getBio())
+                .studyYear(student.getStudyYear())
+                .phone(student.getPhone())
+                .postsCount(totalPosts)
+                .bookmarksCount(totalBookmarks)
+                .isBloodDonor(isDonor)
+                .bloodGroup(bloodGroup)
                 .onboardingComplete(student.getOnboardingComplete())
                 .isActive(student.getIsActive())
                 .createdAt(student.getCreatedAt())
@@ -285,6 +344,44 @@ public class StudentService {
                             .build();
                 }).orElse(null);
 
+            case "complaint":
+                if (complaintRepository != null) {
+                    return complaintRepository.findById(postId).filter(c -> !Boolean.TRUE.equals(c.getIsDeleted())).map(c -> {
+                        List<String> images = imageRepository.findByPostTypeAndPostId("complaint", c.getId())
+                                .stream().map(PostImage::getImageUrl).collect(Collectors.toList());
+                        return StudentPostItemDTO.builder()
+                                .id(c.getId())
+                                .postType("complaint")
+                                .title(c.getTitle())
+                                .description(c.getDescription())
+                                .status(c.getStatus())
+                                .createdAt(c.getCreatedAt())
+                                .imageUrls(images)
+                                .ownerId(c.getStudentId())
+                                .build();
+                    }).orElse(null);
+                }
+                return null;
+
+            case "study_session":
+            case "study_zone":
+                if (studySessionRepository != null) {
+                    return studySessionRepository.findById(postId)
+                            .filter(s -> !Boolean.TRUE.equals(s.getIsDeleted()))
+                            .<StudentPostItemDTO>map(s -> StudentPostItemDTO.builder()
+                                    .id(s.getId())
+                                    .postType("study_session")
+                                    .title(s.getSubjectText() != null ? s.getSubjectText() : "Study Session")
+                                    .description(s.getDescription())
+                                    .status("active")
+                                    .createdAt(s.getCreatedAt())
+                                    .imageUrls(new ArrayList<String>())
+                                    .ownerId(s.getStudentId())
+                                    .build())
+                            .orElse(null);
+                }
+                return null;
+
             default:
                 return null;
         }
@@ -298,7 +395,7 @@ public class StudentService {
         String postType = normalizePostType(rawPostType);
         List<StudentPostItemDTO> allItems = new ArrayList<>();
 
-        if (postType == null || postType.equals("lost_found")) {
+        if (postType == null || postType.equals("lost_found") || postType.equals("lostfound")) {
             Page<LostFoundPost> lfPage = lostFoundPostRepository.findByStudentIdAndIsDeletedFalse(studentId, Pageable.unpaged());
             for (LostFoundPost p : lfPage) {
                 List<String> images = imageRepository.findByPostTypeAndPostId("lost_found", p.getId())
@@ -336,7 +433,7 @@ public class StudentService {
             });
         }
 
-        if (postType == null || postType.equals("material_share")) {
+        if (postType == null || postType.equals("material_share") || postType.equals("materials")) {
             Page<MaterialShare> matPage = materialShareRepository.findByStudentIdAndIsDeletedFalse(studentId, Pageable.unpaged());
             for (MaterialShare m : matPage) {
                 allItems.add(StudentPostItemDTO.builder()
@@ -346,6 +443,40 @@ public class StudentService {
                         .description(m.getDescription())
                         .status("available")
                         .createdAt(m.getCreatedAt())
+                        .imageUrls(new ArrayList<>())
+                        .ownerId(studentId)
+                        .build());
+            }
+        }
+
+        if (complaintRepository != null && (postType == null || postType.equals("complaint") || postType.equals("complaints"))) {
+            Page<Complaint> compPage = complaintRepository.findByIsDeletedFalseAndStudentId(studentId, Pageable.unpaged());
+            for (Complaint c : compPage) {
+                List<String> images = imageRepository.findByPostTypeAndPostId("complaint", c.getId())
+                        .stream().map(PostImage::getImageUrl).collect(Collectors.toList());
+                allItems.add(StudentPostItemDTO.builder()
+                        .id(c.getId())
+                        .postType("complaint")
+                        .title(c.getTitle())
+                        .description(c.getDescription())
+                        .status(c.getStatus())
+                        .createdAt(c.getCreatedAt())
+                        .imageUrls(images)
+                        .ownerId(studentId)
+                        .build());
+            }
+        }
+
+        if (studySessionRepository != null && (postType == null || postType.equals("study_session") || postType.equals("study_zone") || postType.equals("studyzone"))) {
+            Page<StudySession> studyPage = studySessionRepository.findByIsDeletedFalseAndStudentId(studentId, Pageable.unpaged());
+            for (StudySession s : studyPage) {
+                allItems.add(StudentPostItemDTO.builder()
+                        .id(s.getId())
+                        .postType("study_session")
+                        .title(s.getSubjectText() != null ? s.getSubjectText() : "Study Session")
+                        .description(s.getDescription())
+                        .status("active")
+                        .createdAt(s.getCreatedAt())
                         .imageUrls(new ArrayList<>())
                         .ownerId(studentId)
                         .build());

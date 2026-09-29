@@ -35,7 +35,16 @@ public class Student {
     @Column
     private String gender;
 
-    @Column(name = "profile_picture_url")
+    @Column(columnDefinition = "TEXT")
+    private String bio;
+
+    @Column(name = "study_year")
+    private String studyYear;
+
+    @Column
+    private String phone;
+
+    @Column(name = "profile_picture_url", columnDefinition = "LONGTEXT")
     private String profilePictureUrl;
 
     @Column(name = "onboarding_complete", nullable = false)
