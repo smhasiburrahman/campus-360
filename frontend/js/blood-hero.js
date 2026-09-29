@@ -15,6 +15,8 @@ let selectedUrgencyFilter = '';
 let selectedDonorGroupFilter = '';
 let reqSearchQuery = '';
 
+let currentStudent = null;
+
 function getAuthHeaders() {
     const token = localStorage.getItem('token');
     const headers = { 'Content-Type': 'application/json' };
@@ -25,6 +27,12 @@ function getAuthHeaders() {
 }
 
 function getCurrentStudentId() {
+    if (currentStudent && currentStudent.id) {
+        return currentStudent.id;
+    }
+    if (window.currentStudentProfile && window.currentStudentProfile.id) {
+        return window.currentStudentProfile.id;
+    }
     if (window.currentUser && window.currentUser.id) {
         return window.currentUser.id;
     }
@@ -35,13 +43,119 @@ function getCurrentStudentId() {
             const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
             const jsonPayload = decodeURIComponent(atob(base64).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join(''));
             const payload = JSON.parse(jsonPayload);
-            return payload.userId || payload.sub || 1;
+            const resolvedId = payload.userId || payload.sub;
+            if (resolvedId) return resolvedId;
         } catch (e) {}
     }
-    return 1;
+    return null;
 }
 
-function initBloodHero() {
+async function fetchStudentProfile() {
+    try {
+        if (typeof apiFetch === 'function') {
+            const res = await apiFetch('/students/me');
+            if (res && res.ok) {
+                currentStudent = await res.json();
+                window.currentStudentProfile = currentStudent;
+
+                // Sync topbar user profile
+                const navName = document.getElementById('navName');
+                const navAvatar = document.getElementById('navAvatar');
+                if (navName && currentStudent.fullName) {
+                    navName.textContent = currentStudent.fullName;
+                }
+                if (navAvatar && currentStudent.fullName) {
+                    const initials = currentStudent.fullName.split(' ').filter(Boolean).map(n => n[0]).join('').substring(0, 2).toUpperCase() || 'U';
+                    navAvatar.textContent = initials;
+                }
+
+                // Update donor card header in Tab 5
+                updateDonorStudentCard(currentStudent, null);
+                return currentStudent;
+            }
+        }
+    } catch (err) {
+        console.warn('Could not fetch student profile for BloodHero:', err);
+    }
+    return null;
+}
+
+function setupNavDropdown() {
+    const userProfileBtn = document.getElementById('userProfileBtn');
+    const profileDropdown = document.getElementById('profileDropdown');
+    const logoutBtn = document.getElementById('logoutBtn');
+
+    if (userProfileBtn && profileDropdown) {
+        userProfileBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            profileDropdown.style.display = profileDropdown.style.display === 'block' ? 'none' : 'block';
+        });
+        document.addEventListener('click', () => {
+            if (profileDropdown) profileDropdown.style.display = 'none';
+        });
+    }
+
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', () => {
+            localStorage.removeItem('token');
+            window.location.href = 'index.html';
+        });
+    }
+}
+
+function updateDonorStudentCard(student, donorProfile) {
+    const cardName = document.getElementById('donorCardName');
+    const cardAvatar = document.getElementById('donorCardAvatar');
+    const cardMeta = document.getElementById('donorCardMeta');
+    const badge = document.getElementById('donorRegistrationBadge');
+    const statsDiv = document.getElementById('donorCardStats');
+    const totalCount = document.getElementById('donorCardTotalCount');
+    const submitBtn = document.getElementById('saveDonorProfileBtn');
+
+    const name = (student && student.fullName) ? student.fullName : (donorProfile ? donorProfile.studentName : 'Student Account');
+    const initials = name.split(' ').filter(Boolean).map(n => n[0]).join('').substring(0, 2).toUpperCase() || 'U';
+
+    if (cardAvatar) cardAvatar.textContent = initials;
+    if (cardName) cardName.textContent = name;
+
+    const uniId = (student && student.universityId) ? `ID: ${student.universityId}` : '';
+    const dept = (student && student.departmentName) ? student.departmentName : ((student && student.department && student.department.name) ? student.department.name : '');
+    const email = (student && student.email) ? student.email : '';
+    const metaParts = [uniId, dept, email].filter(Boolean);
+    if (cardMeta) {
+        cardMeta.textContent = metaParts.length > 0 ? metaParts.join(' • ') : 'Verified Campus Student Account';
+    }
+
+    if (donorProfile && donorProfile.id) {
+        if (badge) {
+            badge.style.background = '#dcfce7';
+            badge.style.color = '#15803d';
+            badge.style.border = '1px solid #86efac';
+            badge.innerHTML = '<i class="fa-solid fa-circle-check"></i> Registered Campus Donor';
+        }
+        if (statsDiv) {
+            statsDiv.style.display = 'block';
+            if (totalCount) totalCount.textContent = donorProfile.totalDonations || 0;
+        }
+        if (submitBtn) {
+            submitBtn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Update Donor Profile';
+        }
+    } else {
+        if (badge) {
+            badge.style.background = '#fef3c7';
+            badge.style.color = '#b45309';
+            badge.style.border = '1px solid #fde68a';
+            badge.innerHTML = '<i class="fa-solid fa-circle-info"></i> New Donor (Not Registered)';
+        }
+        if (statsDiv) statsDiv.style.display = 'none';
+        if (submitBtn) {
+            submitBtn.innerHTML = '<i class="fa-solid fa-user-plus"></i> Register as Campus BloodHero';
+        }
+    }
+}
+
+async function initBloodHero() {
+    setupNavDropdown();
     setupTabs();
     setupFilters();
     setupStudioLivePreview();
@@ -52,6 +166,7 @@ function initBloodHero() {
     setupDonationModal();
     setupOutsideResolutionModal();
 
+    await fetchStudentProfile();
     loadLiveStats();
     loadEmergencyRequests();
     loadDonors();
@@ -763,10 +878,16 @@ function setupRequestForm() {
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
             const submitBtn = form.querySelector('button[type="submit"]');
+            const payload = collectFormData();
+
+            if (!payload.requesterId) {
+                alert('Please log in with your student account to broadcast an emergency blood request.');
+                return;
+            }
+
             submitBtn.disabled = true;
             submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Broadcasting SOS...';
 
-            const payload = collectFormData();
             payload.isAiVerified = !!window.lastScannedSlipVerified;
 
             try {
@@ -779,12 +900,13 @@ function setupRequestForm() {
                 if (!res.ok) throw new Error('Failed to create request');
                 const created = await res.json();
 
-                // Save locally to tracked IDs so it is guaranteed to show even if auth token changed
+                // Save locally to tracked IDs for this student
                 try {
-                    let myTracked = JSON.parse(localStorage.getItem('bloodhero_my_request_ids') || '[]');
+                    const trackKey = 'bloodhero_my_request_ids_' + payload.requesterId;
+                    let myTracked = JSON.parse(localStorage.getItem(trackKey) || '[]');
                     if (!myTracked.includes(created.id)) {
                         myTracked.unshift(created.id);
-                        localStorage.setItem('bloodhero_my_request_ids', JSON.stringify(myTracked));
+                        localStorage.setItem(trackKey, JSON.stringify(myTracked));
                     }
                 } catch (e) {}
 
@@ -824,8 +946,9 @@ function setupRequestForm() {
 }
 
 function collectFormData() {
+    const studentId = getCurrentStudentId();
     return {
-        requesterId: parseInt(getCurrentStudentId(), 10),
+        requesterId: studentId ? parseInt(studentId, 10) : null,
         patientName: document.getElementById('reqPatientName').value.trim(),
         bloodGroup: document.getElementById('reqBloodGroup').value,
         unitsNeeded: parseInt(document.getElementById('reqUnitsNeeded').value) || 1,
@@ -1008,7 +1131,7 @@ function setupDonationModal() {
         try {
             const res = await fetch(`http://localhost:8080/api/v1/blood/requests/${requestId}/donate`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: getAuthHeaders(),
                 body: JSON.stringify({ notes })
             });
 
@@ -1122,28 +1245,49 @@ function setupEligibilityScreener() {
    ===================================================================== */
 async function loadMyProfile() {
     try {
-        const res = await fetch('http://localhost:8080/api/v1/blood/donors/me');
-        if (!res.ok) return;
-        const profile = await res.json();
-        if (!profile) return;
+        const studentId = getCurrentStudentId();
+        const url = studentId 
+            ? `http://localhost:8080/api/v1/blood/donors/me?studentId=${studentId}`
+            : 'http://localhost:8080/api/v1/blood/donors/me';
+
+        const res = await fetch(url, {
+            headers: getAuthHeaders()
+        });
 
         const availSwitch = document.getElementById('myAvailabilityToggle');
-        if (availSwitch) availSwitch.checked = !!profile.isAvailable;
-
         const bgSelect = document.getElementById('myBloodGroup');
-        if (bgSelect) bgSelect.value = profile.bloodGroup || 'O+';
-
         const phoneInput = document.getElementById('myContactNumber');
-        if (phoneInput) phoneInput.value = profile.contactNumber || '';
-
         const hallInput = document.getElementById('myHallArea');
-        if (hallInput) hallInput.value = profile.hallOrArea || '';
-
         const lastDateInput = document.getElementById('myLastDonationDate');
-        if (lastDateInput && profile.lastDonationDate) lastDateInput.value = profile.lastDonationDate;
-
         const notesInput = document.getElementById('myNotes');
-        if (notesInput) notesInput.value = profile.notes || '';
+
+        let profile = null;
+        if (res.ok) {
+            profile = await res.json();
+        }
+
+        if (profile && profile.id) {
+            // Logged-in student IS a registered donor
+            if (availSwitch) availSwitch.checked = profile.isAvailable !== false;
+            if (bgSelect) bgSelect.value = profile.bloodGroup || 'O+';
+            if (phoneInput) phoneInput.value = profile.contactNumber || '';
+            if (hallInput) hallInput.value = profile.hallOrArea || '';
+            if (lastDateInput) lastDateInput.value = profile.lastDonationDate || '';
+            if (notesInput) notesInput.value = profile.notes || '';
+
+            updateDonorStudentCard(currentStudent, profile);
+        } else {
+            // Unregistered / new student account:
+            // Explicitly clear all fields so no previous donor's data is shown!
+            if (availSwitch) availSwitch.checked = true;
+            if (bgSelect) bgSelect.value = 'O+';
+            if (phoneInput) phoneInput.value = (currentStudent && currentStudent.phone) ? currentStudent.phone : '';
+            if (hallInput) hallInput.value = '';
+            if (lastDateInput) lastDateInput.value = '';
+            if (notesInput) notesInput.value = '';
+
+            updateDonorStudentCard(currentStudent, null);
+        }
     } catch (e) {
         console.warn('Could not load current user donor profile:', e);
     }
@@ -1155,17 +1299,29 @@ function setupDonorProfileForm() {
 
     if (availSwitch) {
         availSwitch.addEventListener('change', async () => {
+            const studentId = getCurrentStudentId();
+            if (!studentId) {
+                alert('Please log in with your student account to update availability.');
+                return;
+            }
             try {
-                await fetch('http://localhost:8080/api/v1/blood/donors/availability', {
+                const res = await fetch('http://localhost:8080/api/v1/blood/donors/availability', {
                     method: 'PATCH',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ isAvailable: availSwitch.checked })
+                    headers: getAuthHeaders(),
+                    body: JSON.stringify({ 
+                        studentId: parseInt(studentId, 10),
+                        isAvailable: availSwitch.checked 
+                    })
                 });
+                if (!res.ok) {
+                    const errData = await res.json().catch(() => ({}));
+                    throw new Error(errData.message || 'Failed to update availability');
+                }
                 alert(`Your availability status is now: ${availSwitch.checked ? 'AVAILABLE' : 'OFFLINE'}`);
                 loadLiveStats();
                 loadDonors();
             } catch (e) {
-                alert('Could not update availability.');
+                alert('Could not update availability: ' + e.message);
             }
         });
     }
@@ -1173,7 +1329,14 @@ function setupDonorProfileForm() {
     if (form) {
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
+            const studentId = getCurrentStudentId();
+            if (!studentId) {
+                alert('Please log in with your student account to register as a donor.');
+                return;
+            }
+
             const payload = {
+                studentId: parseInt(studentId, 10),
                 bloodGroup: document.getElementById('myBloodGroup').value,
                 contactNumber: document.getElementById('myContactNumber').value.trim(),
                 hallOrArea: document.getElementById('myHallArea').value.trim(),
@@ -1182,18 +1345,34 @@ function setupDonorProfileForm() {
                 isAvailable: document.getElementById('myAvailabilityToggle') ? document.getElementById('myAvailabilityToggle').checked : true
             };
 
+            const submitBtn = document.getElementById('saveDonorProfileBtn') || form.querySelector('button[type="submit"]');
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving Profile...';
+            }
+
             try {
                 const res = await fetch('http://localhost:8080/api/v1/blood/donors/register', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: getAuthHeaders(),
                     body: JSON.stringify(payload)
                 });
-                if (!res.ok) throw new Error('Registration failed');
-                alert('🎉 Donor Profile successfully saved! Thank you for being a Campus BloodHero.');
+                if (!res.ok) {
+                    const errData = await res.json().catch(() => ({}));
+                    throw new Error(errData.message || 'Registration failed');
+                }
+                const saved = await res.json();
+                alert(`🎉 Donor Profile saved successfully for ${saved.studentName || 'you'}! Thank you for being a Campus BloodHero.`);
                 loadLiveStats();
                 loadDonors();
+                await loadMyProfile();
             } catch (err) {
                 alert('Error saving donor profile: ' + err.message);
+            } finally {
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Update Donor Profile';
+                }
             }
         });
     }
@@ -1232,7 +1411,11 @@ async function loadMyRequests() {
 
     try {
         const studentId = getCurrentStudentId();
-        const res = await fetch(`http://localhost:8080/api/v1/blood/requests/me?studentId=${studentId}`, {
+        const url = studentId 
+            ? `http://localhost:8080/api/v1/blood/requests/me?studentId=${studentId}`
+            : 'http://localhost:8080/api/v1/blood/requests/me';
+
+        const res = await fetch(url, {
             headers: getAuthHeaders()
         });
         
@@ -1241,20 +1424,23 @@ async function loadMyRequests() {
             requests = await res.json();
         }
 
-        // Also check any locally tracked request IDs from this browser
-        try {
-            const myTracked = JSON.parse(localStorage.getItem('bloodhero_my_request_ids') || '[]');
-            if (myTracked.length > 0) {
-                const allReqRes = await fetch('http://localhost:8080/api/v1/blood/requests');
-                if (allReqRes.ok) {
-                    const allRequests = await allReqRes.json();
-                    const existingIds = new Set(requests.map(r => r.id));
-                    const locallyTracked = allRequests.filter(r => myTracked.includes(r.id) && !existingIds.has(r.id));
-                    requests = [...locallyTracked, ...requests];
+        // Also check any locally tracked request IDs for this student
+        if (studentId) {
+            try {
+                const trackKey = 'bloodhero_my_request_ids_' + studentId;
+                const myTracked = JSON.parse(localStorage.getItem(trackKey) || '[]');
+                if (myTracked.length > 0) {
+                    const allReqRes = await fetch('http://localhost:8080/api/v1/blood/requests');
+                    if (allReqRes.ok) {
+                        const allRequests = await allReqRes.json();
+                        const existingIds = new Set(requests.map(r => r.id));
+                        const locallyTracked = allRequests.filter(r => myTracked.includes(r.id) && !existingIds.has(r.id));
+                        requests = [...locallyTracked, ...requests];
+                    }
                 }
+            } catch (storageErr) {
+                console.warn('LocalStorage tracked requests error', storageErr);
             }
-        } catch (storageErr) {
-            console.warn('LocalStorage tracked requests error', storageErr);
         }
 
         myUserRequests = requests || [];

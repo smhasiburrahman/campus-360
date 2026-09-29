@@ -12,6 +12,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BloodDonorRegistrationDto {
+    private Long studentId;
     private String bloodGroup;
     private Boolean isAvailable;
     private LocalDate lastDonationDate;

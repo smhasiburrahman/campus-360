@@ -72,8 +72,9 @@ public class BloodHeroService {
     }
 
     public BloodDonorProfileDto getDonorProfile(Long studentId) {
-        Student student = studentRepository.findById(studentId)
-                .orElseThrow(() -> new IllegalArgumentException("Student not found with ID: " + studentId));
+        if (studentId == null) return null;
+        Student student = studentRepository.findById(studentId).orElse(null);
+        if (student == null) return null;
 
         Optional<BloodDonor> donorOpt = donorRepository.findByStudentId(studentId);
         return donorOpt.map(bloodDonor -> mapToDonorDto(bloodDonor, student)).orElse(null);

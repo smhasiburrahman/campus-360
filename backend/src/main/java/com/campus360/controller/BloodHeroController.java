@@ -27,7 +27,7 @@ public class BloodHeroController {
                 return Long.parseLong(authentication.getName());
             } catch (NumberFormatException ignored) {}
         }
-        return 1L; // Fallback demo student ID for frictionless exploration
+        return null;
     }
 
     // 1. Live Stats
@@ -48,9 +48,9 @@ public class BloodHeroController {
     public ResponseEntity<List<BloodEmergencyDetailDto>> getMyRequests(
             @RequestParam(required = false) Long studentId,
             Authentication authentication) {
-        Long resolvedId = resolveStudentId(authentication);
-        if (studentId != null && studentId > 0) {
-            resolvedId = studentId;
+        Long resolvedId = (studentId != null && studentId > 0) ? studentId : resolveStudentId(authentication);
+        if (resolvedId == null) {
+            return ResponseEntity.ok(Collections.emptyList());
         }
         return ResponseEntity.ok(bloodHeroService.getMyRequests(resolvedId));
     }
@@ -72,6 +72,9 @@ public class BloodHeroController {
         Long requesterId = resolveStudentId(authentication);
         if (request.getRequesterId() != null && request.getRequesterId() > 0) {
             requesterId = request.getRequesterId();
+        }
+        if (requesterId == null) {
+            throw new IllegalArgumentException("User must be logged in to create an emergency request.");
         }
         return ResponseEntity.ok(bloodHeroService.createBloodRequest(requesterId, request));
     }
@@ -118,9 +121,14 @@ public class BloodHeroController {
     }
 
     @GetMapping("/donors/me")
-    public ResponseEntity<BloodDonorProfileDto> getMyDonorProfile(Authentication authentication) {
-        Long studentId = resolveStudentId(authentication);
-        return ResponseEntity.ok(bloodHeroService.getDonorProfile(studentId));
+    public ResponseEntity<BloodDonorProfileDto> getMyDonorProfile(
+            @RequestParam(required = false) Long studentId,
+            Authentication authentication) {
+        Long resolvedId = (studentId != null && studentId > 0) ? studentId : resolveStudentId(authentication);
+        if (resolvedId == null) {
+            return ResponseEntity.ok(null);
+        }
+        return ResponseEntity.ok(bloodHeroService.getDonorProfile(resolvedId));
     }
 
     @PostMapping("/donors/register")
@@ -128,15 +136,29 @@ public class BloodHeroController {
             @RequestBody BloodDonorRegistrationDto registrationDto,
             Authentication authentication) {
         Long studentId = resolveStudentId(authentication);
+        if (registrationDto.getStudentId() != null && registrationDto.getStudentId() > 0) {
+            studentId = registrationDto.getStudentId();
+        }
+        if (studentId == null) {
+            throw new IllegalArgumentException("User must be logged in to register as a donor.");
+        }
         return ResponseEntity.ok(bloodHeroService.registerOrUpdateDonor(studentId, registrationDto));
     }
 
     @PatchMapping("/donors/availability")
     public ResponseEntity<BloodDonorProfileDto> toggleAvailability(
-            @RequestBody Map<String, Boolean> body,
+            @RequestBody Map<String, Object> body,
             Authentication authentication) {
         Long studentId = resolveStudentId(authentication);
-        Boolean isAvailable = body.getOrDefault("isAvailable", body.getOrDefault("available", true));
+        if (body.get("studentId") != null) {
+            try {
+                studentId = Long.parseLong(body.get("studentId").toString());
+            } catch (NumberFormatException ignored) {}
+        }
+        if (studentId == null) {
+            throw new IllegalArgumentException("User must be logged in to toggle availability.");
+        }
+        Boolean isAvailable = Boolean.parseBoolean(body.getOrDefault("isAvailable", body.getOrDefault("available", "true")).toString());
         return ResponseEntity.ok(bloodHeroService.toggleAvailability(studentId, isAvailable));
     }
 
