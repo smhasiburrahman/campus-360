@@ -42,6 +42,7 @@ public class SecurityConfig {
                     .requestMatchers("/api/v1/course-planner/curriculum", "/api/v1/course-planner/specializations").permitAll()
                     .requestMatchers("/api/v1/chat/**").permitAll()
                     .requestMatchers("/api/v1/blood/**").permitAll()
+                    .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/v1/lost-found/**").permitAll()
                     .requestMatchers("/error").permitAll()
                     .anyRequest().authenticated()
             );
