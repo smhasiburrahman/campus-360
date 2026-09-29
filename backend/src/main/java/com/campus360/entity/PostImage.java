@@ -24,7 +24,7 @@ public class PostImage {
     @Column(name = "post_id", nullable = false)
     private Long postId;
 
-    @Column(name = "image_url", nullable = false)
+    @Column(name = "image_url", nullable = false, columnDefinition = "LONGTEXT")
     private String imageUrl;
 
     @Column(name = "sort_order", nullable = false)

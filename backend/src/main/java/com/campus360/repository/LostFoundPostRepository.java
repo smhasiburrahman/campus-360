@@ -20,4 +20,6 @@ public interface LostFoundPostRepository extends JpaRepository<LostFoundPost, Lo
     Page<LostFoundPost> findByFilters(@org.springframework.data.repository.query.Param("kind") String kind, 
                                       @org.springframework.data.repository.query.Param("status") String status, 
                                       Pageable pageable);
+
+    java.util.List<LostFoundPost> findByPostKindIgnoreCaseAndIsDeletedFalseOrderByIdDesc(String postKind);
 }

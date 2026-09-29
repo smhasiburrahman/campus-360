@@ -16,4 +16,8 @@ public class LostFoundPostResponse {
     private String ownerName;
     private LocalDateTime createdAt;
     private List<String> imageUrls;
+    private Integer likeCount = 0;
+    private Integer dislikeCount = 0;
+    private String userReaction;
+    private Integer commentCount = 0;
 }

@@ -3,11 +3,17 @@ package com.campus360.service;
 import com.campus360.dto.LostFoundPostRequest;
 import com.campus360.dto.LostFoundPostResponse;
 import com.campus360.dto.LostFoundStatusUpdateRequest;
+import com.campus360.dto.PostCommentDto;
+import com.campus360.dto.PostCommentRequest;
 import com.campus360.entity.LostFoundPost;
+import com.campus360.entity.PostComment;
 import com.campus360.entity.PostImage;
+import com.campus360.entity.PostLike;
 import com.campus360.entity.Student;
 import com.campus360.repository.LostFoundPostRepository;
+import com.campus360.repository.PostCommentRepository;
 import com.campus360.repository.PostImageRepository;
+import com.campus360.repository.PostLikeRepository;
 import com.campus360.repository.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -17,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -31,7 +38,17 @@ public class LostFoundService {
     @Autowired
     private StudentRepository studentRepository;
 
-    private LostFoundPostResponse mapToResponse(LostFoundPost post) {
+    @Autowired
+    private PostLikeRepository postLikeRepository;
+
+    @Autowired
+    private PostCommentRepository postCommentRepository;
+
+    public LostFoundPostResponse mapToResponse(LostFoundPost post) {
+        return mapToResponse(post, null);
+    }
+
+    public LostFoundPostResponse mapToResponse(LostFoundPost post, Long currentUserId) {
         LostFoundPostResponse response = new LostFoundPostResponse();
         response.setId(post.getId());
         response.setPostKind(post.getPostKind());
@@ -51,6 +68,18 @@ public class LostFoundService {
                 .map(PostImage::getImageUrl)
                 .collect(Collectors.toList());
         response.setImageUrls(images);
+
+        int likes = postLikeRepository.countByPostTypeAndPostIdAndReaction("lost_found", post.getId(), "like");
+        int dislikes = postLikeRepository.countByPostTypeAndPostIdAndReaction("lost_found", post.getId(), "dislike");
+        int comments = postCommentRepository.countByPostTypeAndPostIdAndIsDeletedFalse("lost_found", post.getId());
+        response.setLikeCount(likes);
+        response.setDislikeCount(dislikes);
+        response.setCommentCount(comments);
+
+        if (currentUserId != null) {
+            postLikeRepository.findByPostTypeAndPostIdAndStudentId("lost_found", post.getId(), currentUserId)
+                    .ifPresent(pl -> response.setUserReaction(pl.getReaction()));
+        }
 
         return response;
     }
@@ -84,13 +113,124 @@ public class LostFoundService {
     }
 
     public Page<LostFoundPostResponse> getAllPosts(String kind, String status, Pageable pageable) {
-        return postRepository.findByFilters(kind, status, pageable).map(this::mapToResponse);
+        return getAllPosts(kind, status, pageable, null);
+    }
+
+    public Page<LostFoundPostResponse> getAllPosts(String kind, String status, Pageable pageable, Long currentUserId) {
+        return postRepository.findByFilters(kind, status, pageable).map(p -> this.mapToResponse(p, currentUserId));
     }
 
     public LostFoundPostResponse getPostById(Long id) {
+        return getPostById(id, null);
+    }
+
+    public LostFoundPostResponse getPostById(Long id, Long currentUserId) {
         LostFoundPost post = postRepository.findByIdAndIsDeletedFalse(id)
                 .orElseThrow(() -> new RuntimeException("Post not found"));
-        return mapToResponse(post);
+        return mapToResponse(post, currentUserId);
+    }
+
+    @Transactional
+    public Map<String, Object> reactToPost(Long postId, String reaction, Long studentId) {
+        LostFoundPost post = postRepository.findByIdAndIsDeletedFalse(postId)
+                .orElseThrow(() -> new RuntimeException("Post not found"));
+
+        PostLike existing = postLikeRepository.findByPostTypeAndPostIdAndStudentId("lost_found", postId, studentId)
+                .orElse(null);
+
+        if (reaction == null || reaction.isBlank()) {
+            if (existing != null) {
+                postLikeRepository.delete(existing);
+            }
+        } else {
+            String cleanReaction = reaction.toLowerCase().trim();
+            if (!cleanReaction.equals("like") && !cleanReaction.equals("dislike")) {
+                throw new IllegalArgumentException("Invalid reaction: must be 'like' or 'dislike'");
+            }
+
+            if (existing != null) {
+                if (existing.getReaction().equalsIgnoreCase(cleanReaction)) {
+                    // Clicking the same reaction again toggles it off
+                    postLikeRepository.delete(existing);
+                } else {
+                    // Switching from like to dislike or vice versa (one reaction per person)
+                    existing.setReaction(cleanReaction);
+                    postLikeRepository.save(existing);
+                }
+            } else {
+                PostLike newLike = new PostLike();
+                newLike.setPostType("lost_found");
+                newLike.setPostId(postId);
+                newLike.setStudentId(studentId);
+                newLike.setReaction(cleanReaction);
+                postLikeRepository.save(newLike);
+            }
+        }
+
+        int likes = postLikeRepository.countByPostTypeAndPostIdAndReaction("lost_found", postId, "like");
+        int dislikes = postLikeRepository.countByPostTypeAndPostIdAndReaction("lost_found", postId, "dislike");
+        String userReaction = postLikeRepository.findByPostTypeAndPostIdAndStudentId("lost_found", postId, studentId)
+                .map(PostLike::getReaction).orElse(null);
+
+        return Map.of(
+                "likeCount", likes,
+                "dislikeCount", dislikes,
+                "userReaction", userReaction != null ? userReaction : ""
+        );
+    }
+
+    public List<PostCommentDto> getPostComments(Long postId) {
+        List<PostComment> comments = postCommentRepository.findByPostTypeAndPostIdAndIsDeletedFalseOrderByCreatedAtAsc("lost_found", postId);
+        return comments.stream().map(c -> {
+            String name = "Student";
+            if ("student".equalsIgnoreCase(c.getCommenterType())) {
+                name = studentRepository.findById(c.getCommenterId())
+                        .map(Student::getFullName)
+                        .orElse("Student");
+            }
+            return PostCommentDto.builder()
+                    .id(c.getId())
+                    .postId(c.getPostId())
+                    .postType(c.getPostType())
+                    .commenterId(c.getCommenterId())
+                    .commenterName(name)
+                    .commenterType(c.getCommenterType())
+                    .commentText(c.getCommentText())
+                    .createdAt(c.getCreatedAt())
+                    .build();
+        }).collect(Collectors.toList());
+    }
+
+    @Transactional
+    public PostCommentDto addComment(Long postId, PostCommentRequest request, Long studentId) {
+        if (request.getCommentText() == null || request.getCommentText().trim().isEmpty()) {
+            throw new IllegalArgumentException("Comment text cannot be empty");
+        }
+
+        PostComment comment = new PostComment();
+        comment.setPostType("lost_found");
+        comment.setPostId(postId);
+        comment.setCommenterType("student");
+        comment.setCommenterId(studentId);
+        comment.setCommentText(request.getCommentText().trim());
+        comment.setIsDeleted(false);
+
+        PostComment saved = postCommentRepository.save(comment);
+
+        String studentName = studentRepository.findById(studentId)
+                .map(Student::getFullName)
+                .orElse("Student");
+
+        return PostCommentDto.builder()
+                .id(saved.getId())
+                .postId(saved.getPostId())
+                .postType(saved.getPostType())
+                .commenterId(saved.getCommenterId())
+                .commenterName(studentName)
+                .commenterType(saved.getCommenterType())
+                .commentText(saved.getCommentText())
+                .createdAt(saved.getCreatedAt())
+                .build();
     }
 
     @Transactional
