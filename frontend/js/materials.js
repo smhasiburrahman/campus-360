@@ -37,18 +37,86 @@ document.addEventListener('DOMContentLoaded', () => {
         window.location.href = 'index.html';
     });
     
-    // Search by course code
-    const searchInput = document.getElementById('courseSearchInput');
-    searchInput.addEventListener('input', (e) => {
-        const term = e.target.value.toLowerCase();
-        if (window.allMaterialsCache) {
-            const filtered = window.allMaterialsCache.filter(m => 
-                (m.courseName && m.courseName.toLowerCase().includes(term)) ||
-                (m.title && m.title.toLowerCase().includes(term))
-            );
-            renderMaterials(filtered, document.getElementById('materialsFeed'));
+    // Semantic Search functionality
+    const semanticSearchBtn = document.getElementById('semanticSearchBtn');
+    const semanticSearchInput = document.getElementById('semanticSearchInput');
+    const semanticCourseSelect = document.getElementById('semanticCourseSelect');
+    
+    if (semanticSearchBtn) {
+        semanticSearchBtn.addEventListener('click', async () => {
+            const query = semanticSearchInput.value.trim();
+            const courseId = semanticCourseSelect.value;
+            const feed = document.getElementById('materialsFeed');
+            
+            if (!query) {
+                fetchMaterials(); // reset
+                return;
+            }
+            
+            feed.innerHTML = '<p style="text-align: center; color: var(--text-muted); margin-top:2rem;"><i class="fas fa-spinner fa-spin"></i> AI is searching conceptually...</p>';
+            
+            try {
+                let url = `/materials/semantic-search?q=${encodeURIComponent(query)}`;
+                if (courseId) {
+                    url += `&courseId=${courseId}`;
+                }
+                
+                const res = await apiFetch(url);
+                if (res && res.ok) {
+                    const results = await res.json();
+                    renderSemanticResults(results, feed);
+                } else {
+                    feed.innerHTML = '<p style="text-align: center; color: var(--text-muted); margin-top:2rem;">Search failed.</p>';
+                }
+            } catch (err) {
+                feed.innerHTML = '<p style="text-align: center; color: var(--text-muted); margin-top:2rem;">Error connecting to AI search.</p>';
+            }
+        });
+        
+        semanticSearchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') semanticSearchBtn.click();
+        });
+    }
+
+    function renderSemanticResults(results, container) {
+        if (results.length === 0) {
+            container.innerHTML = '<p style="text-align: center; color: var(--text-muted); margin-top:2rem;">No conceptual matches found.</p>';
+            return;
         }
-    });
+        
+        container.innerHTML = `<h3 style="margin-bottom: 1rem; color: var(--primary-color);"><i class="fas fa-robot"></i> AI Found ${results.length} relevant snippet(s)</h3>` + results.map(mat => {
+            // Fix API base URL path if needed
+            let linkUrl = mat.fileUrl || '#';
+            if (linkUrl && linkUrl.startsWith('/uploads')) {
+                const backendHost = API_BASE_URL.replace('/api/v1', '');
+                linkUrl = backendHost + linkUrl;
+            }
+            
+            return `
+                <div class="post-card material-card" style="border-left: 4px solid var(--primary-color);">
+                    <div class="material-body" style="padding-top: 0;">
+                        <div class="material-icon-box" style="background: rgba(79, 70, 229, 0.1); color: var(--primary-color);">
+                            <i class="fas fa-brain"></i>
+                        </div>
+                        <div style="flex:1;">
+                            <div class="material-details">
+                                <h3>${mat.fileName || 'Document Snippet'}</h3>
+                            </div>
+                            <div style="margin-top: 1rem; padding: 1rem; background: #f8fafc; border-radius: 8px; font-style: italic; color: #475569;">
+                                "...${mat.textSnippet}..."
+                            </div>
+                        </div>
+                        
+                        <div style="display: flex; flex-direction: column; gap: 0.5rem; justify-content: center;">
+                            <a href="${linkUrl}" target="_blank" download class="material-visit-btn">
+                                <i class="fas fa-download"></i> Download
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
 
     // Modals
     const shareModal = document.getElementById('shareMaterialModal');
@@ -65,31 +133,63 @@ document.addEventListener('DOMContentLoaded', () => {
         shareModal.style.display = 'none';
     });
 
+    // Preview Modal
+    const closePreviewBtn = document.getElementById('closePreviewModal');
+    if (closePreviewBtn) {
+        closePreviewBtn.addEventListener('click', () => {
+            document.getElementById('previewModal').style.display = 'none';
+            document.getElementById('previewContainer').innerHTML = '';
+        });
+    }
+
     // Form Submission
     document.getElementById('shareMaterialForm').addEventListener('submit', async (e) => {
         e.preventDefault();
-        
-        const payload = {
-            title: document.getElementById('materialTitle').value,
-            departmentId: parseInt(document.getElementById('materialDepartment').value),
-            courseId: parseInt(document.getElementById('materialCourse').value),
-            trimesterId: parseInt(document.getElementById('materialTrimester').value),
-            description: document.getElementById('materialDescription').value,
-            files: [
-                {
-                    fileType: document.getElementById('materialType').value,
-                    fileUrl: document.getElementById('materialUrl').value,
-                    originalFilename: "Google Drive Link"
-                }
-            ]
-        };
 
         const submitBtn = document.getElementById('submitMaterialBtn');
         const originalText = submitBtn.textContent;
-        submitBtn.textContent = 'Sharing...';
+        submitBtn.textContent = 'Uploading file...';
         submitBtn.disabled = true;
 
         try {
+            const fileInput = document.getElementById('materialFile');
+            if (!fileInput.files || fileInput.files.length === 0) {
+                alert('Please select a file to upload.');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+
+            const uploadRes = await apiFetch('/materials/upload', {
+                method: 'POST',
+                body: formData
+            });
+
+            if (!uploadRes || !uploadRes.ok) {
+                alert('File upload failed.');
+                return;
+            }
+
+            const uploadData = await uploadRes.json();
+            
+            submitBtn.textContent = 'Sharing...';
+
+            const payload = {
+                title: document.getElementById('materialTitle').value,
+                departmentId: parseInt(document.getElementById('materialDepartment').value),
+                courseId: parseInt(document.getElementById('materialCourse').value),
+                trimesterId: parseInt(document.getElementById('materialTrimester').value),
+                description: document.getElementById('materialDescription').value,
+                files: [
+                    {
+                        fileType: document.getElementById('materialType').value,
+                        fileUrl: uploadData.fileUrl,
+                        originalFilename: uploadData.originalFilename
+                    }
+                ]
+            };
+
             const res = await apiFetch('/materials', {
                 method: 'POST',
                 body: JSON.stringify(payload)
@@ -143,11 +243,19 @@ async function fetchCourses() {
         if (res && res.ok) {
             const courses = await res.json();
             const select = document.getElementById('materialCourse');
+            const searchSelect = document.getElementById('semanticCourseSelect');
             courses.forEach(c => {
                 const opt = document.createElement('option');
                 opt.value = c.id;
                 opt.textContent = c.courseName;
                 select.appendChild(opt);
+                
+                if (searchSelect) {
+                    const opt2 = document.createElement('option');
+                    opt2.value = c.id;
+                    opt2.textContent = c.courseName;
+                    searchSelect.appendChild(opt2);
+                }
             });
         }
     } catch (e) { console.error("Could not fetch courses"); }
@@ -203,7 +311,14 @@ function renderMaterials(materials, container) {
         let linkUrl = '#';
         if (mat.files && mat.files.length > 0) {
             typeStr = mat.files[0].fileType || 'Material';
-            linkUrl = mat.files[0].fileUrl || '#';
+            const rawUrl = mat.files[0].fileUrl;
+            // If the URL is relative (starts with /uploads), prepend the backend base URL.
+            if (rawUrl && rawUrl.startsWith('/uploads')) {
+                const backendHost = API_BASE_URL.replace('/api/v1', '');
+                linkUrl = backendHost + rawUrl;
+            } else {
+                linkUrl = rawUrl || '#';
+            }
         }
 
         const dateStr = new Date(mat.createdAt).toLocaleDateString();
@@ -233,9 +348,23 @@ function renderMaterials(materials, container) {
                         </div>
                         ${mat.description ? `<p style="margin-top: 1rem; color: var(--text-muted); font-size: 0.9rem;">${mat.description}</p>` : ''}
                     </div>
-                    <a href="${linkUrl}" target="_blank" class="material-visit-btn" onclick="incrementVisits(${mat.id})">
-                        <i class="fas fa-external-link-alt"></i> Visit
-                    </a>
+                    
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        ${(() => {
+                            if (linkUrl === '#') return '';
+                            const lowerUrl = linkUrl.toLowerCase();
+                            const isPdf = lowerUrl.endsWith('.pdf');
+                            const isImage = lowerUrl.match(/\.(jpeg|jpg|gif|png|webp)$/) != null;
+                            if (isPdf || isImage) {
+                                const safeTitle = (mat.title || 'Preview').replace(/'/g, "\\'");
+                                return `<button class="btn btn-outline" onclick="previewFile('${linkUrl}', '${isPdf ? 'pdf' : 'image'}', '${safeTitle}')"><i class="fas fa-eye"></i> Preview</button>`;
+                            }
+                            return '';
+                        })()}
+                        <a href="${linkUrl}" target="_blank" download class="material-visit-btn" onclick="incrementVisits(${mat.id})">
+                            <i class="fas fa-download"></i> Download
+                        </a>
+                    </div>
                 </div>
                 
                 <div class="material-footer">
@@ -300,3 +429,17 @@ async function fetchWidgets() {
         console.error("Widget fetch error", e);
     }
 }
+
+window.previewFile = function(url, type, title) {
+    const modal = document.getElementById('previewModal');
+    const container = document.getElementById('previewContainer');
+    document.getElementById('previewModalTitle').textContent = title || 'Preview';
+    
+    if (type === 'pdf') {
+        container.innerHTML = `<iframe src="${url}" width="100%" height="100%" style="border: none;"></iframe>`;
+    } else {
+        container.innerHTML = `<img src="${url}" style="max-width: 100%; max-height: 100%; object-fit: contain;">`;
+    }
+    
+    modal.style.display = 'flex';
+};
