@@ -1,20 +1,33 @@
-document.addEventListener('DOMContentLoaded', async () => {
-    // 1. Fetch User Profile
-    await fetchUserProfile();
+function initDashboard() {
+    // 1. Fetch BloodHero Emergency Alert Widget immediately (independent)
+    fetchBloodHeroWidget();
 
-    // 2. Fetch Dashboard Feed and Widgets
+    // 2. Fetch User Profile
+    fetchUserProfile();
+
+    // 3. Fetch Dashboard Feed and other Widgets
     fetchWidgets();
     fetchFeed();
-});
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initDashboard);
+} else {
+    initDashboard();
+}
 
 async function fetchUserProfile() {
     try {
         const res = await apiFetch('/students/me');
         if (res && res.ok) {
             const user = await res.json();
-            document.getElementById('navName').textContent = user.fullName;
-            const initials = user.fullName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
-            document.getElementById('navAvatar').textContent = initials;
+            const navName = document.getElementById('navName');
+            const navAvatar = document.getElementById('navAvatar');
+            if (navName && user.fullName) navName.textContent = user.fullName;
+            if (navAvatar && user.fullName) {
+                const initials = user.fullName.split(' ').filter(Boolean).map(n => n[0]).join('').substring(0, 2).toUpperCase() || 'U';
+                navAvatar.textContent = initials;
+            }
         }
     } catch (err) {
         console.error('Failed to load user profile', err);
@@ -35,28 +48,30 @@ async function fetchWidgets() {
         const res = await apiFetch('/events?upcoming=true');
         if (res && res.ok) {
             const page = await res.json();
-            const events = page.content.slice(0, 3); // top 3
+            const events = (page && page.content) ? page.content.slice(0, 3) : [];
             
             const container = document.getElementById('upcomingEventsContainer');
-            if (events.length === 0) {
-                container.innerHTML = '<p style="color: #94a3b8; text-align: center;">No upcoming events.</p>';
-            } else {
-                container.innerHTML = events.map(ev => {
-                    const dateObj = new Date(ev.eventDate);
-                    const month = dateObj.toLocaleString('default', { month: 'short' });
-                    const day = dateObj.getDate();
-                    return `
-                    <div class="event-item">
-                        <div class="event-date">
-                            <span>${month}</span>
-                            ${day}
-                        </div>
-                        <div class="event-details">
-                            <h4>${ev.title || 'Untitled Event'}</h4>
-                            <p>${ev.postedBy ? ev.postedBy.name : 'Campus Event'}</p>
-                        </div>
-                    </div>`;
-                }).join('');
+            if (container) {
+                if (events.length === 0) {
+                    container.innerHTML = '<p style="color: #94a3b8; text-align: center;">No upcoming events.</p>';
+                } else {
+                    container.innerHTML = events.map(ev => {
+                        const dateObj = new Date(ev.eventDate);
+                        const month = dateObj.toLocaleString('default', { month: 'short' });
+                        const day = dateObj.getDate();
+                        return `
+                        <div class="event-item">
+                            <div class="event-date">
+                                <span>${month}</span>
+                                ${day}
+                            </div>
+                            <div class="event-details">
+                                <h4>${escapeHtml(ev.title || 'Untitled Event')}</h4>
+                                <p>${escapeHtml(ev.postedBy ? ev.postedBy.name : 'Campus Event')}</p>
+                            </div>
+                        </div>`;
+                    }).join('');
+                }
             }
         }
     } catch (err) {
@@ -65,28 +80,101 @@ async function fetchWidgets() {
 
     // Campus Pulse (Dummy Data for now, as stats endpoints aren't ready)
     const pulseGrid = document.getElementById('pulseGrid');
-    pulseGrid.innerHTML = `
-        <div class="pulse-card">
-            <i class="fa-solid fa-pen-to-square" style="color: #3b82f6;"></i>
-            <h2>12</h2>
-            <p>Posts Today</p>
-        </div>
-        <div class="pulse-card">
-            <i class="fa-solid fa-flag" style="color: #ef4444;"></i>
-            <h2>3</h2>
-            <p>Open Complaints</p>
-        </div>
-        <div class="pulse-card">
-            <i class="fa-solid fa-book" style="color: #0ea5e9;"></i>
-            <h2>4</h2>
-            <p>Active Studies</p>
-        </div>
-        <div class="pulse-card">
-            <i class="fa-regular fa-file-lines" style="color: #6366f1;"></i>
-            <h2>7</h2>
-            <p>New Materials</p>
-        </div>
-    `;
+    if (pulseGrid) {
+        pulseGrid.innerHTML = `
+            <div class="pulse-card">
+                <i class="fa-solid fa-pen-to-square" style="color: #3b82f6;"></i>
+                <h2>12</h2>
+                <p>Posts Today</p>
+            </div>
+            <div class="pulse-card">
+                <i class="fa-solid fa-flag" style="color: #ef4444;"></i>
+                <h2>3</h2>
+                <p>Open Complaints</p>
+            </div>
+            <div class="pulse-card">
+                <i class="fa-solid fa-book" style="color: #0ea5e9;"></i>
+                <h2>4</h2>
+                <p>Active Studies</p>
+            </div>
+            <div class="pulse-card">
+                <i class="fa-regular fa-file-lines" style="color: #6366f1;"></i>
+                <h2>7</h2>
+                <p>New Materials</p>
+            </div>
+        `;
+    }
+}
+
+async function fetchBloodHeroWidget() {
+    const container = document.getElementById('bloodHeroAlertsContainer');
+    if (!container) return;
+
+    let requests = null;
+    try {
+        const res = await apiFetch('/blood/requests?status=OPEN');
+        if (res && res.ok) {
+            requests = await res.json();
+        }
+    } catch (err) {
+        console.warn('apiFetch failed for blood requests, trying direct fetch...', err);
+    }
+
+    // Direct fallback if apiFetch failed or returned unready
+    if (!requests) {
+        try {
+            const fallbackRes = await fetch('http://localhost:8080/api/v1/blood/requests?status=OPEN');
+            if (fallbackRes && fallbackRes.ok) {
+                requests = await fallbackRes.json();
+            }
+        } catch (fbErr) {
+            console.error('Direct fallback fetch also failed', fbErr);
+        }
+    }
+
+    if (!requests || requests.length === 0) {
+        container.innerHTML = `
+            <div style="font-size: 0.85rem; color: #15803d; background: #f0fdf4; padding: 0.6rem 0.8rem; border-radius: 6px; display: flex; align-items: center; gap: 0.5rem;">
+                <i class="fa-solid fa-circle-check"></i>
+                <span>Campus blood supplies stable. No active SOS.</span>
+            </div>
+        `;
+        return;
+    }
+
+    const top2 = requests.slice(0, 2);
+    container.innerHTML = top2.map(req => {
+        const isCrit = req.urgencyLevel === 'CRITICAL';
+        return `
+        <div style="background: white; border: 1px solid ${isCrit ? '#fecaca' : '#fed7aa'}; border-radius: 8px; padding: 0.6rem 0.75rem; margin-bottom: 0.5rem; display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+            <div style="display: flex; align-items: center; gap: 0.6rem;">
+                <span style="background: ${isCrit ? '#ef4444' : '#f97316'}; color: white; font-weight: 800; font-size: 0.85rem; padding: 0.25rem 0.55rem; border-radius: 6px; letter-spacing: 0.5px;">
+                    ${escapeHtml(req.bloodGroup)}
+                </span>
+                <div>
+                    <div style="font-size: 0.85rem; font-weight: 700; color: #1e293b; max-width: 140px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                        ${escapeHtml(req.hospitalName || 'Emergency')}
+                    </div>
+                    <div style="font-size: 0.75rem; color: #64748b;">
+                        ${req.unitsFulfilled || 0}/${req.unitsNeeded} bags &bull; ${escapeHtml(req.urgencyLevel)}
+                    </div>
+                </div>
+            </div>
+            <a href="blood-hero.html" style="font-size: 0.75rem; font-weight: 700; color: #dc2626; text-decoration: none; display: flex; align-items: center; gap: 0.25rem; background: #fee2e2; padding: 0.3rem 0.6rem; border-radius: 6px; white-space: nowrap;">
+                Help <i class="fa-solid fa-arrow-right"></i>
+            </a>
+        </div>`;
+    }).join('');
+}
+
+function escapeHtml(str) {
+    if (!str) return '';
+    return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
 }
 
 let globalFeedData = [];
