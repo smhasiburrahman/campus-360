@@ -6,71 +6,133 @@
     <title>Driver Dashboard - Campus 360</title>
     <link rel="stylesheet" href="css/driver.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- SockJS and STOMP -->
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@stomp/stompjs@5.0.0/bundles/stomp.umd.min.js"></script>
 </head>
 <body>
 
     <header style="display: flex; justify-content: space-between; align-items: center;">
         <h1 style="font-size: 1.25rem;"><i class="fa-solid fa-bus"></i> Campus 360 Driver</h1>
-        <button id="logoutBtn" class="btn" style="width: auto; padding: 0.5rem 1rem; font-size: 0.875rem; background: transparent; border: 1px solid var(--text-secondary); color: var(--text-secondary); display: none;">Logout</button>
+        <div style="display: flex; align-items: center; gap: 0.8rem;">
+            <span id="driverInfoLabel" style="font-size: 0.82rem; color: var(--text-secondary); display: none;"></span>
+            <button id="logoutBtn" class="btn" style="width: auto; padding: 0.4rem 0.8rem; font-size: 0.85rem; background: transparent; border: 1px solid var(--text-secondary); color: var(--text-secondary); display: none;">Logout</button>
+        </div>
     </header>
 
     <div class="container">
         
         <!-- Login Section -->
         <div id="loginSection" class="card">
-            <h2 style="margin-bottom: 1.5rem; text-align: center;">Driver Login</h2>
+            <h2 style="margin-bottom: 1rem; text-align: center;">Driver Login</h2>
+            
+            <div class="driver-tabs">
+                <button type="button" class="driver-tab-btn active" id="btnSelectDriver1" onclick="window.selectDriverAccount('driver@campus360.edu')">
+                    <i class="fa-solid fa-user"></i> Driver 1 (Karim)
+                </button>
+                <button type="button" class="driver-tab-btn" id="btnSelectDriver2" onclick="window.selectDriverAccount('driver2@campus360.edu')">
+                    <i class="fa-solid fa-user"></i> Driver 2 (Rahim)
+                </button>
+            </div>
+
             <form id="loginForm">
                 <div class="form-group">
-                    <label for="email">Email</label>
+                    <label for="email">Driver Email</label>
                     <input type="email" id="email" value="driver@campus360.edu" required>
                 </div>
                 <div class="form-group">
                     <label for="password">Password</label>
                     <input type="password" id="password" value="driver123" required>
                 </div>
-                <button type="submit" class="btn btn-primary" id="loginBtn">Log In</button>
+                <button type="submit" class="btn btn-primary" id="loginBtn">Log In to Drive</button>
             </form>
             <div id="loginError" style="color: var(--danger-color); margin-top: 1rem; text-align: center; display: none;"></div>
         </div>
 
         <!-- Setup Trip Section -->
         <div id="setupSection" class="card hidden">
-            <h2 style="margin-bottom: 1.5rem; text-align: center;">Start New Trip</h2>
+            <h2 style="margin-bottom: 1.5rem; text-align: center;">Start New Shuttle Trip</h2>
+            
+            <div id="activeTripNotice" style="display: none; background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 8px; padding: 0.8rem; margin-bottom: 1rem; color: #fca5a5; font-size: 0.85rem;">
+                <i class="fa-solid fa-circle-exclamation"></i> You have an ongoing active trip. Please end it before starting a new one.
+            </div>
+
             <div class="form-group">
-                <label for="routeSelect">Select Route</label>
+                <label for="routeSelect">Select Route & Direction</label>
                 <select id="routeSelect" required>
                     <option value="" disabled selected>Loading routes...</option>
                 </select>
             </div>
+            
             <div class="form-group">
-                <label for="shuttleSelect">Select Shuttle</label>
+                <label for="shuttleSelect">Select Assigned Shuttle</label>
                 <select id="shuttleSelect" required>
                     <option value="" disabled selected>Loading shuttles...</option>
                 </select>
             </div>
-            <button class="btn btn-start" id="startTripBtn">Start Trip</button>
+
+            <div class="form-group">
+                <label for="trackingModeSelect">Tracking / Drive Mode</label>
+                <select id="trackingModeSelect">
+                    <option value="simulation" selected>🧭 Route Simulation (Exact Waypoints & Delays)</option>
+                    <option value="gps">📱 Live Device Mobile GPS</option>
+                </select>
+            </div>
+
+            <div class="form-group" id="speedModeGroup">
+                <label for="speedModeSelect">Simulation Speed</label>
+                <select id="speedModeSelect">
+                    <option value="realistic" selected>⏱️ Realistic Trip (~15-20 Mins - Average 18 km/h)</option>
+                    <option value="fast">⚡ Fast Demo Mode (~2-3 Mins - Quick Lab Viva)</option>
+                </select>
+            </div>
+
+            <div style="background: rgba(255,255,255,0.05); padding: 0.8rem; border-radius: 8px; font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 1.5rem;">
+                <i class="fa-solid fa-circle-info" style="color: var(--primary-color);"></i> <strong>Notice:</strong> When you start, the shuttle stays at origin for <strong>20 seconds</strong> for passenger boarding before moving along the waypoints.
+            </div>
+
+            <button class="btn btn-start" id="startTripBtn">Start This Shuttle</button>
+
+
         </div>
 
         <!-- Active Trip Section -->
         <div id="activeSection" class="hidden" style="display: flex; flex-direction: column; justify-content: space-between; height: 100%;">
             <div>
-                <div class="live-indicator">
-                    <div class="dot"></div>
-                    Broadcasting Live
-                </div>
-                
-                <div class="telemetry">
-                    <div class="telemetry-label">Current Route</div>
-                    <div id="activeRouteName" style="font-size: 1.25rem; font-weight: 600; margin-top: 0.5rem; color: white;">-</div>
+                <!-- Boarding Banner (Active during first 20 seconds) -->
+                <div id="boardingBanner" class="boarding-banner" style="display: none;">
+                    <div><i class="fa-solid fa-users"></i> <strong>BOARDING PASSENGERS AT STATION</strong></div>
+                    <div class="timer" id="boardingTimer">20s</div>
+                    <div style="font-size: 0.8rem; opacity: 0.85;">Bus is stationary. Departs automatically when timer reaches 0.</div>
                 </div>
 
-                <div class="telemetry">
-                    <div class="telemetry-label">Speed</div>
-                    <div class="telemetry-value"><span id="speedDisplay">0</span> <span style="font-size: 1rem; color: var(--text-secondary);">km/h</span></div>
+                <div class="live-indicator" id="liveIndicator">
+                    <div class="dot"></div>
+                    <span id="liveStatusText">Broadcasting Live STOMP</span>
                 </div>
                 
+                <!-- Single Trip Telemetry View -->
+                <div id="singleTelemetryView">
+                    <div class="telemetry">
+                        <div class="telemetry-label">Current Route</div>
+                        <div id="activeRouteName" style="font-size: 1.15rem; font-weight: 600; margin-top: 0.5rem; color: white;">-</div>
+                    </div>
+
+                    <div class="next-stop-indicator">
+                        <span style="color: var(--text-secondary);"><i class="fa-solid fa-location-dot"></i> Next Station:</span>
+                        <strong id="nextStopName" style="color: #38bdf8;">Notun Bazar</strong>
+                    </div>
+
+                    <div class="telemetry">
+                        <div class="telemetry-label">Live Speed</div>
+                        <div class="telemetry-value"><span id="speedDisplay">0</span> <span style="font-size: 1rem; color: var(--text-secondary);">km/h</span></div>
+                    </div>
+                </div>
+
+
+                
                 <div class="telemetry">
-                    <div class="telemetry-label">Elapsed Time</div>
+                    <div class="telemetry-label">Trip Elapsed Time</div>
                     <div class="telemetry-value" id="timeDisplay" style="font-size: 2rem;">00:00</div>
                 </div>
             </div>

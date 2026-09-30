@@ -1,7 +1,8 @@
 const API_BASE_URL = 'http://localhost:8080/api/v1';
 
 async function apiFetch(endpoint, options = {}) {
-    const token = localStorage.getItem('token');
+    // Support tab-isolated session token (allows multiple driver accounts in separate tabs)
+    const token = sessionStorage.getItem('token') || localStorage.getItem('token');
 
     const defaultHeaders = {
         'Content-Type': 'application/json',
@@ -29,9 +30,12 @@ async function apiFetch(endpoint, options = {}) {
 
         // Handle 401 Unauthorized (token expired)
         if (response.status === 401 && !endpoint.includes('/auth/')) {
+            sessionStorage.removeItem('token');
             localStorage.removeItem('token');
-            window.location.href = 'index.html';
-            return null;
+            if (!window.location.pathname.includes('driver-panel.html')) {
+                window.location.href = 'index.html';
+            }
+            return response;
         }
 
         return response;

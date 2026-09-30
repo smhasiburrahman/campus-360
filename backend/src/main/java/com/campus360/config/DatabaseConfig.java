@@ -38,8 +38,15 @@ public class DatabaseConfig {
     @Bean
     public VectorStore vectorStore(@Qualifier("vectorJdbcTemplate") JdbcTemplate vectorJdbcTemplate, 
                                    EmbeddingModel embeddingModel) {
-        // Manually configuring the PgVectorStore to use our secondary JdbcTemplate
-        // with 384 dimensions for all-MiniLM-L6-v2
-        return new PgVectorStore(vectorJdbcTemplate, embeddingModel, 384);
+        try {
+            if (vectorJdbcTemplate.getDataSource() != null) {
+                try (java.sql.Connection conn = vectorJdbcTemplate.getDataSource().getConnection()) {
+                    return new PgVectorStore(vectorJdbcTemplate, embeddingModel, 384);
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("[DatabaseConfig] PostgreSQL vector database unreachable, using in-memory SimpleVectorStore: " + e.getMessage());
+        }
+        return new org.springframework.ai.vectorstore.SimpleVectorStore(embeddingModel);
     }
 }

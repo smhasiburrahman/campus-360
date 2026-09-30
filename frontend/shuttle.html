@@ -107,10 +107,16 @@
                     <div id="map"></div>
                     
                     <!-- Floating Side Panel (Glassmorphism) -->
-                    <div class="glass-panel">
+                    <div class="glass-panel" id="glassPanel">
                         <div class="glass-header">
-                            <div class="live-dot"></div>
-                            <h3>Active Routes</h3>
+                            <div class="glass-header-title">
+                                <div class="live-dot"></div>
+                                <h3>Active Fleet</h3>
+                                <span class="fleet-count-badge" id="fleetCountBadge">0</span>
+                            </div>
+                            <button class="panel-toggle-btn" id="togglePanelBtn" title="Toggle panel" onclick="window.toggleRoutesPanel()">
+                                <i class="fa-solid fa-chevron-up" id="panelToggleIcon"></i>
+                            </button>
                         </div>
                         <div id="activeRoutesList" class="route-list">
                             <div style="text-align: center; color: var(--text-secondary); padding: 1rem;">
@@ -118,6 +124,119 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- AI Commute Assistant Floating Trigger Button -->
+                    <button id="aiCommuteTriggerBtn" class="ai-commute-trigger" title="Ask Gemini AI Commute Assistant">
+                        <span class="ai-pulse-dot"></span>
+                        <i class="fa-solid fa-wand-magic-sparkles"></i>
+                        <span>AI Commute Assistant</span>
+                    </button>
+
+                    <!-- Gemini AI Commute Assistant Chat Drawer -->
+                    <div id="aiCommuteDrawer" class="ai-commute-drawer hidden">
+                        <div class="ai-drawer-header">
+                            <div class="ai-header-info">
+                                <div class="ai-header-icon"><i class="fa-solid fa-robot"></i></div>
+                                <div>
+                                    <div class="ai-header-title">Gemini Commute AI <span class="ai-model-tag">gemini-2.5-flash</span></div>
+                                    <div class="ai-header-sub">UIU Official Timetable & Live Simulation</div>
+                                </div>
+                            </div>
+                            <div class="ai-header-actions">
+                                <button class="ai-close-btn" id="aiDrawerCloseBtn" title="Close AI Assistant"><i class="fa-solid fa-xmark"></i></button>
+                            </div>
+                        </div>
+
+                        <!-- Tab Switcher -->
+                        <div class="ai-tabs-bar">
+                            <button type="button" class="ai-tab-btn active" id="tabBtnChat" onclick="window.switchAiTab('chat')">
+                                <i class="fa-solid fa-message"></i> AI Assistant
+                            </button>
+                            <button type="button" class="ai-tab-btn" id="tabBtnRush" onclick="window.switchAiTab('rush')">
+                                <i class="fa-solid fa-chart-simple"></i> Rush & Crowd Guide
+                            </button>
+                        </div>
+
+                        <!-- Chat View Container -->
+                        <div id="aiChatView" class="ai-tab-content">
+                            <!-- Quick Query Chips -->
+                            <div class="ai-quick-prompts">
+                                <div class="ai-prompt-chip" onclick="window.sendQuickPrompt('Amar 10:45 e class ache, ekhon Notun Bazar theke bus pabo?')">
+                                    ⏱️ 10:45 e class, bus pabo?
+                                </div>
+                                <div class="ai-prompt-chip" onclick="window.sendQuickPrompt('Ekhon UIU theke Notun Bazar jawar bus ache?')">
+                                    🚌 UIU to Notun Bazar bus ache?
+                                </div>
+                                <div class="ai-prompt-chip" onclick="window.sendQuickPrompt('Ami Sayednagar achi, tarahura te achi. Rickshaw nebo naki bus?')">
+                                    🏃 Tarahura te achi, rickshaw nebo?
+                                </div>
+                            </div>
+
+                            <!-- Chat Messages Container -->
+                            <div id="aiChatMessages" class="ai-chat-messages">
+                                <div class="ai-message-row ai-row-assistant">
+                                    <div class="ai-avatar"><i class="fa-solid fa-robot"></i></div>
+                                    <div class="ai-bubble ai-assistant-bubble">
+                                        Assalamu Alaikum! Apnar class-er time, location ba hurry niye proshno korun, ami official timetable ebong live bus status eksathe analyze kore best commute advice dicchi.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Input Form -->
+                            <form id="aiChatForm" class="ai-chat-form">
+                                <input type="text" id="aiChatInput" placeholder="Banglish-e proshno likhun..." autocomplete="off" required>
+                                <button type="submit" id="aiChatSubmitBtn" title="Send question">
+                                    <i class="fa-solid fa-paper-plane"></i>
+                                </button>
+                            </form>
+                        </div>
+
+                        <!-- Rush & Crowd Guide View Container -->
+                        <div id="aiRushView" class="ai-tab-content hidden" style="padding: 0.75rem; overflow-y: auto; flex: 1;">
+                            <div class="rush-summary-pill">
+                                <i class="fa-solid fa-crown" style="color: #facc15;"></i>
+                                <span>Best Comfort Slots: <strong>12:00 PM – 03:00 PM</strong> &amp; Night slots</span>
+                            </div>
+
+                            <div class="rush-section-title">🌅 Notun Bazar ➔ UIU</div>
+                            <div class="rush-slot-item" onclick="window.sendQuickPrompt('07:30 - 08:45 AM e Notun Bazar theke kemon vir thake?')">
+                                <span>07:30 AM – 08:45 AM</span>
+                                <span class="rush-tag rush-high">🔴 Extreme Rush (8:30 Class)</span>
+                            </div>
+                            <div class="rush-slot-item" onclick="window.sendQuickPrompt('09:25 AM e Notun Bazar theke kemon vir thake?')">
+                                <span>09:25 AM – 09:35 AM</span>
+                                <span class="rush-tag rush-med">🟡 Moderate</span>
+                            </div>
+                            <div class="rush-slot-item" onclick="window.sendQuickPrompt('10:45 AM e Notun Bazar theke kemon vir thake?')">
+                                <span>10:45 AM – 10:55 AM</span>
+                                <span class="rush-tag rush-low">🟢 Easy Seat</span>
+                            </div>
+                            <div class="rush-slot-item" onclick="window.sendQuickPrompt('12 PM theke 3 PM e kemon vir thake?')">
+                                <span>12:05 PM &amp; 01:25 PM</span>
+                                <span class="rush-tag rush-low">🟢 Best &amp; Peaceful (12-3 PM)</span>
+                            </div>
+                            <div class="rush-slot-item" onclick="window.sendQuickPrompt('02:45 PM e Notun Bazar theke kemon vir thake?')">
+                                <span>02:45 PM – 02:55 PM</span>
+                                <span class="rush-tag rush-med">🟡 Moderate Rush</span>
+                            </div>
+
+                            <div class="rush-section-title" style="margin-top: 0.6rem;">🌇 UIU ➔ Notun Bazar</div>
+                            <div class="rush-slot-item" onclick="window.sendQuickPrompt('02:05 PM o 03:25 PM e UIU theke kemon vir thake?')">
+                                <span>02:05 PM &amp; 03:25 PM</span>
+                                <span class="rush-tag rush-med">🟡 Moderate Flow</span>
+                            </div>
+                            <div class="rush-slot-item" onclick="window.sendQuickPrompt('04:40 PM ebong 05:45 PM e UIU theke kemon vir thake?')">
+                                <span>04:40 PM &amp; 05:45 PM</span>
+                                <span class="rush-tag rush-high">🔴 Peak Rush (Class Shesh)</span>
+                            </div>
+                            <div class="rush-slot-item" onclick="window.sendQuickPrompt('07:00 PM o 09:40 PM e kemon vir thake?')">
+                                <span>07:00 PM &amp; 09:40 PM</span>
+                                <span class="rush-tag rush-low">🟢 Calm &amp; Relaxed (Night)</span>
+                            </div>
+                        </div>
+
+                    </div>
+
                 </div>
             </div>
         </main>
@@ -128,8 +247,9 @@
     <script src="js/api.js"></script>
     <script src="js/shuttle.js"></script>
     <script src="js/chat-widget.js"></script>
+    <script src="js/ai-commute.js"></script>
     <script>
-        const token = localStorage.getItem('token');
+        const token = sessionStorage.getItem('token') || localStorage.getItem('token');
         if (!token) window.location.href = 'index.html';
     </script>
 </body>
