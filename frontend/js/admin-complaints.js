@@ -240,21 +240,37 @@ function computeStatsFromList() {
     document.getElementById('overviewHandled').textContent = counts.handled || 0;
     document.getElementById('overviewDenied').textContent = counts.denied || 0;
 
-    // Update Top Categories list
-    const catMap = {};
+    // Update Top Departments list
+    const deptMap = {};
     complaintsList.forEach(c => {
-        const cat = c.category || 'General';
-        catMap[cat] = (catMap[cat] || 0) + 1;
+        if (c.department) {
+            deptMap[c.department] = (deptMap[c.department] || 0) + 1;
+        }
     });
 
-    const catList = document.getElementById('categoriesList');
-    if (catList) {
-        catList.innerHTML = Object.keys(catMap).map(cat => `
-            <div class="category-row">
-                <span>${cat}</span>
-                <strong>${catMap[cat]}</strong>
+    const deptList = document.getElementById('departmentsList');
+    if (deptList) {
+        deptList.innerHTML = Object.keys(deptMap).map(dept => `
+            <div class="category-row" style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                <span>🤖 ${dept}</span>
+                <strong>${deptMap[dept]}</strong>
             </div>
         `).join('');
+    }
+    
+    // Populate Department Select Dropdown
+    const deptSelect = document.getElementById('departmentSelect');
+    if (deptSelect) {
+        const currentVal = deptSelect.value;
+        deptSelect.innerHTML = '<option value="ALL">All Departments</option>' + Object.keys(deptMap).map(dept => `<option value="${dept}">${dept}</option>`).join('');
+        deptSelect.value = currentVal;
+        
+        if (!deptSelect.hasAttribute('data-bound')) {
+            deptSelect.setAttribute('data-bound', 'true');
+            deptSelect.addEventListener('change', () => {
+                applyClientSideFilters();
+            });
+        }
     }
 }
 
@@ -262,14 +278,16 @@ function computeStatsFromList() {
    5. FILTERING & RENDERING
    ========================================================================== */
 function applyClientSideFilters() {
-    let filtered = [...complaintsList];
+    // Only show escalated complaints to admin
+    let filtered = complaintsList.filter(item => item.status !== 'not_approved');
 
     if (activeStatusFilter !== 'ALL') {
         filtered = filtered.filter(item => item.status === activeStatusFilter);
     }
-
-    if (showOnlyMyComplaints && currentUserId) {
-        filtered = filtered.filter(item => item.ownerId === currentUserId);
+    
+    const deptSelect = document.getElementById('departmentSelect');
+    if (deptSelect && deptSelect.value !== 'ALL') {
+        filtered = filtered.filter(item => item.department === deptSelect.value);
     }
 
     const query = (document.getElementById('complaintSearchInput')?.value || '').toLowerCase().trim();
@@ -277,15 +295,21 @@ function applyClientSideFilters() {
         filtered = filtered.filter(item =>
             (item.title && item.title.toLowerCase().includes(query)) ||
             (item.description && item.description.toLowerCase().includes(query)) ||
-            (item.location && item.location.toLowerCase().includes(query))
+            (item.location && item.location.toLowerCase().includes(query)) ||
+            (item.category && item.category.toLowerCase().includes(query))
         );
     }
 
     const sortVal = document.getElementById('sortOrderSelect')?.value;
-    if (sortVal === 'most_voted') {
+    const priorityOrder = { 'Urgent': 4, 'High': 3, 'Medium': 2, 'Low': 1 };
+    
+    if (sortVal === 'newest') {
+        filtered.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    } else if (sortVal === 'most_voted') {
         filtered.sort((a, b) => (b.upvoteCount || 0) - (a.upvoteCount || 0));
     } else {
-        filtered.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        // default to priority
+        filtered.sort((a, b) => (priorityOrder[b.priority] || 0) - (priorityOrder[a.priority] || 0));
     }
 
     renderComplaintFeed(filtered);
@@ -404,27 +428,19 @@ function createComplaintCardHTML(item) {
             ${mediaHtml}
             ${officialResponseHtml}
 
-            <div class="complaint-footer">
+            <div class="complaint-footer" style="display: flex; justify-content: space-between; align-items: center;">
                 <div class="voting-group">
-                    <!-- Agree (Upvote) Button -->
-                    <button class="vote-action-pill agree ${isAgree ? 'active' : ''} ${disableVoteClass}" ${clickEventLike} title="Agree with this issue">
-                        <i class="fa-${isAgree ? 'solid' : 'regular'} fa-circle-check"></i>
-                        <span>Agree</span>
-                        <span class="vote-count">${item.upvoteCount || 0}</span>
-                    </button>
-
-                    <!-- Disagree (Downvote) Button -->
-                    <button class="vote-action-pill disagree ${isDisagree ? 'active' : ''} ${disableVoteClass}" ${clickEventDislike} title="Disagree with this issue">
-                        <i class="fa-${isDisagree ? 'solid' : 'regular'} fa-circle-xmark"></i>
-                        <span>Disagree</span>
-                        <span class="vote-count">${item.downvoteCount || 0}</span>
-                    </button>
-
+                    <span style="font-weight: bold; color: var(--text-color); margin-right: 15px;"><i class="fa-solid fa-arrow-up"></i> ${item.upvoteCount || 0} Upvotes</span>
                     <!-- Comments count button -->
                     <button class="comment-btn" id="comment-btn-${item.id}" onclick="toggleComments(${item.id})">
                         <i class="fa-regular fa-comment"></i>
                         <span id="comment-count-${item.id}">${item.commentCount || 0}</span>
                     </button>
+                </div>
+                
+                <div class="admin-reply-box" style="display: flex; gap: 10px;">
+                    <input type="text" id="adminReply-${item.id}" placeholder="Type official response..." style="padding: 6px 10px; border-radius: 4px; border: 1px solid var(--border-color); font-size: 0.8rem;" value="${item.officialResponse || ''}">
+                    <button onclick="submitOfficialResponse(${item.id})" style="padding: 6px 12px; background: var(--primary-color); color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 0.8rem; font-weight: bold;">Post Reply</button>
                 </div>
                 <div class="complaint-reference-id">${displayId}</div>
             </div>
@@ -518,6 +534,49 @@ async function updateComplaintStatus(complaintId, newStatus) {
         }
     } catch (e) {
         console.warn('Backend offline, status modified in client memory.');
+    }
+}
+
+window.submitOfficialResponse = async function(complaintId) {
+    const inputEl = document.getElementById(`adminReply-${complaintId}`);
+    if (!inputEl) return;
+    
+    const replyText = inputEl.value.trim();
+    if (!replyText) {
+        alert("Please enter a response.");
+        return;
+    }
+    
+    const target = complaintsList.find(c => c.id === complaintId);
+    if (!target) return;
+    
+    // Default to handling the complaint if they reply, unless it's already denied/handled
+    let newStatus = target.status;
+    if (newStatus === 'pending' || newStatus === 'processing') {
+        newStatus = 'handled';
+    }
+
+    try {
+        if (typeof apiFetch === 'function') {
+            const res = await apiFetch(`/complaints/${complaintId}/status`, {
+                method: 'PATCH',
+                body: JSON.stringify({ 
+                    status: newStatus,
+                    officialResponse: replyText 
+                })
+            });
+            if (res && res.ok) {
+                alert("Official response posted successfully!");
+                inputEl.value = "";
+                // Refresh list so they see the updated status/comments
+                await fetchComplaints();
+            } else {
+                alert("Failed to post official response.");
+            }
+        }
+    } catch (e) {
+        console.error("Error submitting response", e);
+        alert("Error posting official response.");
     }
 }
 
@@ -626,6 +685,7 @@ async function proceedWithSubmission() {
     computeStatsFromList();
     applyClientSideFilters();
 }
+
 /* ==========================================================================
    9. COMMENTS LOGIC
    ========================================================================== */
@@ -665,7 +725,6 @@ window.fetchComments = async function(postId) {
                 const initials = c.commenterName ? c.commenterName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() : 'U';
                 const isAuthority = c.commenterType === 'authority';
                 
-                // If it's an authority comment, style it differently (highlighted)
                 const bubbleStyle = isAuthority 
                     ? 'background: var(--primary-light, #e0e7ff); border: 1px solid var(--primary-color); border-left: 4px solid var(--primary-color); padding: 10px; border-radius: 8px;' 
                     : 'background: var(--bg-primary); border: 1px solid var(--border-color); padding: 10px; border-radius: 8px;';
@@ -686,7 +745,6 @@ window.fetchComments = async function(postId) {
                 `;
             }).join('');
             
-            // Scroll to bottom
             listEl.scrollTop = listEl.scrollHeight;
         } else {
             listEl.innerHTML = '<div style="color: var(--danger);">Failed to load comments.</div>';
@@ -713,7 +771,6 @@ window.submitComment = async function(event, postId) {
 
         if (res && res.ok) {
             input.value = '';
-            // Refresh comments for this post
             await fetchComments(postId);
         } else {
             alert('Failed to post comment.');
@@ -724,7 +781,6 @@ window.submitComment = async function(event, postId) {
     }
 }
 
-// Helpers
 function escapeHtml(str) {
     if (!str) return '';
     return String(str).replace(/[&<>"']/g, function(m) {

@@ -19,6 +19,9 @@ public class ComplaintResponse {
     private String userReaction;
     private String status;
     private Long handledBy;
+    private String department;
+    private String priority;
+    private String officialResponse;
     private LocalDateTime statusUpdatedAt;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

@@ -37,6 +37,19 @@ public class ComplaintController {
         return ResponseEntity.ok(complaintService.createComplaint(request, studentId));
     }
 
+    @PostMapping("/check-duplicate")
+    @PreAuthorize("hasRole('STUDENT')")
+    public ResponseEntity<com.campus360.dto.DuplicateCheckResponse> checkDuplicate(@RequestBody java.util.Map<String, String> request) {
+        String text = request.getOrDefault("text", "");
+        java.util.List<ComplaintResponse> duplicates = complaintService.checkDuplicates(text);
+        
+        com.campus360.dto.DuplicateCheckResponse response = new com.campus360.dto.DuplicateCheckResponse();
+        response.setHasDuplicates(!duplicates.isEmpty());
+        response.setDuplicates(duplicates);
+        
+        return ResponseEntity.ok(response);
+    }
+
     @GetMapping
     public ResponseEntity<Page<ComplaintResponse>> getAllComplaints(
             @RequestParam(required = false) String status,
@@ -93,5 +106,22 @@ public class ComplaintController {
         String adminRole = getAdminRole(authentication);
         complaintService.deleteComplaint(id, userId, adminRole);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/{id}/comments")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<java.util.List<com.campus360.dto.PostCommentDto>> getComments(@PathVariable Long id) {
+        return ResponseEntity.ok(complaintService.getComments(id));
+    }
+
+    @PostMapping("/{id}/comments")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<com.campus360.dto.PostCommentDto> addComment(
+            @PathVariable Long id,
+            @RequestBody com.campus360.dto.PostCommentRequest request,
+            Authentication authentication) {
+        Long userId = Long.parseLong(authentication.getName());
+        String adminRole = getAdminRole(authentication);
+        return ResponseEntity.ok(complaintService.addComment(id, request, userId, adminRole));
     }
 }

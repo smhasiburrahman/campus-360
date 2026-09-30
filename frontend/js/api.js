@@ -72,13 +72,20 @@ async function apiFetch(endpoint, options = {}) {
                                 <a href="admin-shuttles.html" class="nav-item">
                                     <i class="fa-solid fa-route"></i> Manage Shuttles
                                 </a>
+                                <a href="admin-complaints.html" class="nav-item">
+                                    <i class="fa-solid fa-clipboard-list"></i> Triage Complaints
+                                </a>
                             </div>
                         `;
                         sidebarNav.insertAdjacentHTML('beforeend', adminHtml);
 
-                        // If we are currently on the admin-shuttles page, mark it active
+                        // If we are currently on an admin page, mark it active
                         if (window.location.pathname.includes('admin-shuttles.html')) {
                             const link = sidebarNav.querySelector('a[href="admin-shuttles.html"]');
+                            if (link) link.classList.add('active');
+                        }
+                        if (window.location.pathname.includes('admin-complaints.html')) {
+                            const link = sidebarNav.querySelector('a[href="admin-complaints.html"]');
                             if (link) link.classList.add('active');
                         }
                     }

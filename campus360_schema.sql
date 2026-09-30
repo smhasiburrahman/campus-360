@@ -233,6 +233,8 @@ CREATE TABLE complaints (
     status_updated_at       TIMESTAMP NULL,
     is_deleted              BOOLEAN NOT NULL DEFAULT FALSE,
     deleted_at              TIMESTAMP NULL,
+    department              VARCHAR(100) NULL,
+    priority                VARCHAR(50) NULL,
     created_at              TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at              TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     CONSTRAINT fk_complaints_student FOREIGN KEY (student_id) REFERENCES students(id) ON DELETE CASCADE,

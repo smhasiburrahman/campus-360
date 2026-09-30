@@ -59,6 +59,12 @@ public class Complaint {
     @UpdateTimestamp
     private java.time.LocalDateTime updatedAt;
 
-    //testing
+    @Column(name = "department")
+    private String department;
 
+    @Column(name = "priority")
+    private String priority;
+
+    @Column(name = "official_response", columnDefinition = "TEXT")
+    private String officialResponse;
 }

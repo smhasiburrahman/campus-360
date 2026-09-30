@@ -11,4 +11,6 @@ public interface ComplaintRepository extends JpaRepository<Complaint, Long> {
     Page<Complaint> findByIsDeletedFalse(Pageable pageable);
     Page<Complaint> findByIsDeletedFalseAndStatus(String status, Pageable pageable);
     Page<Complaint> findByIsDeletedFalseAndStudentId(Long studentId, Pageable pageable);
+    
+    java.util.List<Complaint> findByStatusAndCreatedAtBefore(String status, java.time.LocalDateTime date);
 }

@@ -5,4 +5,5 @@ import lombok.Data;
 @Data
 public class ComplaintStatusUpdateRequest {
     private String status;
+    private String officialResponse;
 }

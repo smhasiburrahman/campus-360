@@ -102,13 +102,8 @@
                 <!-- Page Header Row -->
                 <div class="complaints-header-row">
                     <div>
-                        <h1>Complaints</h1>
-                        <p class="subtitle">Voice campus issues — auto-escalated at 1 upvote</p>
-                    </div>
-                    <div class="header-action-group">
-                        <button class="btn-file-complaint" id="openComplaintModalBtn">
-                            <i class="fa-solid fa-plus"></i> File Complaint
-                        </button>
+                        <h1>Authority Triage</h1>
+                        <p class="subtitle">Manage AI-categorized campus complaints</p>
                     </div>
                 </div>
 
@@ -120,28 +115,30 @@
                     </div>
 
                     <div class="sort-box">
-                        <select id="sortOrderSelect">
+                        <select id="sortOrderSelect" onchange="applyClientSideFilters()">
+                            <option value="priority" selected>Highest Priority</option>
                             <option value="newest">Newest First</option>
                             <option value="most_voted">Most Upvoted</option>
                         </select>
                     </div>
                 </div>
 
-                <!-- Status Filter Tabs & My Complaints Toggle -->
+                <!-- Status Filter Tabs & Dept Filter -->
                 <div class="status-filter-wrapper">
                     <div class="status-tabs" id="statusFilterTabs">
                         <button class="status-tab active" data-status="ALL">All <span class="count" id="count-ALL">0</span></button>
-                        <button class="status-tab" data-status="not_approved">Not Approved <span class="count" id="count-not_approved">0</span></button>
                         <button class="status-tab" data-status="pending">Pending <span class="count" id="count-pending">0</span></button>
                         <button class="status-tab" data-status="processing">Processing <span class="count" id="count-processing">0</span></button>
                         <button class="status-tab" data-status="handled">Handled <span class="count" id="count-handled">0</span></button>
                         <button class="status-tab" data-status="denied">Denied <span class="count" id="count-denied">0</span></button>
                     </div>
 
-                    <label class="toggle-switch-label">
-                        <input type="checkbox" id="myComplaintsToggle">
-                        <span>My complaints</span>
-                    </label>
+                    <div class="department-filter">
+                        <select id="departmentSelect">
+                            <option value="ALL">All Departments</option>
+                            <!-- Populated dynamically -->
+                        </select>
+                    </div>
                 </div>
 
                 <!-- 2-Column Grid Layout -->
@@ -192,39 +189,14 @@
                             </div>
                         </div>
 
-                        <!-- Top Categories Card -->
+                        <!-- Top Departments Card -->
                         <div class="widget">
                             <div class="widget-header">
-                                <h3>TOP CATEGORIES</h3>
+                                <h3>AI ASSIGNED DEPARTMENTS</h3>
                             </div>
-                            <div class="categories-list" id="categoriesList">
+                            <div class="categories-list" id="departmentsList">
                                 <!-- Populated dynamically -->
                             </div>
-                        </div>
-
-                        <!-- How Complaints Work Card -->
-                        <div class="widget how-it-works-widget">
-                            <div class="widget-header">
-                                <h3>How Complaints Work</h3>
-                            </div>
-                            <ol class="step-guide">
-                                <li>
-                                    <span class="step-num">1</span>
-                                    <p>Submit your complaint with details and evidence</p>
-                                </li>
-                                <li>
-                                    <span class="step-num">2</span>
-                                    <p>Reach 1 upvote to auto-escalate to Pending</p>
-                                </li>
-                                <li>
-                                    <span class="step-num">3</span>
-                                    <p>University Authority reviews and moves to Processing</p>
-                                </li>
-                                <li>
-                                    <span class="step-num">4</span>
-                                    <p>Complaint is Handled or Denied with an official response</p>
-                                </li>
-                            </ol>
                         </div>
 
                     </div>
@@ -323,6 +295,6 @@
     </div>
 
     <script src="js/api.js"></script>
-    <script src="js/complaints.js"></script>
+    <script src="js/admin-complaints.js"></script>
 </body>
 </html>
