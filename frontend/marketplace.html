@@ -319,8 +319,9 @@
                     <textarea id="listingDescription" rows="3" placeholder="Condition details, edition, marks, etc..." required></textarea>
                 </div>
                 <div class="form-group">
-                    <label for="listingImageUrl">Product Image URL</label>
-                    <input type="url" id="listingImageUrl" placeholder="https://example.com/item.jpg">
+                    <label for="listingImageUpload">Product Image (Optional)</label>
+                    <input type="file" id="listingImageUpload" accept="image/*" style="width: 100%; padding: 0.5rem; border: 1px solid var(--border-color); border-radius: var(--radius-md);">
+                    <div id="listingImagePreview" class="image-preview-container" style="margin-top: 10px; display: flex; gap: 10px; flex-wrap: wrap;"></div>
                 </div>
                 <div class="modal-actions">
                     <button type="button" class="btn-cancel" id="cancelListingModalBtn">Cancel</button>

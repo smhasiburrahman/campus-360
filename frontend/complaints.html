@@ -265,8 +265,9 @@
                     <textarea id="complaintDescription" rows="4" placeholder="Elaborate the problem in detail..." required></textarea>
                 </div>
                 <div class="form-group">
-                    <label for="complaintImage">Image URL (Optional)</label>
-                    <input type="url" id="complaintImage" placeholder="https://example.com/photo.jpg">
+                    <label for="complaintImageUpload">Image (Optional)</label>
+                    <input type="file" id="complaintImageUpload" accept="image/*" style="width: 100%; padding: 0.5rem; border: 1px solid var(--border-color); border-radius: var(--radius-md);">
+                    <div id="complaintImagePreview" class="image-preview-container" style="margin-top: 10px; display: flex; gap: 10px; flex-wrap: wrap;"></div>
                 </div>
                 <div class="form-group checkbox-group">
                     <label>

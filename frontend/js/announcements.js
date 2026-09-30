@@ -43,15 +43,42 @@ document.addEventListener('DOMContentLoaded', async () => {
         imageInput.click();
     });
 
-    imageInput.addEventListener('change', (e) => {
+    imageInput.addEventListener('change', async (e) => {
         if (e.target.files && e.target.files[0]) {
-            const dummyUrl = 'https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=800&auto=format&fit=crop';
-            uploadedImages.push(dummyUrl);
+            const file = e.target.files[0];
             
+            // Show preview with opacity while uploading
             const img = document.createElement('img');
-            img.src = dummyUrl;
+            img.src = URL.createObjectURL(file);
             img.className = 'image-preview';
+            img.style.opacity = '0.5';
             imagePreviewContainer.appendChild(img);
+
+            const formData = new FormData();
+            formData.append('file', file);
+
+            try {
+                // Remove button state or show loading if needed, here we just show opacity on img
+                const res = await apiFetch('/materials/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                if (res.ok) {
+                    const data = await res.json();
+                    const fileUrl = 'http://localhost:8080' + data.fileUrl;
+                    uploadedImages.push(fileUrl);
+                    img.src = fileUrl; // update to server URL
+                    img.style.opacity = '1';
+                } else {
+                    alert('Failed to upload image.');
+                    img.remove();
+                }
+            } catch (error) {
+                console.error('Error uploading image:', error);
+                alert('An error occurred during image upload.');
+                img.remove();
+            }
         }
     });
 

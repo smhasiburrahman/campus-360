@@ -144,8 +144,58 @@ function setupMarketplaceListeners() {
         });
     }
 
-    if (closeModalBtn) closeModalBtn.addEventListener('click', () => modal.style.display = 'none');
-    if (cancelModalBtn) cancelModalBtn.addEventListener('click', () => modal.style.display = 'none');
+    if (closeModalBtn) closeModalBtn.addEventListener('click', () => {
+        modal.style.display = 'none';
+        document.getElementById('listingImagePreview').innerHTML = '';
+    });
+    if (cancelModalBtn) cancelModalBtn.addEventListener('click', () => {
+        modal.style.display = 'none';
+        document.getElementById('listingImagePreview').innerHTML = '';
+    });
+
+    // Image Upload Logic
+    const imageUploadInput = document.getElementById('listingImageUpload');
+    const imagePreviewContainer = document.getElementById('listingImagePreview');
+    if (imageUploadInput) {
+        imageUploadInput.addEventListener('change', async (e) => {
+            if (e.target.files && e.target.files[0]) {
+                const file = e.target.files[0];
+                
+                const img = document.createElement('img');
+                img.src = URL.createObjectURL(file);
+                img.style.maxWidth = '100px';
+                img.style.maxHeight = '100px';
+                img.style.objectFit = 'cover';
+                img.style.borderRadius = '8px';
+                img.style.opacity = '0.5';
+                imagePreviewContainer.innerHTML = '';
+                imagePreviewContainer.appendChild(img);
+
+                const formData = new FormData();
+                formData.append('file', file);
+
+                try {
+                    const res = await apiFetch('/materials/upload', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    
+                    if (res.ok) {
+                        const data = await res.json();
+                        img.src = 'http://localhost:8080' + data.fileUrl; // update to server URL
+                        img.style.opacity = '1';
+                    } else {
+                        alert('Failed to upload image.');
+                        img.remove();
+                    }
+                } catch (error) {
+                    console.error('Error uploading image:', error);
+                    alert('An error occurred during image upload.');
+                    img.remove();
+                }
+            }
+        });
+    }
     
     if (closeVendorBtn) closeVendorBtn.addEventListener('click', () => vendorModal.style.display = 'none');
     if (cancelVendorBtn) cancelVendorBtn.addEventListener('click', () => vendorModal.style.display = 'none');
@@ -460,7 +510,12 @@ async function submitNewListing() {
     const condition = document.getElementById('listingCondition').value;
     const price = parseFloat(document.getElementById('listingPrice').value);
     const rawDescription = document.getElementById('listingDescription').value;
-    const imageUrl = document.getElementById('listingImageUrl').value;
+    
+    const previewImg = document.querySelector('#listingImagePreview img');
+    let imageUrl = null;
+    if (previewImg && previewImg.style.opacity === '1') {
+        imageUrl = previewImg.src;
+    }
 
     // Combine into a single description since backend only stores description
     const fullDescription = `[${category} - ${condition}] ${title}\n\n${rawDescription}`;
@@ -487,6 +542,7 @@ async function submitNewListing() {
                 
                 document.getElementById('createListingModal').style.display = 'none';
                 document.getElementById('createListingForm').reset();
+                document.getElementById('listingImagePreview').innerHTML = '';
                 updateStatsRow();
                 applyFiltersAndRender();
             } else {
@@ -504,6 +560,7 @@ async function submitNewListing() {
         
         document.getElementById('createListingModal').style.display = 'none';
         document.getElementById('createListingForm').reset();
+        document.getElementById('listingImagePreview').innerHTML = '';
         updateStatsRow();
         applyFiltersAndRender();
     }

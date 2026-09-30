@@ -106,9 +106,62 @@ function setupEventListeners() {
     const closeModalBtn = document.getElementById('closeComplaintModalBtn');
     const cancelModalBtn = document.getElementById('cancelModalBtn');
 
-    if (openModalBtn) openModalBtn.addEventListener('click', () => modal.style.display = 'flex');
+    let uploadedComplaintImage = null;
+
+    if (openModalBtn) openModalBtn.addEventListener('click', () => {
+        modal.style.display = 'flex';
+        uploadedComplaintImage = null;
+        document.getElementById('complaintImagePreview').innerHTML = '';
+    });
     if (closeModalBtn) closeModalBtn.addEventListener('click', () => modal.style.display = 'none');
     if (cancelModalBtn) cancelModalBtn.addEventListener('click', () => modal.style.display = 'none');
+
+    // Image Upload Logic
+    const imageUploadInput = document.getElementById('complaintImageUpload');
+    const imagePreviewContainer = document.getElementById('complaintImagePreview');
+    if (imageUploadInput) {
+        imageUploadInput.addEventListener('change', async (e) => {
+            if (e.target.files && e.target.files[0]) {
+                const file = e.target.files[0];
+                
+                const img = document.createElement('img');
+                img.src = URL.createObjectURL(file);
+                img.style.maxWidth = '100px';
+                img.style.maxHeight = '100px';
+                img.style.objectFit = 'cover';
+                img.style.borderRadius = '8px';
+                img.style.opacity = '0.5';
+                imagePreviewContainer.innerHTML = '';
+                imagePreviewContainer.appendChild(img);
+
+                const formData = new FormData();
+                formData.append('file', file);
+
+                try {
+                    const res = await apiFetch('/materials/upload', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    
+                    if (res.ok) {
+                        const data = await res.json();
+                        uploadedComplaintImage = 'http://localhost:8080' + data.fileUrl;
+                        img.src = uploadedComplaintImage;
+                        img.style.opacity = '1';
+                    } else {
+                        alert('Failed to upload image.');
+                        img.remove();
+                        uploadedComplaintImage = null;
+                    }
+                } catch (error) {
+                    console.error('Error uploading image:', error);
+                    alert('An error occurred during image upload.');
+                    img.remove();
+                    uploadedComplaintImage = null;
+                }
+            }
+        });
+    }
 
     // Complaint submission form
     const form = document.getElementById('fileComplaintForm');
@@ -453,7 +506,16 @@ async function submitNewComplaint() {
     const location = document.getElementById('complaintLocation').value;
     const description = document.getElementById('complaintDescription').value;
     const isAnonymous = document.getElementById('isAnonymous').checked;
-    const imgUrl = document.getElementById('complaintImage').value;
+    
+    // Fallback if uploadedComplaintImage is undefined at this scope (will use global var from above)
+    // We didn't define it globally but in setupEventListeners, let's just re-fetch the image from the DOM if we can't access it, or we make it global.
+    // Wait, since submitNewComplaint is a separate function, let's grab it from the preview img src or we make uploadedComplaintImage global.
+    // I'll grab it from the preview img.
+    const previewImg = document.querySelector('#complaintImagePreview img');
+    let imgUrl = null;
+    if (previewImg && previewImg.style.opacity === '1') {
+        imgUrl = previewImg.src;
+    }
 
     const payload = {
         title,
