@@ -38,6 +38,17 @@ public class ShuttleDriverController {
         return ResponseEntity.noContent().build();
     }
 
+    @GetMapping("/active")
+    @PreAuthorize("hasRole('DRIVER')")
+    public ResponseEntity<ShuttleTrip> getMyActiveTrip(
+            @RequestParam(required = false) Integer shuttleId,
+            Authentication authentication) {
+        Long driverId = Long.parseLong(authentication.getName());
+        return shuttleService.getActiveTripForDriver(driverId, shuttleId)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.noContent().build());
+    }
+
     @PostMapping("/{tripId}/end")
     @PreAuthorize("hasRole('DRIVER')")
     public ResponseEntity<ShuttleTrip> endTrip(@PathVariable Long tripId, Authentication authentication) {

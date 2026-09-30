@@ -27,10 +27,10 @@ public class RouteStop {
     @Column(name = "sequence_no", nullable = false)
     private Integer sequenceNo;
 
-    @Column(name = "latitude", nullable = false)
+    @Column(name = "latitude", precision = 10, scale = 7, nullable = false)
     private java.math.BigDecimal latitude;
 
-    @Column(name = "longitude", nullable = false)
+    @Column(name = "longitude", precision = 10, scale = 7, nullable = false)
     private java.math.BigDecimal longitude;
 
 }

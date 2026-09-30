@@ -176,3 +176,65 @@ input:focus, select:focus {
     text-transform: uppercase;
     letter-spacing: 1px;
 }
+
+/* Driver Quick Account Switcher */
+.driver-tabs {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.driver-tab-btn {
+    flex: 1;
+    padding: 0.6rem 0.5rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 8px;
+    color: var(--text-secondary);
+    font-size: 0.82rem;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.2s;
+}
+
+.driver-tab-btn.active {
+    background: rgba(59, 130, 246, 0.2);
+    border-color: var(--primary-color);
+    color: white;
+    font-weight: 600;
+}
+
+/* Boarding Banner in Driver Panel */
+.boarding-banner {
+    background: rgba(234, 179, 8, 0.15);
+    border: 1px solid rgba(234, 179, 8, 0.35);
+    border-radius: 12px;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    color: #fef08a;
+    animation: glow-amber 2s infinite alternate;
+}
+
+@keyframes glow-amber {
+    from { box-shadow: 0 0 10px rgba(234, 179, 8, 0.1); }
+    to { box-shadow: 0 0 20px rgba(234, 179, 8, 0.3); }
+}
+
+.boarding-banner .timer {
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: #facc15;
+    margin: 0.3rem 0;
+}
+
+.next-stop-indicator {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    padding: 0.75rem 1rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.9rem;
+}

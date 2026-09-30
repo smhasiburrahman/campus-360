@@ -30,16 +30,16 @@ public class ShuttleTrip {
     @Column(name = "status", nullable = false)
     private String status;
 
-    @Column(name = "current_latitude")
+    @Column(name = "current_latitude", precision = 10, scale = 7)
     private java.math.BigDecimal currentLatitude;
 
-    @Column(name = "current_longitude")
+    @Column(name = "current_longitude", precision = 10, scale = 7)
     private java.math.BigDecimal currentLongitude;
 
-    @Column(name = "current_heading")
+    @Column(name = "current_heading", precision = 6, scale = 2)
     private java.math.BigDecimal currentHeading;
 
-    @Column(name = "current_speed_kmh")
+    @Column(name = "current_speed_kmh", precision = 6, scale = 2)
     private java.math.BigDecimal currentSpeedKmh;
 
     @Column(name = "location_updated_at")

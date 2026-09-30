@@ -21,16 +21,16 @@ public class ShuttleLocation {
     @Column(name = "trip_id", nullable = false)
     private Long tripId;
 
-    @Column(name = "latitude", nullable = false)
+    @Column(name = "latitude", precision = 10, scale = 7, nullable = false)
     private java.math.BigDecimal latitude;
 
-    @Column(name = "longitude", nullable = false)
+    @Column(name = "longitude", precision = 10, scale = 7, nullable = false)
     private java.math.BigDecimal longitude;
 
-    @Column(name = "heading")
+    @Column(name = "heading", precision = 6, scale = 2)
     private java.math.BigDecimal heading;
 
-    @Column(name = "speed_kmh")
+    @Column(name = "speed_kmh", precision = 6, scale = 2)
     private java.math.BigDecimal speedKmh;
 
     @Column(name = "recorded_at", nullable = false)

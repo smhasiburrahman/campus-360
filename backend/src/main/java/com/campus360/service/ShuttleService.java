@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -60,7 +61,32 @@ public class ShuttleService {
 
     // --- Driver Operations ---
 
+    public Optional<ShuttleTrip> getActiveTripForDriver(Long driverId) {
+        return getActiveTripForDriver(driverId, null);
+    }
+
+    public Optional<ShuttleTrip> getActiveTripForDriver(Long driverId, Integer shuttleId) {
+        if (shuttleId != null) {
+            List<ShuttleTrip> shuttleActive = shuttleTripRepository.findByShuttleIdAndStatus(shuttleId, "active");
+            return shuttleActive.isEmpty() ? Optional.empty() : Optional.of(shuttleActive.get(0));
+        }
+        List<ShuttleTrip> activeTrips = shuttleTripRepository.findByDriverIdAndStatus(driverId, "active");
+        return activeTrips.isEmpty() ? Optional.empty() : Optional.of(activeTrips.get(0));
+    }
+
+    public List<ShuttleTrip> getAllActiveTripsForDriver(Long driverId) {
+        return shuttleTripRepository.findByDriverIdAndStatus(driverId, "active");
+    }
+
     public ShuttleTrip startTrip(Long driverId, ShuttleTripStartRequest request) {
+        // Enforce: A shuttle vehicle cannot be assigned to multiple active trips
+        if (request.getShuttleId() != null) {
+            List<ShuttleTrip> existingShuttleActive = shuttleTripRepository.findByShuttleIdAndStatus(request.getShuttleId().intValue(), "active");
+            if (!existingShuttleActive.isEmpty()) {
+                throw new RuntimeException("This shuttle vehicle is already currently in an active trip (Trip #" + existingShuttleActive.get(0).getId() + "). Please complete or end it before starting a new one.");
+            }
+        }
+
         ShuttleRoute route = shuttleRouteRepository.findById(request.getRouteId().intValue())
                 .orElseThrow(() -> new RuntimeException("Route not found"));
 
@@ -72,7 +98,23 @@ public class ShuttleService {
         }
         trip.setStatus("active");
         trip.setStartedAt(LocalDateTime.now());
-        return shuttleTripRepository.save(trip);
+
+        // Set initial coordinates to the first stop of the route
+        List<RouteStop> stops = getStopsForRoute(route.getId());
+        stops.sort(java.util.Comparator.comparing(RouteStop::getSequenceNo));
+        if (!stops.isEmpty()) {
+            trip.setCurrentLatitude(stops.get(0).getLatitude());
+            trip.setCurrentLongitude(stops.get(0).getLongitude());
+            trip.setCurrentHeading(java.math.BigDecimal.ZERO);
+            trip.setCurrentSpeedKmh(java.math.BigDecimal.ZERO);
+            trip.setLocationUpdatedAt(LocalDateTime.now());
+        }
+
+        ShuttleTrip savedTrip = shuttleTripRepository.save(trip);
+        // Broadcast new trip creation to all connected students
+        messagingTemplate.convertAndSend("/topic/trips/active", savedTrip);
+        messagingTemplate.convertAndSend("/topic/trips/" + savedTrip.getId(), savedTrip);
+        return savedTrip;
     }
 
     @Transactional
@@ -104,6 +146,7 @@ public class ShuttleService {
 
         // 3. Broadcast to WebSocket
         messagingTemplate.convertAndSend("/topic/trips/" + tripId, trip);
+        messagingTemplate.convertAndSend("/topic/trips/active", trip);
     }
 
     public ShuttleTrip endTrip(Long tripId, Long driverId) {
@@ -115,7 +158,10 @@ public class ShuttleService {
         }
         trip.setStatus("completed");
         trip.setEndedAt(LocalDateTime.now());
-        return shuttleTripRepository.save(trip);
+        ShuttleTrip saved = shuttleTripRepository.save(trip);
+        messagingTemplate.convertAndSend("/topic/trips/" + tripId, saved);
+        messagingTemplate.convertAndSend("/topic/trips/active", saved);
+        return saved;
     }
 
     // --- Public Operations ---
@@ -131,15 +177,15 @@ public class ShuttleService {
     public List<RouteStop> getStopsForRoute(Integer routeId) {
         return routeStopRepository.findAll().stream()
                 .filter(s -> s.getRouteId().equals(routeId))
+                .sorted(java.util.Comparator.comparing(RouteStop::getSequenceNo))
                 .collect(Collectors.toList());
     }
 
     public List<ShuttleTrip> getActiveTrips(Integer routeId) {
-        // ideally findByStatusAndRouteId
-        return shuttleTripRepository.findAll().stream()
-                .filter(t -> "active".equals(t.getStatus()))
-                .filter(t -> routeId == null || t.getRouteId().equals(routeId))
-                .collect(Collectors.toList());
+        if (routeId != null) {
+            return shuttleTripRepository.findByStatusAndRouteId("active", routeId);
+        }
+        return shuttleTripRepository.findByStatus("active");
     }
     
     public ShuttleTrip getTrip(Long tripId) {
