@@ -102,19 +102,9 @@
 
         <div class="dashboard-container">
 
-            <div class="page-header">
+            <div class="page-header" style="display: flex; justify-content: space-between; align-items: center;">
                 <h1>Study Zone</h1>
-            </div>
-
-            <div class="filter-tabs" id="filterTabs">
-                <button class="filter-pill" data-filter="all">All Posts</button>
-                <button class="filter-pill" data-filter="announcements"><span class="dot announcement"></span>Announcements</button>
-                <button class="filter-pill" data-filter="lost-found"><span class="dot lostfound"></span>Lost &amp; Found</button>
-                <button class="filter-pill" data-filter="events"><span class="dot event"></span>Events</button>
-                <button class="filter-pill" data-filter="complaints"><span class="dot complaint"></span>Complaints</button>
-                <button class="filter-pill" data-filter="marketplace"><span class="dot marketplace"></span>Marketplace</button>
-                <button class="filter-pill study-pill active" data-filter="study-zone"><span class="dot study"></span>Study Zone</button>
-                <button class="filter-pill" data-filter="materials"><span class="dot material"></span>Material Sharing</button>
+                <button class="btn btn-primary" id="openAddSessionBtn"><i class="fa-solid fa-plus"></i> Add Session</button>
             </div>
 
             <div class="content-grid">
@@ -263,6 +253,55 @@
 
         </div>
     </main>
+</div>
+
+<!-- Add Session Modal -->
+<div class="modal-overlay" id="addSessionModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;">
+    <div class="modal-content" style="background: white; width: 90%; max-width: 500px; border-radius: var(--radius-lg); padding: 1.5rem; position: relative; max-height: 90vh; overflow-y: auto;">
+        <button id="closeSessionModalBtn" style="position: absolute; right: 1rem; top: 1rem; background: none; border: none; font-size: 1.25rem; cursor: pointer; color: var(--text-muted);">&times;</button>
+        <h2 style="margin-bottom: 1.5rem; font-size: 1.25rem;">Create Study Session</h2>
+        
+        <form id="addSessionForm">
+            <div class="form-group" style="margin-bottom: 1rem;">
+                <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Subject / Course Name *</label>
+                <input type="text" id="sessionSubject" class="form-control" required placeholder="e.g. Data Structures, Physics 101" style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: var(--radius-md);">
+            </div>
+            
+            <div class="form-group" style="margin-bottom: 1rem;">
+                <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Study Time *</label>
+                <input type="datetime-local" id="sessionTime" class="form-control" required style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: var(--radius-md);">
+            </div>
+            
+            <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                <div class="form-group">
+                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Mode *</label>
+                    <select id="sessionMode" class="form-control" required style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: var(--radius-md);">
+                        <option value="offline">Offline</option>
+                        <option value="online">Online</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Peer Limit *</label>
+                    <input type="number" id="sessionLimit" class="form-control" required min="2" max="50" value="5" style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: var(--radius-md);">
+                </div>
+            </div>
+            
+            <div class="form-group" style="margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                <input type="checkbox" id="sessionTutor">
+                <label for="sessionTutor" style="font-weight: 500; cursor: pointer;">Tutor Needed?</label>
+            </div>
+            
+            <div class="form-group" style="margin-bottom: 1.5rem;">
+                <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Description</label>
+                <textarea id="sessionDescription" class="form-control" rows="4" placeholder="Agenda, location details, meeting link, etc." style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: var(--radius-md);"></textarea>
+            </div>
+            
+            <div style="display: flex; justify-content: flex-end; gap: 1rem;">
+                <button type="button" id="cancelSessionModalBtn" class="btn btn-outline" style="padding: 0.75rem 1.5rem;">Cancel</button>
+                <button type="submit" id="submitSessionBtn" class="btn btn-primary" style="padding: 0.75rem 1.5rem;">Create Session</button>
+            </div>
+        </form>
+    </div>
 </div>
 
 <script src="js/auth.js"></script>

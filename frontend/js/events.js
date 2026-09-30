@@ -279,21 +279,48 @@ function setupModal() {
         modal.classList.remove('active');
         form.reset();
         previews.innerHTML = '';
-        dummyImageUrls = [];
+        uploadedImageUrls = [];
     };
 
     closeBtn.addEventListener('click', closeModal);
     cancelBtn.addEventListener('click', closeModal);
 
-    // Dummy Image Upload
-    let dummyImageUrls = [];
-    uploadInput.addEventListener('change', (e) => {
+    // Image Upload
+    let uploadedImageUrls = [];
+    uploadInput.addEventListener('change', async (e) => {
         const file = e.target.files[0];
         if (file) {
-            // For now, simulate upload with a random image
-            const dummyUrl = 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80';
-            dummyImageUrls.push(dummyUrl);
-            previews.innerHTML += `<img src="${dummyUrl}" class="image-preview" alt="Preview">`;
+            // Show preview with opacity while uploading
+            const img = document.createElement('img');
+            img.src = URL.createObjectURL(file);
+            img.className = 'image-preview';
+            img.style.opacity = '0.5';
+            previews.appendChild(img);
+
+            const formData = new FormData();
+            formData.append('file', file);
+
+            try {
+                const res = await apiFetch('/materials/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                if (res.ok) {
+                    const data = await res.json();
+                    const fileUrl = 'http://localhost:8080' + data.fileUrl;
+                    uploadedImageUrls.push(fileUrl);
+                    img.src = fileUrl; // update to server URL
+                    img.style.opacity = '1';
+                } else {
+                    alert('Failed to upload image.');
+                    img.remove();
+                }
+            } catch (error) {
+                console.error('Error uploading image:', error);
+                alert('An error occurred during image upload.');
+                img.remove();
+            }
         }
     });
 
@@ -321,7 +348,7 @@ function setupModal() {
             registrationLink,
             organizerDetails,
             eventDate,
-            imageUrls: dummyImageUrls
+            imageUrls: uploadedImageUrls
         };
 
         const submitBtn = document.getElementById('submitEventBtn');

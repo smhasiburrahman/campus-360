@@ -461,7 +461,7 @@ function initProfileModal() {
             fileInput.click();
         });
 
-        fileInput.addEventListener('change', () => {
+        fileInput.addEventListener('change', async () => {
             const file = fileInput.files && fileInput.files[0];
             if (!file) return;
 
@@ -472,29 +472,38 @@ function initProfileModal() {
                 return;
             }
 
-            const reader = new FileReader();
-            reader.onload = () => {
-                pendingAvatarDataUrl = reader.result;
-                if (inputAvatarUrl) inputAvatarUrl.value = ''; // clear url input if file picked
-                updateModalPreview(pendingAvatarDataUrl, inputName ? inputName.value : 'Student');
-                showToast('Photo selected! Click "Save Changes" to apply.', 'success');
-            };
-            reader.readAsDataURL(file);
-        });
-    }
+            const formData = new FormData();
+            formData.append('file', file);
 
-    // Live update preview if photo URL is typed
-    if (inputAvatarUrl) {
-        inputAvatarUrl.addEventListener('input', () => {
-            const urlVal = inputAvatarUrl.value.trim();
-            if (urlVal) {
-                pendingAvatarDataUrl = null;
-                updateModalPreview(urlVal, inputName ? inputName.value : 'Student');
-            } else if (!pendingAvatarDataUrl) {
-                updateModalPreview(currentStudent?.profilePictureUrl, inputName ? inputName.value : 'Student');
+            uploadPhotoBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Uploading...';
+            uploadPhotoBtn.disabled = true;
+
+            try {
+                const res = await apiFetch('/materials/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                if (res.ok) {
+                    const data = await res.json();
+                    pendingAvatarDataUrl = 'http://localhost:8080' + data.fileUrl;
+                    updateModalPreview(pendingAvatarDataUrl, inputName ? inputName.value : 'Student');
+                    showToast('Photo uploaded successfully! Click "Save Changes" to apply.', 'success');
+                } else {
+                    showToast('Failed to upload image.', 'error');
+                }
+            } catch (error) {
+                console.error('Error uploading image:', error);
+                showToast('An error occurred during image upload.', 'error');
+            } finally {
+                uploadPhotoBtn.innerHTML = '<i class="fa-solid fa-camera"></i> Change Photo';
+                uploadPhotoBtn.disabled = false;
+                fileInput.value = '';
             }
         });
     }
+
+    // URL preview logic removed as URL input was removed
 
     // Form submission
     if (form) {
@@ -519,8 +528,7 @@ function initProfileModal() {
                 const departmentId = inputDept && inputDept.value ? parseInt(inputDept.value, 10) : null;
                 const gender = inputGender ? inputGender.value || null : null;
                 const phone = inputPhone ? inputPhone.value.trim() || null : null;
-                const urlVal = inputAvatarUrl ? inputAvatarUrl.value.trim() : '';
-                const profilePictureUrl = pendingAvatarDataUrl || urlVal || (currentStudent ? currentStudent.profilePictureUrl : null);
+                const profilePictureUrl = pendingAvatarDataUrl || (currentStudent ? currentStudent.profilePictureUrl : null);
                 const bio = inputBio ? inputBio.value.trim() || null : null;
 
                 const payload = {
